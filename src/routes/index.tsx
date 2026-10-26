@@ -5,6 +5,7 @@ import { Icon, SectionHead, btn, Dot, inputCls } from "@/components/mk/core";
 import { SalonCard, SafeImg } from "@/components/mk/marketplace";
 import { AREAS, CATEGORIES, FAQ, GALLERY, IMAGES, SALONS } from "@/lib/data";
 import { seo } from "@/lib/seo";
+import type { DiscoverSearch } from "@/lib/filters";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +25,7 @@ function HeroSearch() {
       aria-label="جست‌وجوی سالن"
       onSubmit={(e) => {
         e.preventDefault();
-        nav({ to: "/discover", search: { cat: cat || undefined, area: area || undefined, date: date || undefined } });
+        nav({ to: "/discover", search: { cat: (cat || undefined) as DiscoverSearch["cat"], area: area || undefined, date: (date || undefined) as DiscoverSearch["date"] } });
       }}
       className="grid gap-3 rounded-card bg-card p-4 shadow-modal sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]"
     >
