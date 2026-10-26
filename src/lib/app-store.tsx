@@ -65,7 +65,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const el = document.documentElement;
-    el.dataset.theme = theme;
+    el.setAttribute("data-theme", theme);
     el.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
