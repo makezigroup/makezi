@@ -14,11 +14,14 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ForSalonsRouteImport } from './routes/for-salons'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as BookingSalonIdRouteImport } from './routes/booking.$salonId'
+import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,6 +46,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
 const ForSalonsRoute = ForSalonsRouteImport.update({
   id: '/for-salons',
   path: '/for-salons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -70,6 +78,16 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingSalonIdRoute = BookingSalonIdRouteImport.update({
+  id: '/booking/$salonId',
+  path: '/booking/$salonId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalonsSlugRoute = SalonsSlugRouteImport.update({
+  id: '/salons/$slug',
+  path: '/salons/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,11 +95,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/map': typeof MapRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/booking/$salonId': typeof BookingSalonIdRoute
+  '/salons/$slug': typeof SalonsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,11 +110,14 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/map': typeof MapRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/booking/$salonId': typeof BookingSalonIdRoute
+  '/salons/$slug': typeof SalonsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,11 +126,14 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/map': typeof MapRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/booking/$salonId': typeof BookingSalonIdRoute
+  '/salons/$slug': typeof SalonsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,11 +143,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/for-salons'
+    | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/map'
     | '/privacy'
     | '/terms'
+    | '/booking/$salonId'
+    | '/salons/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,11 +158,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/for-salons'
+    | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/map'
     | '/privacy'
     | '/terms'
+    | '/booking/$salonId'
+    | '/salons/$slug'
   id:
     | '__root__'
     | '/'
@@ -140,11 +173,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/discover'
     | '/for-salons'
+    | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/map'
     | '/privacy'
     | '/terms'
+    | '/booking/$salonId'
+    | '/salons/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -153,11 +189,14 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DiscoverRoute: typeof DiscoverRoute
   ForSalonsRoute: typeof ForSalonsRoute
+  GalleryRoute: typeof GalleryRoute
   HelpRoute: typeof HelpRoute
   HowItWorksRoute: typeof HowItWorksRoute
   MapRoute: typeof MapRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  BookingSalonIdRoute: typeof BookingSalonIdRoute
+  SalonsSlugRoute: typeof SalonsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -197,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForSalonsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/help': {
       id: '/help'
       path: '/help'
@@ -232,6 +278,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/booking/$salonId': {
+      id: '/booking/$salonId'
+      path: '/booking/$salonId'
+      fullPath: '/booking/$salonId'
+      preLoaderRoute: typeof BookingSalonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salons/$slug': {
+      id: '/salons/$slug'
+      path: '/salons/$slug'
+      fullPath: '/salons/$slug'
+      preLoaderRoute: typeof SalonsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -241,11 +301,14 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DiscoverRoute: DiscoverRoute,
   ForSalonsRoute: ForSalonsRoute,
+  GalleryRoute: GalleryRoute,
   HelpRoute: HelpRoute,
   HowItWorksRoute: HowItWorksRoute,
   MapRoute: MapRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  BookingSalonIdRoute: BookingSalonIdRoute,
+  SalonsSlugRoute: SalonsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
