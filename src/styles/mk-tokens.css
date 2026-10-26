@@ -1,0 +1,232 @@
+/* Copied verbatim from MAKEZI Design System tokens/ (colors, spacing, typography, motion). Radius tokens are mapped in styles.css @theme. */
+/* MAKEZI color tokens
+   Primitives: documented in Brand Book 3.0 p.46–47 (from Brand Book 2.0).
+   Semantic layer: naming = design proposal (Brand Book p.56). Light + dark modes.
+   Default theme is an OPEN decision (BB-3) — light is the :root fallback only. */
+:root{
+  /* Brand primitives — documented */
+  --brand-ink:#101C22;
+  --brand-lime:#D1F068;
+  --brand-pink:#FF70A6;
+  --brand-paper:#F7F9F5;
+  --brand-white:#FFFFFF;
+
+  /* Lime scale (brand = 300) */
+  --lime-50:#F3FBDC;--lime-100:#E6FA9A;--lime-200:#DCF684;--lime-300:#D1F068;--lime-400:#C3E458;
+  --lime-500:#B6D641;--lime-600:#9EBC33;--lime-700:#8FAA2E;--lime-800:#6C8020;
+  /* Pink scale (brand = 400) */
+  --pink-50:#FFF0F6;--pink-100:#FFDCEA;--pink-200:#FFC1D6;--pink-300:#FF9BC0;--pink-400:#FF70A6;
+  --pink-500:#EC5D93;--pink-600:#D94D80;--pink-700:#B03A66;--pink-800:#7E2949;
+  /* Neutral scale (50 = paper, 900 = ink) */
+  --neutral-50:#F7F9F5;--neutral-100:#EDF0EC;--neutral-200:#E3E7E1;--neutral-300:#C4CCC9;--neutral-400:#93A1A6;
+  --neutral-500:#6B7A80;--neutral-600:#4A5459;--neutral-700:#222D33;--neutral-800:#1A2328;--neutral-900:#101C22;
+  /* Supporting neutrals seen in Brand Book */
+  --neutral-cool-200:#C6D1D5; /* muted text on ink */
+  --cobrand-divider:#C6CFCA;  /* co-branding divider */
+
+  /* System colors — documented (fills, icons, large text only on light) */
+  --status-success:#12A06A;--status-warning:#F0A93B;--status-error:#D93A40;--status-info:#2E82BD;
+  /* System TEXT variants — design proposal (Brand Book p.48 finding: base hues fail 4.5:1 for small text) */
+  --status-success-text-light:#0B7A50; /* 5.1:1 on paper */
+  --status-warning-text-light:#8A5A00; /* 5.6:1 */
+  --status-error-text-light:#B8262D;   /* 5.9:1 */
+  --status-info-text-light:#1F6A9E;    /* 5.5:1 */
+  --status-success-text-dark:#3FCB8F;  /* 8.4:1 on ink */
+  --status-warning-text-dark:#F5BE63;
+  --status-error-text-dark:#FF8A7A;
+  --status-info-text-dark:#6FB3E6;
+
+  --overlay-scrim:rgba(16,28,34,.56);
+  --overlay-photo:rgba(16,28,34,.45); /* logo on photo: 45% dark layer (documented) */
+}
+
+/* ---------- Semantic: LIGHT ---------- */
+:root,[data-theme="light"]{
+  color-scheme:light;
+  --color-bg-default:var(--neutral-50);
+  --color-bg-subtle:var(--neutral-100);
+  --color-bg-surface:var(--brand-white);
+  --color-bg-surface-raised:var(--brand-white);
+  --color-bg-inverse:var(--brand-ink);
+  --color-bg-brand:var(--brand-lime);
+  --color-bg-accent-subtle:var(--pink-50);
+  --color-bg-skeleton:var(--neutral-100);
+  --color-bg-placeholder:var(--neutral-200);
+
+  --color-text-primary:var(--brand-ink);
+  --color-text-muted:var(--neutral-600);
+  --color-text-subtle:var(--neutral-500);   /* placeholder / disabled only (4.2:1) */
+  --color-text-inverse:var(--brand-paper);
+  --color-text-on-brand:var(--brand-ink);   /* never white on lime */
+  --color-text-on-accent:var(--brand-ink);  /* never white on pink */
+  --color-text-link:var(--brand-ink);
+  --color-link-underline:var(--brand-pink);
+
+  --color-border:var(--neutral-200);
+  --color-border-strong:var(--neutral-300);
+  --color-border-inverse:var(--brand-ink);
+
+  --color-action-primary-bg:var(--brand-lime);
+  --color-action-primary-bg-hover:var(--lime-400);
+  --color-action-primary-bg-active:var(--lime-500);
+  --color-action-primary-fg:var(--brand-ink);
+  --color-action-secondary-bg:var(--brand-ink);
+  --color-action-secondary-bg-hover:var(--neutral-700);
+  --color-action-secondary-fg:var(--brand-paper);
+  --color-action-outline-border:var(--brand-ink);
+  --color-action-outline-bg-hover:var(--neutral-100);
+  --color-action-disabled-bg:var(--neutral-100);
+  --color-action-disabled-fg:var(--neutral-500);
+
+  --color-accent:var(--brand-pink);          /* dot, capacity, small accents — never error */
+  --color-accent-text:var(--pink-700);       /* pink as text on light (5.4:1) */
+  --color-selected-bg:var(--brand-ink);
+  --color-selected-fg:var(--brand-paper);
+
+  --color-focus-inner:var(--brand-ink);
+  --color-focus-outer:var(--brand-lime);
+
+  --color-success:var(--status-success);--color-success-text:var(--status-success-text-light);--color-success-bg:#E4F5EC;
+  --color-warning:var(--status-warning);--color-warning-text:var(--status-warning-text-light);--color-warning-bg:#FDF1DD;
+  --color-error:var(--status-error);--color-error-text:var(--status-error-text-light);--color-error-bg:#FBE6E6;
+  --color-info:var(--status-info);--color-info-text:var(--status-info-text-light);--color-info-bg:#E3EFF8;
+
+  --color-icon:var(--brand-ink);
+  --color-icon-muted:var(--neutral-600);
+}
+
+/* ---------- Semantic: DARK (design proposal) ---------- */
+[data-theme="dark"]{
+  color-scheme:dark;
+  --color-bg-default:var(--brand-ink);
+  --color-bg-subtle:var(--neutral-800);
+  --color-bg-surface:var(--neutral-800);
+  --color-bg-surface-raised:var(--neutral-700);
+  --color-bg-inverse:var(--brand-paper);
+  --color-bg-brand:var(--brand-lime);
+  --color-bg-accent-subtle:#2A1E26;
+  --color-bg-skeleton:var(--neutral-700);
+  --color-bg-placeholder:var(--neutral-700);
+
+  --color-text-primary:var(--brand-paper);
+  --color-text-muted:var(--neutral-cool-200);
+  --color-text-subtle:var(--neutral-400);
+  --color-text-inverse:var(--brand-ink);
+  --color-text-on-brand:var(--brand-ink);
+  --color-text-on-accent:var(--brand-ink);
+  --color-text-link:var(--brand-lime);
+  --color-link-underline:var(--brand-pink);
+
+  --color-border:var(--neutral-700);
+  --color-border-strong:#3A474E;
+  --color-border-inverse:var(--brand-paper);
+
+  --color-action-primary-bg:var(--brand-lime);
+  --color-action-primary-bg-hover:var(--lime-200);
+  --color-action-primary-bg-active:var(--lime-100);
+  --color-action-primary-fg:var(--brand-ink);
+  --color-action-secondary-bg:var(--brand-paper);
+  --color-action-secondary-bg-hover:var(--neutral-200);
+  --color-action-secondary-fg:var(--brand-ink);
+  --color-action-outline-border:var(--brand-paper);
+  --color-action-outline-bg-hover:var(--neutral-700);
+  --color-action-disabled-bg:var(--neutral-700);
+  --color-action-disabled-fg:var(--neutral-400);
+
+  --color-accent:var(--brand-pink);
+  --color-accent-text:var(--pink-200);       /* 11.4:1 on ink (documented) */
+  --color-selected-bg:var(--brand-lime);
+  --color-selected-fg:var(--brand-ink);
+
+  --color-focus-inner:var(--brand-paper);
+  --color-focus-outer:var(--brand-lime);
+
+  --color-success:var(--status-success);--color-success-text:var(--status-success-text-dark);--color-success-bg:#12302A;
+  --color-warning:var(--status-warning);--color-warning-text:var(--status-warning-text-dark);--color-warning-bg:#33291A;
+  --color-error:var(--status-error);--color-error-text:var(--status-error-text-dark);--color-error-bg:#3A1F24;
+  --color-info:var(--status-info);--color-info-text:var(--status-info-text-dark);--color-info-bg:#162B3B;
+
+  --color-icon:var(--brand-paper);
+  --color-icon-muted:var(--neutral-cool-200);
+}
+/* Spacing, radius, elevation, size, layout — values documented (Brand Book p.51/p.55/p.56) unless marked. */
+:root{
+  --space-0:0;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+  --space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --space-half:2px; /* hairline offsets only */
+
+
+  --shadow-card:0 2px 8px rgba(16,28,34,.06);
+  --shadow-modal:0 8px 32px rgba(16,28,34,.14);
+  --shadow-none:none;
+
+  --border-width:1px;
+  --border-width-strong:2px;
+
+  --size-touch-min:44px;
+  --size-button-md:48px; /* primary min height */
+  --size-button-sm:40px; /* proposal: dense secondary actions (hit area padded to 44) */
+  --size-input:48px;
+  --size-icon:24px;--size-icon-sm:20px;--size-icon-lg:32px;
+  --size-dot:10px;       /* signature dot in UI — never taller than a letter */
+  --size-mark-min:24px;--size-lockup-min-h:32px;
+
+  /* Grid — documented: mobile 4 col / 16 margin; desktop 12 col / 32–64 margin / 24 gutter. Tablet = proposal. */
+  --grid-mobile-cols:4;/* @kind other */--grid-mobile-margin:16px;--grid-mobile-gutter:16px;
+  --grid-tablet-cols:8;/* @kind other */--grid-tablet-margin:24px;--grid-tablet-gutter:16px;
+  --grid-desktop-cols:12;/* @kind other */--grid-desktop-margin:clamp(32px,4vw,64px);--grid-desktop-gutter:24px;
+  --container-max:1280px;
+  --bp-tablet:600px;/* @kind other */--bp-desktop:1024px;/* @kind other */
+
+  --z-header:20;/* @kind other */--z-bottomnav:30;/* @kind other */--z-overlay:40;/* @kind other */--z-toast:50;/* @kind other */
+}
+/* Type tokens — scale documented in Brand Book p.50/p.56 (from Brand Book 2.0). Mobile overrides = proposal. */
+:root{
+  --font-fa:'Vazirmatn',Tahoma,sans-serif;
+  --font-lat:'Outfit','Vazirmatn',sans-serif;
+  --font-mono:'Space Grotesk','Vazirmatn',monospace; /* numbers & codes only, never narrative */
+  --font-ui:var(--font-fa);
+
+  --weight-light:300;   /* large headlines only */
+  --weight-regular:400; /* body */
+  --weight-medium:500;
+  --weight-semibold:600;/* emphasis & labels */
+  --weight-bold:700;
+  --weight-black:800;   /* display & lockup */
+
+  --type-d1-size:52px;--type-d1-line:1.30;/* @kind other */--type-d1-weight:800;/* @kind other */
+  --type-h1-size:36px;--type-h1-line:1.40;/* @kind other */--type-h1-weight:700;/* @kind other */
+  --type-h2-size:27px;--type-h2-line:1.45;/* @kind other */--type-h2-weight:700;/* @kind other */
+  --type-h3-size:21px;--type-h3-line:1.50;/* @kind other */--type-h3-weight:600;/* @kind other */
+  --type-body-l-size:17px;--type-body-l-line:1.75;/* @kind other */
+  --type-body-size:15px;--type-body-line:1.75;/* @kind other */
+  --type-caption-size:13px;--type-caption-line:1.7;/* @kind other */
+  --type-label-size:11.5px;--type-label-line:1.7;/* @kind other */
+
+  --line-fa-min:1.7;/* @kind other */ /* Persian running text never below */
+  --letter-spacing-fa:0;/* @kind other */ /* positive tracking on Persian is forbidden */
+  --letter-spacing-lat-caps:.08em;/* @kind other */
+}
+@media (max-width:599px){
+  :root{--type-d1-size:36px;--type-h1-size:28px;}
+}
+/* Motion — documented (Brand Book p.53). Forbidden: linear, bounce, elastic.
+   fast = micro-interaction (120–160) · base = state change (200–250) · slow = page & sheet entry (300–400) */
+:root{
+  --motion-fast:140ms;/* @kind other */
+  --motion-base:220ms;/* @kind other */
+  --motion-slow:350ms;/* @kind other */
+  --motion-splash:1400ms;/* @kind other */
+  --ease-standard:cubic-bezier(.2,.8,.2,1);/* @kind other */
+  --ease-enter:cubic-bezier(0,.6,.3,1);/* @kind other */
+  --ease-exit:cubic-bezier(.4,0,1,1);/* @kind other */
+}
+@media (prefers-reduced-motion:reduce){
+  :root{
+    --motion-fast:1ms;/* @kind other */
+    --motion-base:120ms;/* @kind other */
+    --motion-slow:120ms;/* @kind other */
+    --motion-splash:1ms;/* @kind other */
+  }
+}
