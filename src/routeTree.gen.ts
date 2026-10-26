@@ -11,15 +11,20 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ForSalonsRouteImport } from './routes/for-salons'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
+import { Route as MyBookingsRouteImport } from './routes/my-bookings'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as BookingSalonIdRouteImport } from './routes/booking.$salonId'
 import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
 
@@ -31,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -63,9 +73,19 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyBookingsRoute = MyBookingsRouteImport.update({
+  id: '/my-bookings',
+  path: '/my-bookings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -73,9 +93,19 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookingSalonIdRoute = BookingSalonIdRouteImport.update({
@@ -92,30 +122,40 @@ const SalonsSlugRoute = SalonsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/booking/$salonId': typeof BookingSalonIdRoute
   '/salons/$slug': typeof SalonsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/booking/$salonId': typeof BookingSalonIdRoute
   '/salons/$slug': typeof SalonsSlugRoute
 }
@@ -123,15 +163,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
+  '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/booking/$salonId': typeof BookingSalonIdRoute
   '/salons/$slug': typeof SalonsSlugRoute
 }
@@ -140,45 +185,60 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/discover'
     | '/for-salons'
     | '/gallery'
     | '/help'
     | '/how-it-works'
+    | '/login'
     | '/map'
+    | '/my-bookings'
     | '/privacy'
+    | '/saved'
     | '/terms'
+    | '/verify'
     | '/booking/$salonId'
     | '/salons/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/discover'
     | '/for-salons'
     | '/gallery'
     | '/help'
     | '/how-it-works'
+    | '/login'
     | '/map'
+    | '/my-bookings'
     | '/privacy'
+    | '/saved'
     | '/terms'
+    | '/verify'
     | '/booking/$salonId'
     | '/salons/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/discover'
     | '/for-salons'
     | '/gallery'
     | '/help'
     | '/how-it-works'
+    | '/login'
     | '/map'
+    | '/my-bookings'
     | '/privacy'
+    | '/saved'
     | '/terms'
+    | '/verify'
     | '/booking/$salonId'
     | '/salons/$slug'
   fileRoutesById: FileRoutesById
@@ -186,15 +246,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   ContactRoute: typeof ContactRoute
   DiscoverRoute: typeof DiscoverRoute
   ForSalonsRoute: typeof ForSalonsRoute
   GalleryRoute: typeof GalleryRoute
   HelpRoute: typeof HelpRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
+  MyBookingsRoute: typeof MyBookingsRoute
   PrivacyRoute: typeof PrivacyRoute
+  SavedRoute: typeof SavedRoute
   TermsRoute: typeof TermsRoute
+  VerifyRoute: typeof VerifyRoute
   BookingSalonIdRoute: typeof BookingSalonIdRoute
   SalonsSlugRoute: typeof SalonsSlugRoute
 }
@@ -213,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -257,11 +329,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
       fullPath: '/map'
       preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-bookings': {
+      id: '/my-bookings'
+      path: '/my-bookings'
+      fullPath: '/my-bookings'
+      preLoaderRoute: typeof MyBookingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -271,11 +357,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/booking/$salonId': {
@@ -298,15 +398,20 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   ContactRoute: ContactRoute,
   DiscoverRoute: DiscoverRoute,
   ForSalonsRoute: ForSalonsRoute,
   GalleryRoute: GalleryRoute,
   HelpRoute: HelpRoute,
   HowItWorksRoute: HowItWorksRoute,
+  LoginRoute: LoginRoute,
   MapRoute: MapRoute,
+  MyBookingsRoute: MyBookingsRoute,
   PrivacyRoute: PrivacyRoute,
+  SavedRoute: SavedRoute,
   TermsRoute: TermsRoute,
+  VerifyRoute: VerifyRoute,
   BookingSalonIdRoute: BookingSalonIdRoute,
   SalonsSlugRoute: SalonsSlugRoute,
 }
