@@ -351,7 +351,7 @@ export function SalonAnalytics() {
             <div key={i} className="flex flex-1 flex-col items-center gap-1">
               <span className="text-label">{fmt.num(b)}</span>
               <div className="w-full rounded-t-sm bg-ink" style={{ height: `${(b / 25) * 100}%` }} />
-              <span className="text-label text-muted-foreground">{WEEK[i].slice(0, 2)}</span>
+              <span className="text-label text-muted-foreground">{WEEK[i]?.slice(0, 2)}</span>
             </div>
           ))}
         </div>

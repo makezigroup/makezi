@@ -226,7 +226,7 @@ export function DashShell({ title, badge, nav, children }: { title: string; badg
                 <li key={n.to}>
                   <Link
                     to={n.to}
-                    activeOptions={{ exact: n.exact }}
+                    activeOptions={{ exact: !!n.exact }}
                     onClick={() => setOpen(false)}
                     className="flex min-h-11 items-center gap-3 rounded-button px-3 text-caption font-semibold text-foreground no-underline hover:bg-muted"
                     activeProps={{ className: "!bg-selected !text-selected-foreground" }}

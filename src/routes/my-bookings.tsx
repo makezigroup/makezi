@@ -113,7 +113,7 @@ function BookingRow({ b }: { b: Booking }) {
 function Reschedule({ b, onDone }: { b: Booking; onDone: (d: string, t: string) => void }) {
   const fmt = useFmt();
   const days = Array.from({ length: 10 }, (_, i) => isoDay(i + 1));
-  const [day, setDay] = useState(days[0]);
+  const [day, setDay] = useState(isoDay(1));
   const [time, setTime] = useState<string | null>(null);
   const slots = slotsFor(b.salonId, day);
   return (
@@ -156,7 +156,7 @@ function ReviewForm({ onDone }: { onDone: () => void }) {
           <span className="text-caption font-semibold">{d}</span>
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
-              <button type="button" key={n} aria-label={`${d}: ${n} از ۵`} aria-pressed={vals[i] === n} onClick={() => setVals((v) => v.map((x, j) => (j === i ? n : x)))} className={cn("grid size-10 place-items-center rounded-full border font-mono text-caption", vals[i] >= n ? "border-selected bg-selected text-selected-foreground" : "border-border")}>
+              <button type="button" key={n} aria-label={`${d}: ${n} از ۵`} aria-pressed={vals[i] === n} onClick={() => setVals((v) => v.map((x, j) => (j === i ? n : x)))} className={cn("grid size-10 place-items-center rounded-full border font-mono text-caption", (vals[i] ?? 0) >= n ? "border-selected bg-selected text-selected-foreground" : "border-border")}>
                 {fmt.digits(n)}
               </button>
             ))}

@@ -45,7 +45,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) {
-        const s = JSON.parse(raw);
+        const s = JSON.parse(raw) as Partial<{ theme: Theme; faDigits: boolean; bookings: Booking[]; saved: string[]; phone: string }>;
         if (s.theme) setThemeState(s.theme);
         if (typeof s.faDigits === "boolean") setFaDigits(s.faDigits);
         if (Array.isArray(s.bookings)) setBookings(s.bookings);

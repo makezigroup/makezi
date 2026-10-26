@@ -35,12 +35,12 @@ function BookingFlow() {
   const [svc, setSvc] = useState<string[]>(service ? [service] : []);
   const [staff, setStaff] = useState<string | null>(null);
   const days = useMemo(() => Array.from({ length: 14 }, (_, i) => isoDay(i)), []);
-  const [day, setDay] = useState(days[0]);
+  const [day, setDay] = useState(isoDay(0));
   const [time, setTime] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState(signedPhone ?? "");
   const [note, setNote] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [done, setDone] = useState<Booking | null>(null);
 
   const chosen = salon.services.filter((s) => svc.includes(s.id));
@@ -53,7 +53,7 @@ function BookingFlow() {
 
   const next = () => {
     if (step === 3) {
-      const e: Record<string, string> = {};
+      const e: { name?: string; phone?: string } = {};
       if (name.trim().length < 2) e.name = "نام خود را وارد کنید.";
       if (!isValidPhone(phone)) e.phone = "شماره‌ی موبایل ۱۱ رقم است و با ۰۹ شروع می‌شود.";
       setErrors(e);

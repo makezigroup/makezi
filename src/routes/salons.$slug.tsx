@@ -81,7 +81,7 @@ function SalonProfile() {
 
         <Tabs defaultValue="prices" className="mt-10" dir="rtl">
           <TabsList className="h-auto flex-wrap justify-start gap-1 rounded-full bg-muted p-1">
-            {[["prices", "فهرست قیمت"], ["staff", "متخصصان"], ["reviews", "نظرها"], ["portfolio", "نمونه‌کار"], ["creds", "مدارک"]].map(([v, l]) => (
+            {([["prices", "فهرست قیمت"], ["staff", "متخصصان"], ["reviews", "نظرها"], ["portfolio", "نمونه‌کار"], ["creds", "مدارک"]] as const).map(([v, l]) => v && (
               <TabsTrigger key={v} value={v} className="min-h-10 rounded-full px-4 data-[state=active]:bg-selected data-[state=active]:text-selected-foreground">
                 {l}
               </TabsTrigger>

@@ -1,7 +1,7 @@
 // Persian number/price/rating formatting (Brand Book typesetting rules).
 const FA = "۰۱۲۳۴۵۶۷۸۹";
 
-export const toFa = (v: string | number) => String(v).replace(/\d/g, (d) => FA[Number(d)]);
+export const toFa = (v: string | number) => String(v).replace(/\d/g, (d) => FA[Number(d)] ?? d);
 
 export function makeFmt(faDigits: boolean) {
   const digits = (s: string | number) => (faDigits ? toFa(s) : String(s));

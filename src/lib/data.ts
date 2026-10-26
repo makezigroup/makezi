@@ -28,8 +28,8 @@ export interface Service {
   category: CategoryId;
   durationMin: number;
   price: number;
-  priceFrom?: boolean;
-  note?: string;
+  priceFrom?: boolean | undefined;
+  note?: string | undefined;
   updated: string;
 }
 export interface Staff {
@@ -47,7 +47,7 @@ export interface Review {
   overall: number;
   dims: number[];
   text: string;
-  reply?: string;
+  reply?: string | undefined;
   bookingVerified: true;
 }
 export interface Credential {
@@ -126,8 +126,8 @@ function salon(i: number, p: Partial<Salon> & Pick<Salon, "status" | "categories
   return {
     id: `s${i}`,
     slug: `salon-${i}`,
-    name: `سالن [نام ${"۰۱۲۳۴۵۶۷۸۹"[i]}]`,
-    area: AREAS[(i - 1) % AREAS.length],
+    name: `سالن [نام ${"۰۱۲۳۴۵۶۷۸۹"[i] ?? i}]`,
+    area: AREAS[(i - 1) % AREAS.length] ?? "[محله]",
     distanceKm: 0.6 + i * 0.55,
     about: "این متن نمونه است. سالن در این بخش درباره‌ی تخصص، روش کار و ابزارهای خود توضیح می‌دهد.",
     address: "[آدرس نمونه]، [محله]",
@@ -148,7 +148,7 @@ export const SALONS: Salon[] = [
   salon(3, { status: "pending", categories: ["nail"], services: NAIL.slice(0, 3).map((s) => ({ ...s, price: s.price - 70000 })), image: extension, profileCompleteness: 70 }),
   salon(4, { status: "verified", categories: ["hair", "skin"], services: [...HAIR, ...SKIN], image: hair, profileCompleteness: 90 }),
   salon(5, { status: "verified", categories: ["makeup", "skin"], services: [...MAKEUP, ...SKIN], image: makeup, reviews: [], profileCompleteness: 75 }),
-  salon(6, { status: "unverified", categories: ["nail", "hair"], services: [NAIL[1], NAIL[4], HAIR[0]], image: interior, reviews: REVIEWS(6).slice(0, 1), profileCompleteness: 55 }),
+  salon(6, { status: "unverified", categories: ["nail", "hair"], services: [NAIL[1]!, NAIL[4]!, HAIR[0]!], image: interior, reviews: REVIEWS(6).slice(0, 1), profileCompleteness: 55 }),
 ];
 
 export const getSalon = (slugOrId: string) => SALONS.find((s) => s.slug === slugOrId || s.id === slugOrId);
@@ -156,7 +156,7 @@ export const priceFrom = (s: Salon) => Math.min(...s.services.map((v) => v.price
 export const avgRating = (s: Salon) =>
   s.reviews.length ? s.reviews.reduce((a, r) => a + r.overall, 0) / s.reviews.length : 0;
 export const dimAverages = (s: Salon) =>
-  [0, 1, 2, 3].map((d) => (s.reviews.length ? s.reviews.reduce((a, r) => a + r.dims[d], 0) / s.reviews.length : 0));
+  [0, 1, 2, 3].map((d) => (s.reviews.length ? s.reviews.reduce((a, r) => a + (r.dims[d] ?? 0), 0) / s.reviews.length : 0));
 
 /** Deterministic sample availability: time slots for salon + ISO day. */
 const ALL_SLOTS = ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
