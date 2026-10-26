@@ -73,7 +73,7 @@ function Home() {
             <Dot /> انتخاب آگاهانه در زیبایی
           </p>
           <h1 className="text-display">
-            سالن را با <span className="bg-lime px-2 text-brand-ink">قیمت و نمونه‌کار واقعی</span> انتخاب کنید
+            سالن را با <span className="bg-lime px-2 text-brand-ink [box-decoration-break:clone]">قیمت و نمونه‌کار واقعی</span> انتخاب کنید
           </h1>
           <p className="max-w-xl text-body-l text-muted-foreground">
             قیمت ثبت‌شده‌ی هر خدمت، مدارک بررسی‌شده و نظر کسانی که واقعاً نوبت گرفته‌اند را کنار هم ببینید و بدون تماس و پیام، نوبت رزرو کنید.
