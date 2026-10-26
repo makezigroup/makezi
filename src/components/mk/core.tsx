@@ -7,7 +7,7 @@ import { BOOKING_STATUS, type BookingStatus, type VerifyStatus } from "@/lib/dat
 import { CheckCircle2, AlertTriangle, XCircle, Info, Clock } from "lucide-react";
 
 /** MAKEZI brand line icon (24px grid, 1.75 stroke). */
-export function Icon({ name, size = 24, className, label }: { name: IconName; size?: number; className?: string; label?: string }) {
+export function Icon({ name, size = 24, className, label }: { name: IconName; size?: number | undefined; className?: string | undefined; label?: string | undefined }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -28,7 +28,7 @@ export function Icon({ name, size = 24, className, label }: { name: IconName; si
 }
 
 /** Original MAKEZI mark (logo.svg). Ink follows text colour; dot stays brand pink. */
-export function LogoMark({ className, title = "MAKEZI" }: { className?: string; title?: string }) {
+export function LogoMark({ className, title = "MAKEZI" }: { className?: string | undefined; title?: string | undefined }) {
   return (
     <svg viewBox="0 0 100 61.5" className={className} role="img" aria-label={title}>
       <path
@@ -43,7 +43,7 @@ export function LogoMark({ className, title = "MAKEZI" }: { className?: string; 
   );
 }
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className }: { className?: string | undefined }) {
   return (
     <Link to="/" className={cn("inline-flex items-center gap-2 text-foreground no-underline", className)} aria-label="MAKEZI میکزی — صفحه‌ی اصلی">
       <LogoMark className="h-7 w-auto" />
@@ -75,7 +75,7 @@ export const Button = forwardRef<HTMLButtonElement, BtnProps>(({ className, vari
 Button.displayName = "Button";
 
 /** Signature pink dot — never taller than a letter. */
-export const Dot = ({ className }: { className?: string }) => (
+export const Dot = ({ className }: { className?: string | undefined }) => (
   <span aria-hidden className={cn("inline-block size-2.5 rounded-full bg-pink", className)} />
 );
 
@@ -91,7 +91,7 @@ const toneCls: Record<Tone, string> = {
 const toneIcon = { success: CheckCircle2, warning: Clock, error: XCircle, info: Info, neutral: Info, brand: Info };
 
 /** Status always = icon + word, never colour alone. */
-export function StatusBadge({ tone, children, className, icon = true }: { tone: Tone; children: ReactNode; className?: string; icon?: boolean }) {
+export function StatusBadge({ tone, children, className, icon = true }: { tone: Tone; children: ReactNode; className?: string | undefined; icon?: boolean | undefined }) {
   const I = toneIcon[tone];
   return (
     <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-label", toneCls[tone], className)}>
@@ -101,7 +101,7 @@ export function StatusBadge({ tone, children, className, icon = true }: { tone: 
   );
 }
 
-export function VerifyBadge({ status, className }: { status: VerifyStatus; className?: string }) {
+export function VerifyBadge({ status, className }: { status: VerifyStatus; className?: string | undefined }) {
   if (status === "verified")
     return (
       <span className={cn("inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-0.5 text-label text-success-text", className)}>
@@ -122,7 +122,7 @@ export function BookingBadge({ status }: { status: BookingStatus }) {
   return <StatusBadge tone={s.tone}>{s.label}</StatusBadge>;
 }
 
-export function Chip({ active, onClick, children, icon }: { active?: boolean; onClick?: () => void; children: ReactNode; icon?: IconName }) {
+export function Chip({ active, onClick, children, icon }: { active?: boolean | undefined; onClick?: () => void; children: ReactNode; icon?: IconName | undefined }) {
   return (
     <button
       type="button"
@@ -139,12 +139,12 @@ export function Chip({ active, onClick, children, icon }: { active?: boolean; on
   );
 }
 
-export function Card({ className, children, as: As = "div" }: { className?: string; children: ReactNode; as?: "div" | "section" | "article" | "li" }) {
+export function Card({ className, children, as: As = "div" }: { className?: string | undefined; children: ReactNode; as?: "div" | "section" | "article" | "li" }) {
   return <As className={cn("rounded-card bg-card p-5 shadow-card", className)}>{children}</As>;
 }
 
 /** Marks sample / not-yet-connected content honestly. */
-export function DemoNote({ children, className }: { children: ReactNode; className?: string }) {
+export function DemoNote({ children, className }: { children: ReactNode; className?: string | undefined }) {
   return (
     <p className={cn("flex items-start gap-2 rounded-input bg-info-soft px-3 py-2 text-caption text-info-text", className)}>
       <Info className="mt-1 size-4 shrink-0" aria-hidden />
@@ -153,7 +153,7 @@ export function DemoNote({ children, className }: { children: ReactNode; classNa
   );
 }
 
-export function DecisionTag({ id, children }: { id: string; children?: ReactNode }) {
+export function DecisionTag({ id, children }: { id: string; children?: ReactNode | undefined }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-warning px-2 py-0.5 text-label text-warning-text">
       <AlertTriangle className="size-3" aria-hidden />
@@ -163,7 +163,7 @@ export function DecisionTag({ id, children }: { id: string; children?: ReactNode
   );
 }
 
-export function StatePanel({ icon = "search", title, body, action }: { icon?: IconName; title: string; body?: string; action?: ReactNode }) {
+export function StatePanel({ icon = "search", title, body, action }: { icon?: IconName | undefined; title: string; body?: string | undefined; action?: ReactNode | undefined }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-card border border-dashed border-border-strong bg-surface px-6 py-12 text-center">
       <span className="grid size-14 place-items-center rounded-full bg-muted">
@@ -176,7 +176,7 @@ export function StatePanel({ icon = "search", title, body, action }: { icon?: Ic
   );
 }
 
-export function SectionHead({ eyebrow, title, body, action }: { eyebrow?: string; title: string; body?: string; action?: ReactNode }) {
+export function SectionHead({ eyebrow, title, body, action }: { eyebrow?: string | undefined; title: string; body?: string | undefined; action?: ReactNode | undefined }) {
   return (
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
@@ -194,7 +194,7 @@ export function SectionHead({ eyebrow, title, body, action }: { eyebrow?: string
   );
 }
 
-export const Field = ({ label, hint, error, children, htmlFor }: { label: string; hint?: string; error?: string; children: ReactNode; htmlFor?: string }) => (
+export const Field = ({ label, hint, error, children, htmlFor }: { label: string; hint?: string | undefined; error?: string | undefined; children: ReactNode; htmlFor?: string | undefined }) => (
   <div className="flex flex-col gap-1.5">
     <label htmlFor={htmlFor} className="text-caption font-semibold">
       {label}

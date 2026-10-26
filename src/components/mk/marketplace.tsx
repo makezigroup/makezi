@@ -7,7 +7,7 @@ import { avgRating, dimAverages, openSlotsToday, priceFrom, type Review, type Sa
 import { isoDay } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export function SafeImg({ src, alt, className, eager }: { src: string; alt: string; className?: string; eager?: boolean }) {
+export function SafeImg({ src, alt, className, eager }: { src: string; alt: string; className?: string | undefined; eager?: boolean | undefined }) {
   const [err, setErr] = useState(false);
   if (err)
     return (
@@ -37,7 +37,7 @@ export function RatingInline({ salon }: { salon: Salon }) {
   );
 }
 
-export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean }) {
+export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean | undefined }) {
   const fmt = useFmt();
   const { saved, toggleSaved } = useApp();
   const slots = openSlotsToday(salon, isoDay(0));
@@ -111,9 +111,9 @@ export function RatingSummary({ salon }: { salon: Salon }) {
             <li key={d} className="grid grid-cols-[5rem_1fr_2.5rem] items-center gap-3 text-caption">
               <span>{d}</span>
               <span className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
-                <span className="block h-full rounded-full bg-ink" style={{ width: `${(dims[i] / 5) * 100}%` }} />
+                <span className="block h-full rounded-full bg-ink" style={{ width: `${((dims[i] ?? 0) / 5) * 100}%` }} />
               </span>
-              <span className="font-semibold">{fmt.rating(dims[i])}</span>
+              <span className="font-semibold">{fmt.rating(dims[i] ?? 0)}</span>
             </li>
           ))}
         </ul>

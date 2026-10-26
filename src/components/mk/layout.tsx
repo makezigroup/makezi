@@ -14,7 +14,7 @@ const NAV = [
   { to: "/for-salons", label: "برای سالن‌ها" },
 ] as const;
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({ className }: { className?: string | undefined }) {
   const { theme, setTheme } = useApp();
   const dark = theme === "dark";
   return (
@@ -175,7 +175,7 @@ export function BottomNav() {
   );
 }
 
-export function SiteLayout({ children, footer = true }: { children: ReactNode; footer?: boolean }) {
+export function SiteLayout({ children, footer = true }: { children: ReactNode; footer?: boolean | undefined }) {
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-lime focus:px-4 focus:py-2 focus:text-brand-ink">
@@ -191,7 +191,7 @@ export function SiteLayout({ children, footer = true }: { children: ReactNode; f
   );
 }
 
-export function PageIntro({ title, body, children }: { title: string; body?: string; children?: ReactNode }) {
+export function PageIntro({ title, body, children }: { title: string; body?: string | undefined; children?: ReactNode | undefined }) {
   return (
     <section className="container-mk pb-8 pt-10 md:pt-14">
       <h1 className="text-h1">{title}</h1>
@@ -202,7 +202,7 @@ export function PageIntro({ title, body, children }: { title: string; body?: str
 }
 
 /** Shared shell for salon portal and admin. */
-export function DashShell({ title, badge, nav, children }: { title: string; badge: string; nav: { to: string; label: string; icon: IconName; exact?: boolean }[]; children: ReactNode }) {
+export function DashShell({ title, badge, nav, children }: { title: string; badge: string; nav: { to: string; label: string; icon: IconName; exact?: boolean | undefined }[]; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background">
@@ -245,7 +245,7 @@ export function DashShell({ title, badge, nav, children }: { title: string; badg
   );
 }
 
-export function DashTitle({ title, body, action }: { title: string; body?: string; action?: ReactNode }) {
+export function DashTitle({ title, body, action }: { title: string; body?: string | undefined; action?: ReactNode | undefined }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div>

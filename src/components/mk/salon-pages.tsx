@@ -11,7 +11,7 @@ import { isoDay } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /** The signed-in salon in this demo. */
-export const ME = SALONS[0];
+export const ME = SALONS[0]!;
 
 export const SALON_NAV = [
   { to: "/salon", label: "پیشخوان", icon: "salon" as const, exact: true },
@@ -142,7 +142,7 @@ export function SalonServices() {
           onSubmit={(e) => {
             e.preventDefault();
             const p = Number(price.replace(/\D/g, ""));
-            if (!name.trim() || !p) return toast.error("نام خدمت و قیمت را وارد کنید.");
+            if (!name.trim() || !p) { toast.error("نام خدمت و قیمت را وارد کنید."); return; }
             setList((l) => [...l, { id: `x${l.length}`, name, category: "nail", durationMin: Number(dur) || 60, price: p, updated: "امروز" }]);
             setName(""); setPrice("");
             toast.success("خدمت افزوده شد.");
@@ -241,7 +241,7 @@ function CredentialUpload({ onAdd }: { onAdd: (f: { label: string; name: string 
   const [label, setLabel] = useState("مدرک فنی");
   const [file, setFile] = useState<File | null>(null);
   return (
-    <form className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end" onSubmit={(e) => { e.preventDefault(); if (!file) return toast.error("فایل را انتخاب کنید."); onAdd({ label, name: file.name }); setFile(null); toast.success("مدرک برای بررسی ثبت شد."); }}>
+    <form className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end" onSubmit={(e) => { e.preventDefault(); if (!file) { toast.error("فایل را انتخاب کنید."); return; } onAdd({ label, name: file.name }); setFile(null); toast.success("مدرک برای بررسی ثبت شد."); }}>
       <Field label="نوع مدرک" htmlFor="cl">
         <select id="cl" className={inputCls} value={label} onChange={(e) => setLabel(e.target.value)}>
           <option>مدرک فنی</option><option>مجوز بهداشت محل کار</option><option>پروانه‌ی کسب</option><option>گواهی تجهیزات استریل</option>

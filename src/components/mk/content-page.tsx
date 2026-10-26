@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { SiteLayout, PageIntro } from "./layout";
 
-export function ContentPage({ title, body, children }: { title: string; body?: string; children: ReactNode }) {
+export function ContentPage({ title, body, children }: { title: string; body?: string | undefined; children: ReactNode }) {
   return (
     <SiteLayout>
       <PageIntro title={title} body={body} />
