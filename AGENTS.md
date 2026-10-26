@@ -8,3 +8,11 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture rules
+- Brand tokens live in `src/styles/mk-tokens.css` (copied from the MAKEZI Design System); `src/styles.css` maps them to Tailwind/shadcn names — change colours there, never in components.
+- MAKEZI UI primitives are in `src/components/mk/` (core, marketplace, layout); salon portal and admin page bodies live in `salon-pages.tsx` / `admin-pages.tsx` with thin route files — keeps the three experiences separated but on one component set.
+- Unresolved business/brand decisions are centralised in `src/lib/decisions.ts`; read defaults from there so they stay reversible.
+- No backend yet: data in `src/lib/data.ts` is sample-only and user state (bookings, saved, theme, digits, demo login) is client-side in `src/lib/app-store.tsx`; replace with Lovable Cloud before launch.
+- All number/price/date display goes through `useFmt()` so the Persian/Latin digits toggle applies everywhere.
+- `cn()` uses an extended tailwind-merge that knows the custom `text-{display,h1..label}` size utilities — keep it, or text colours get dropped.
