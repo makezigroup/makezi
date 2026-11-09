@@ -4,7 +4,7 @@ import { DemoNote } from "@/components/mk/core";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => seo("حریم خصوصی (پیش‌نویس)", "جای‌نگه‌دار سیاست حریم خصوصی میکزی؛ متن تأییدشده هنوز منتشر نشده است."),
+  head: () => seo("حریم خصوصی (پیش‌نویس)", "جای‌نگه‌دار سیاست حریم خصوصی میکزی؛ متن تأییدشده هنوز منتشر نشده است.", { path: "/privacy", noindex: true }),
   component: () => (
     <ContentPage title="حریم خصوصی" body="پیش‌نویس — متن حقوقی تأییدشده نیست.">
       <Prose>

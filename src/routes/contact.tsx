@@ -7,7 +7,7 @@ import { isValidPhone } from "@/lib/format";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => seo("تماس و پشتیبانی", "پیام خود را برای پشتیبانی میکزی بنویسید."),
+  head: () => seo("تماس و پشتیبانی", "پیام خود را برای پشتیبانی میکزی بنویسید.", { path: "/contact" }),
   component: Contact,
 });
 

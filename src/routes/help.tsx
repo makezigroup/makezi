@@ -7,7 +7,7 @@ import { OPEN_DECISIONS } from "@/lib/decisions";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/help")({
-  head: () => seo("راهنما و پرسش‌های رایج", "پاسخ پرسش‌های رایج درباره‌ی قیمت‌ها، تأیید مدارک، نظرها، مقایسه و تماس با سالن در میکزی."),
+  head: () => seo("راهنما و پرسش‌های رایج", "پاسخ پرسش‌های رایج درباره‌ی قیمت‌ها، تأیید مدارک، نظرها، مقایسه و تماس با سالن در میکزی.", { path: "/help" }),
   component: () => (
     <ContentPage title="راهنما و پرسش‌های رایج">
       <Accordion type="single" collapsible className="max-w-3xl rounded-card bg-card px-5 shadow-card">

@@ -11,9 +11,11 @@
 
 ## Architecture rules
 - Brand tokens live in `src/styles/mk-tokens.css` (copied from the MAKEZI Design System); `src/styles.css` maps them to Tailwind/shadcn names — change colours there, never in components.
-- MAKEZI UI primitives are in `src/components/mk/` (core, marketplace, layout); salon portal and admin page bodies live in `salon-pages.tsx` / `admin-pages.tsx` with thin route files — keeps the three experiences separated but on one component set.
+- MAKEZI UI primitives are in `src/components/mk/` (core, marketplace, layout); admin page bodies use thin route files and the shared primitives to preserve the approved design.
 - Unresolved business/brand decisions are centralised in `src/lib/decisions.ts`; read defaults from there so they stay reversible.
-- No backend yet: seed data in `src/lib/data.ts` is sample-only; salons, reviews, inquiries, favourites, comparison and demo login live client-side in `src/lib/app-store.tsx`; replace with Lovable Cloud (server-enforced admin role) before launch.
+- Cloud Auth owns identity; Cloud tables enforce owner/admin access through RLS and a separate user_roles table; never import local demo records into public state because published information must be factual.
+- Public SSR reads use publishable-key server functions; profile and service metadata use the same persisted record as the page to avoid fake or stale structured data.
+- Visit evidence is private storage linked to a review; a database trigger requires staff-accepted evidence before a verified-visit badge can be saved.
 - Product is a discovery/review directory, not a booking platform: no booking routes or wording; business rules (compare limit, score threshold, one review per user, review validation) live in `src/lib/rules.ts` and are tested in `src/test/rules.test.ts`.
 - `/salons/$slug` serves both city pages and salon profiles (city slugs are reserved); area and service pages use `$slug_` un-nested routes.
 - All number/price/date display goes through `useFmt()` so the Persian/Latin digits toggle applies everywhere.

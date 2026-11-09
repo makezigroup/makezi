@@ -10,7 +10,7 @@ export const Route = createFileRoute("/account")({
 });
 
 function Account() {
-  const { phone, signOut, reviews, saved, compare, displayName } = useApp();
+  const { phone, email, signOut, reviews, saved, compare, displayName } = useApp();
   const fmt = useFmt();
   const tiles = [
     { to: "/my-reviews" as const, icon: "review" as const, label: "نظرهای من", n: phone ? reviews.filter((r) => r.userKey === phone).length : 0 },
@@ -23,13 +23,13 @@ function Account() {
       <PageIntro title="حساب من" />
       <div className="container-mk grid max-w-4xl gap-6">
         {!phone ? (
-          <StatePanel icon="profile" title="وارد حساب خود نشده‌اید" body="برای نوشتن نظر و نگه‌داشتن فهرست‌ها با شماره‌ی موبایل وارد شوید." action={<Link to="/login" className={btn()}>ورود با موبایل</Link>} />
+          <StatePanel icon="profile" title="وارد حساب خود نشده‌اید" body="برای نوشتن نظر و نگه‌داشتن فهرست‌ها وارد حساب شوید." action={<Link to="/login" className={btn()}>ورود</Link>} />
         ) : (
           <section className="flex flex-wrap items-center gap-4 rounded-card bg-card p-5 shadow-card">
             <span className="grid size-14 place-items-center rounded-full bg-muted"><Icon name="profile" /></span>
             <div className="flex-1">
               <p className="font-semibold">{displayName || "کاربر میکزی"}</p>
-              <bdi dir="ltr" className="font-mono text-caption text-muted-foreground">{fmt.digits(phone)}</bdi>
+              <bdi dir="ltr" className="font-mono text-caption text-muted-foreground">{email}</bdi>
             </div>
             <Button variant="outline" size="sm" onClick={signOut}>خروج</Button>
           </section>
@@ -41,7 +41,6 @@ function Account() {
             </Link>
           ))}
         </div>
-        <DemoNote>ورود و حساب کاربری در این نسخه نمایشی است و به سرور متصل نیست.</DemoNote>
       </div>
     </SiteLayout>
   );

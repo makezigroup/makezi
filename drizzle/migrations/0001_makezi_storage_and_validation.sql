@@ -1,0 +1,15 @@
+CREATE POLICY visit_upload ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id='visit-evidence' AND (storage.foldername(name))[1]=auth.uid()::text);
+CREATE POLICY visit_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='visit-evidence' AND ((storage.foldername(name))[1]=auth.uid()::text OR public.has_role(auth.uid(),'admin')));
+CREATE POLICY visit_delete ON storage.objects FOR DELETE TO authenticated USING(bucket_id='visit-evidence' AND (storage.foldername(name))[1]=auth.uid()::text);
+ALTER TABLE public.reviews DROP CONSTRAINT reviews_text_check;
+ALTER TABLE public.reviews ADD CONSTRAINT reviews_text_check CHECK(char_length(text) BETWEEN 20 AND 1500 AND text !~ '(https?://|www\.|09[0-9]{9}|۰۹[۰-۹]{9})');
+CREATE TABLE public.directory_categories (id text PRIMARY KEY, label text NOT NULL);
+GRANT SELECT ON public.directory_categories TO anon; GRANT SELECT,INSERT,UPDATE,DELETE ON public.directory_categories TO authenticated; GRANT ALL ON public.directory_categories TO service_role;
+ALTER TABLE public.directory_categories ENABLE ROW LEVEL SECURITY;
+CREATE POLICY categories_read ON public.directory_categories FOR SELECT TO anon,authenticated USING(true);
+CREATE POLICY categories_admin ON public.directory_categories FOR ALL TO authenticated USING(public.has_role(auth.uid(),'admin')) WITH CHECK(public.has_role(auth.uid(),'admin'));
+CREATE TABLE public.directory_locations (id text PRIMARY KEY, city text NOT NULL, area text NOT NULL DEFAULT '', label text NOT NULL);
+GRANT SELECT ON public.directory_locations TO anon; GRANT SELECT,INSERT,UPDATE,DELETE ON public.directory_locations TO authenticated; GRANT ALL ON public.directory_locations TO service_role;
+ALTER TABLE public.directory_locations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY locations_read ON public.directory_locations FOR SELECT TO anon,authenticated USING(true);
+CREATE POLICY locations_admin ON public.directory_locations FOR ALL TO authenticated USING(public.has_role(auth.uid(),'admin')) WITH CHECK(public.has_role(auth.uid(),'admin'));

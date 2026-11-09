@@ -85,6 +85,7 @@ export interface Salon {
   slug: string;
   name: string;
   published: boolean;
+  archived?: boolean;
   status: VerifyStatus;
   city: string;
   area: string; // area slug
@@ -115,7 +116,7 @@ export interface Salon {
 
 /** standard = community review; verified-visit = evidence checked by the MAKEZI team. */
 export type ReviewKind = "community" | "verified-visit";
-export type ReviewStatus = "pending" | "approved" | "rejected" | "hidden";
+export type ReviewStatus = "pending" | "approved" | "rejected" | "hidden" | "reported";
 export interface Review {
   id: string;
   salonId: string;
@@ -127,6 +128,8 @@ export interface Review {
   /** One value per DECISIONS.ratingDimensions, 1..5. */
   dims: number[];
   text: string;
+  title?: string;
+  visitDate?: string | undefined;
   reply?: string | undefined;
   kind: ReviewKind;
   /** User asked for verification and attached evidence (evidence itself is never public). */
@@ -218,7 +221,7 @@ export const SALONS: Salon[] = [
 ];
 
 export const getStaticSalon = (slugOrId: string) => SALONS.find((s) => s.slug === slugOrId || s.id === slugOrId);
-export const priceFrom = (s: Salon) => (s.services.length ? Math.min(...s.services.map((v) => v.price)) : 0);
+export const priceFrom = (s: Salon) => { const prices=s.services.map(v=>v.price).filter(v=>v>0); return prices.length ? Math.min(...prices) : 0; };
 export const priceTop = (s: Salon) => (s.services.length ? Math.max(...s.services.map((v) => v.priceMax ?? v.price)) : 0);
 
 /** Open now from the published hours (hours are as entered by the MAKEZI team). */

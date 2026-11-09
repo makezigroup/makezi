@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CATEGORY_IDS, isOpenAt, priceFrom, type Review, type Salon } from "./data";
+import { CATEGORY_IDS, CATEGORIES, getCity, areaName, isOpenAt, priceFrom, type Review, type Salon } from "./data";
 import { DECISIONS } from "./decisions";
 import { publicReviews, scoreOf } from "./rules";
 
@@ -9,6 +9,10 @@ export const directorySearch = z.object({
   city: z.string().optional(),
   area: z.string().optional(),
   max: z.number().optional(),
+  min: z.number().optional(),
+  minReviews: z.number().optional(),
+  service: z.string().optional(),
+  page: z.number().int().positive().optional(),
   rating: z.number().optional(),
   verified: z.boolean().optional(),
   open: z.boolean().optional(),
@@ -21,7 +25,7 @@ export type DirectorySearch = z.infer<typeof directorySearch>;
 export type SortKey = NonNullable<DirectorySearch["sort"]>;
 
 export const SORT_LABEL: Record<SortKey, { label: string; how: string }> = {
-  distance: { label: "نزدیک‌ترین", how: "بر اساس فاصله‌ی تقریبی از مرکز محله‌ی انتخابی." },
+  distance: { label: "مرتبط‌ترین", how: "تطابق نام سالن و خدمت با جست‌وجوی شما؛ سپس تاریخ انتشار." },
   rating: { label: "امتیاز نظرها", how: `میانگین ساده‌ی نظرهای منتشرشده؛ سالن‌های با کمتر از ${DECISIONS.minReviewsForScore} نظر در انتها می‌آیند.` },
   reviews: { label: "تعداد نظرها", how: "تعداد نظرهای منتشرشده، از بیشتر به کمتر." },
   price: { label: "قیمت شروع (کمترین)", how: "ارزان‌ترین خدمت ثبت‌شده‌ی هر سالن." },
@@ -37,13 +41,16 @@ export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearc
   const q = s.q?.trim();
   const score = new Map(list.map((x) => [x.id, scoreOf(publicReviews(reviews, x.id))]));
   let out = list.filter((x) => {
-    if (!x.published) return false;
+    if (!x.published || x.archived) return false;
     if (!DECISIONS.showUnverifiedSalons && x.status !== "verified") return false;
     if (s.verified && x.status !== "verified") return false;
     if (s.cat && !x.categories.includes(s.cat) && !x.services.some((v) => v.category === s.cat)) return false;
     if (s.city && x.city !== s.city) return false;
     if (s.area && x.area !== s.area) return false;
     if (s.max && priceFrom(x) > s.max) return false;
+    if (s.min && priceFrom(x) < s.min) return false;
+    if (s.service && !x.services.some(v=>v.name === s.service)) return false;
+    if (s.minReviews && (score.get(x.id)?.count ?? 0) < s.minReviews) return false;
     if (s.rating) {
       const avg = score.get(x.id)?.avg;
       if (avg == null || avg < s.rating) return false;
@@ -52,12 +59,13 @@ export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearc
     if (s.portfolio && x.portfolio.length === 0) return false;
     if (s.open && !isOpenAt(x, now)) return false;
     if (s.attrs?.length && !s.attrs.every((a) => (x.attributes as string[]).includes(a))) return false;
-    if (q && !(x.name.includes(q) || x.services.some((v) => v.name.includes(q)) || x.address.includes(q))) return false;
+    if (q && ![x.name, x.address, getCity(x.city)?.name ?? x.city, areaName(x.city,x.area), ...x.categories.map(c=>CATEGORIES.find(v=>v.id===c)?.label ?? ''), ...x.services.map(v=>v.name)].some(v=>v.includes(q))) return false;
     return true;
   });
   const sort = s.sort ?? "distance";
   out = [...out].sort((a, b) => {
-    const sa = score.get(a.id)!, sb = score.get(b.id)!;
+    const sa = score.get(a.id), sb = score.get(b.id);
+    if (!sa || !sb) return 0;
     switch (sort) {
       case "price": return priceFrom(a) - priceFrom(b);
       case "price-desc": return priceFrom(b) - priceFrom(a);
@@ -65,7 +73,7 @@ export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearc
       case "reviews": return sb.count - sa.count;
       case "newest": return b.addedAt.localeCompare(a.addedAt);
       case "updated": return b.checkedAt.localeCompare(a.checkedAt);
-      default: return a.distanceKm - b.distanceKm;
+      default: return Number(!!q && b.name.includes(q)) - Number(!!q && a.name.includes(q)) || b.addedAt.localeCompare(a.addedAt);
     }
   });
   return out;

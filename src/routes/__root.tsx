@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { AppStoreProvider } from "../lib/app-store";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getPublicDirectory } from "@/lib/directory.functions";
 
 function NotFoundComponent() {
   return (
@@ -76,6 +77,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: () => getPublicDirectory(),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -125,11 +127,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const initialSalons = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <AppStoreProvider>
+      <AppStoreProvider initialSalons={initialSalons}>
         <Outlet />
         <Toaster position="top-center" dir="rtl" />
       </AppStoreProvider>

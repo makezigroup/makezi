@@ -1,4 +1,14 @@
-# MAKEZI visual synchronization
+# MAKEZI product transformation
+
+- [x] Replace browser demo accounts and records with Cloud authentication and protected persistence.
+- [x] Remove salon-owner dashboard; align navigation and direct contact with discovery.
+- [x] Persist reviews, private evidence, favorites, partnership requests and admin moderation with audit history.
+- [x] Preserve visual identity; show accurate empty states and persisted profile metadata.
+- [x] Verify public/mobile flows and partnership persistence; document all incomplete requirements in the implementation report.
+- [ ] Verify authenticated review/admin workflows — no administrator or real salon records exist yet.
+- [ ] Connect salon image uploads — public storage is blocked by workspace policy.
+
+## Previous visual synchronization
 
 - [x] Apply inspected shared header, footer, typography, and mobile-menu presentation.
 - [x] Align homepage section order and visual composition while preserving current data and discovery behavior.

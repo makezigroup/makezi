@@ -10,11 +10,11 @@ import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  { to: "/", label: "خانه" },
   { to: "/salons", label: "جست‌وجوی سالن" },
-  { to: "/map", label: "نقشه" },
-  { to: "/gallery", label: "گالری مدل" },
-  { to: "/how-it-works", label: "چطور کار می‌کند" },
-  { to: "/for-salons", label: "برای سالن‌ها" },
+  { to: "/categories", label: "خدمات" },
+  { to: "/compare", label: "مقایسه" },
+  { to: "/about", label: "درباره‌ی میکزی" },
 ] as const;
 
 const ACCOUNT = [
@@ -127,7 +127,7 @@ export function SiteHeader() {
       </div>
       {open && (
         <nav aria-label="منوی موبایل" className="container-mk flex flex-col gap-1 border-t border-border pb-4 pt-2 xl:hidden">
-          {[...NAV, { to: "/categories", label: "خدمات" }, { to: "/compare", label: "مقایسه" }, ...(phone ? ACCOUNT : [{ to: "/login", label: "ورود" } as const])].map((n) => (
+          {[...NAV, { to: "/for-salons", label: "افزودن سالن" }, ...(phone ? ACCOUNT : [{ to: "/login", label: "ورود" } as const])].map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="rounded-input px-3 py-3 font-semibold text-foreground no-underline hover:bg-muted">
               {n.label}
             </Link>
@@ -141,8 +141,8 @@ export function SiteHeader() {
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
     { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/map", label: "نقشه" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
-    { title: "سالن‌ها", links: [{ to: "/for-salons", label: "همکاری با میکزی" }, { to: "/for-salons", label: "ثبت سالن" }, { to: "/salon", label: "پنل سالن" }] },
-    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/verify", label: "شفافیت و نظرها" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
+    { title: "سالن‌ها", links: [{ to: "/for-salons", label: "سالن خود را به میکزی اضافه کنید" }] },
+    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }] },
   ];
   return (
@@ -171,7 +171,7 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="container-mk flex flex-wrap justify-between gap-2 border-t border-current/15 py-5 text-label opacity-70">
-        <span>© MAKEZI · نسخه‌ی نمایشی با داده‌های نمونه</span>
+        <span>© MAKEZI · انتخاب آگاهانه در زیبایی</span>
         <span>اطلاعات تماس رسمی هنوز اعلام نشده است.</span>
       </div>
     </footer>

@@ -5,6 +5,7 @@ import { Button, Icon, VerifyBadge, StatusBadge, Dot, btn } from "./core";
 import { useApp, useFmt, useScore } from "@/lib/app-store";
 import { DECISIONS } from "@/lib/decisions";
 import { IMAGES, areaName, isOpenAt, priceFrom, reviewOverall, type ImageKey, type Review, type Salon } from "@/lib/data";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 export const imgSrc = (k: ImageKey | string) => (k in IMAGES ? IMAGES[k as ImageKey] : k);
@@ -94,21 +95,21 @@ export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean 
         <SafeImg src={salon.image} alt={`تصویر ${salon.name}`} className="size-full transition-transform ease-mk group-hover:scale-[1.02]" />
         {salon.services.length > 0 && (
           <span className="absolute bottom-3 start-3 rounded-full bg-surface px-3 py-1 text-caption font-semibold text-foreground shadow-card">
-            از {fmt.price(priceFrom(salon))}
+            {priceFrom(salon)>0 ? `از ${fmt.price(priceFrom(salon))}` : "قیمت اعلام نشده"}
           </span>
         )}
         <SaveButton id={salon.id} className="absolute end-3 top-3 z-[1]" />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="text-h3 leading-snug">
-          <Link to="/salons/$slug" params={{ slug: salon.slug }} className="text-foreground no-underline after:absolute after:inset-0">
+          <Link to="/salons/$slug" params={{ slug: salon.slug }} onClick={()=>track("search_result_clicked",{salon:salon.id})} className="text-foreground no-underline after:absolute after:inset-0">
             {salon.name}
           </Link>
         </h3>
         <VerifyBadge status={salon.status} className="self-start" />
         <RatingInline salonId={salon.id} />
         <p className="flex items-center gap-1 text-caption text-muted-foreground">
-          <Icon name="location" size={16} /> {areaName(salon.city, salon.area)} · {fmt.rating(salon.distanceKm)} کیلومتر
+          <Icon name="location" size={16} /> {areaName(salon.city, salon.area)}
         </p>
         <div className="mt-auto flex items-center justify-between gap-2 pt-1">
           <OpenBadge salon={salon} />
@@ -195,7 +196,7 @@ export function ReviewCard({ r, report = true }: { r: Review; report?: boolean |
           ) : open ? (
             <>
               {REPORT_REASONS.map((x) => (
-                <button key={x} type="button" className="min-h-9 rounded-full border border-border-strong px-3 text-label hover:bg-muted" onClick={() => { reportReview(r.id, x); setDone(true); }}>{x}</button>
+                <button key={x} type="button" className="min-h-9 rounded-full border border-border-strong px-3 text-label hover:bg-muted" onClick={async () => { try { await reportReview(r.id, x); setDone(true); } catch { toast.error("برای گزارش نظر وارد حساب شوید."); } }}>{x}</button>
               ))}
               <button type="button" className="text-label underline" onClick={() => setOpen(false)}>انصراف</button>
             </>

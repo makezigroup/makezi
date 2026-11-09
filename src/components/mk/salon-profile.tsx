@@ -11,6 +11,7 @@ import { DECISIONS } from "@/lib/decisions";
 import { hasReviewed, publicReviews, validateReview, type ReviewErrors } from "@/lib/rules";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
 import { track } from "@/lib/analytics";
+import { validContactPhone, validWebsite } from "@/lib/cloud-data";
 import { cn } from "@/lib/utils";
 
 export const directionsUrl = (s: Salon) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.address)}`;
@@ -69,12 +70,12 @@ export function SalonProfile({ salon }: { salon: Salon }) {
             <p className="flex flex-wrap items-center gap-2 text-muted-foreground"><Icon name="clock" size={20} /> {salon.hours} · <OpenBadge salon={salon} /></p>
             {salon.services.length > 0 && <p className="text-caption">بازه‌ی قیمت اعلام‌شده: از {fmt.price(priceFrom(salon))}</p>}
             <div className="mt-2 flex flex-wrap gap-2">
-              <a href={`tel:${salon.phone}`} onClick={() => track("phone_contact_clicked", { salon: salon.id })} className={btn({ size: "lg" }) + " flex-1"}>
+              {validContactPhone(salon.phone) && <a href={`tel:${salon.phone}`}  onClick={() => track("phone_contact_clicked", { salon: salon.id })} className={btn({ size: "lg" }) + " flex-1"}>
                 <Icon name="call" size={20} /> تماس با سالن
-              </a>
-              <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ variant: "outline", size: "lg" })}>
+              </a>}
+              {salon.address && <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ variant: "outline", size: "lg" })}>
                 <Icon name="route" size={20} /> مسیریابی
-              </a>
+              </a>}
             </div>
             <div className="flex flex-wrap gap-2">
               <SaveButton id={salon.id} label />
@@ -174,7 +175,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
               ))}
             </div>
           )}
-          <p className="mt-3 text-label text-muted-foreground">تصاویر این نسخه نمونه‌اند. در نسخه‌ی نهایی فقط کار واقعی همین سالن منتشر می‌شود.</p>
+          <p className="mt-3 text-label text-muted-foreground">تصاویر منتشرشده متعلق به نمونه‌کار ثبت‌شده‌ی سالن هستند.</p>
           <Dialog open={lightbox != null} onOpenChange={(o) => !o && setLightbox(null)}>
             <DialogContent className="max-w-3xl p-2" dir="rtl">
               {lightbox != null && salon.portfolio[lightbox] && (
@@ -205,8 +206,8 @@ export function SalonProfile({ salon }: { salon: Salon }) {
               <li className="flex items-center gap-2"><Icon name="location" size={20} /> {salon.address}</li>
               <li className="flex items-center gap-2"><Icon name="call" size={20} /> <a href={`tel:${salon.phone}`} onClick={() => track("phone_contact_clicked", { salon: salon.id })}><bdi dir="ltr">{fmt.digits(salon.phone)}</bdi></a></li>
               <li className="flex items-center gap-2"><Icon name="clock" size={20} /> {salon.hours}</li>
-              {salon.website && <li className="flex items-center gap-2"><Icon name="share" size={20} /> <a href={salon.website} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_clicked", { salon: salon.id })}>وب‌سایت سالن</a></li>}
-              {salon.instagram && <li className="flex items-center gap-2"><Icon name="camera" size={20} /> <a href={`https://instagram.com/${salon.instagram}`} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_clicked", { salon: salon.id, kind: "instagram" })}><bdi dir="ltr">@{salon.instagram}</bdi></a></li>}
+              {validWebsite(salon.website) && <li className="flex items-center gap-2"><Icon name="share" size={20} /> <a href={salon.website} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_contact_clicked", { salon: salon.id })}>وب‌سایت سالن</a></li>}
+              {salon.instagram && <li className="flex items-center gap-2"><Icon name="camera" size={20} /> <a href={`https://instagram.com/${salon.instagram}`} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("instagram_contact_clicked", { salon: salon.id, kind: "instagram" })}><bdi dir="ltr">@{salon.instagram}</bdi></a></li>}
             </ul>
             <div className="relative overflow-hidden rounded-card bg-muted" style={{ backgroundImage: "url(/pattern-open.svg)", backgroundSize: "cover" }}>
               <span className="absolute grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink text-ink-foreground shadow-modal" style={{ left: `${salon.map.x}%`, top: `${salon.map.y}%` }} aria-hidden><Icon name="salon" size={18} /></span>
@@ -214,7 +215,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
               <div className="aspect-[16/9]" />
             </div>
           </div>
-          <DemoNote className="mt-4">شماره‌ها و آدرس‌های این نسخه نمونه‌اند و به سالن واقعی وصل نیستند.</DemoNote>
+
         </section>
 
         {/* G. Similar */}
@@ -285,6 +286,9 @@ function ReviewForm({ salon }: { salon: Salon }) {
   const [evidence, setEvidence] = useState<File | null>(null);
   const [errors, setErrors] = useState<ReviewErrors>({});
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [title, setTitle] = useState("");
+  const [visitDate, setVisitDate] = useState("");
 
   if (!phone)
     return (
@@ -299,23 +303,24 @@ function ReviewForm({ salon }: { salon: Salon }) {
         نظر شما برای این سالن ثبت شده است. پس از بررسی تیم میکزی منتشر می‌شود. وضعیت آن را در <Link to="/my-reviews">نظرهای من</Link> ببینید.
       </div>
     );
-  if (!open) return <Button className="mt-6" variant="ink" onClick={() => setOpen(true)}><Icon name="review" size={20} /> نوشتن نظر</Button>;
+  if (!open) return <Button className="mt-6" variant="ink" onClick={() => { setOpen(true); track("review_started",{salon:salon.id}); }}><Icon name="review" size={20} /> نوشتن نظر</Button>;
 
   return (
     <form
       className="mt-6 flex flex-col gap-5 rounded-card bg-card p-5 shadow-card"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         const err = validateReview({ service, dims, text });
         if (evidence && evidence.size > 5 * 1024 * 1024) err.evidence = "حجم فایل حداکثر ۵ مگابایت است.";
         setErrors(err);
         if (Object.keys(err).length) return;
-        addReview({ salonId: salon.id, author: displayName.trim() || "کاربر میکزی", userKey: phone, service, dims: dims as number[], text: text.trim(), evidenceSubmitted: !!evidence });
-        setSent(true);
-        toast.success("نظر شما ثبت شد و پس از بررسی منتشر می‌شود.");
+        setBusy(true);
+        try { await addReview({ salonId: salon.id, author: displayName.trim() || "کاربر میکزی", userKey: phone, service, dims: dims as number[], text: text.trim(), title, visitDate }, evidence ?? undefined); setSent(true); toast.success("نظر شما ثبت شد و پس از بررسی منتشر می‌شود."); } catch { toast.error("نظر ثبت نشد؛ دوباره تلاش کنید."); } finally { setBusy(false); }
       }}
     >
       <h3 className="text-h3">نظر شما درباره‌ی {salon.name}</h3>
+      <Field label="عنوان نظر (اختیاری)" htmlFor="rv-title"><input id="rv-title" className={inputCls} maxLength={100} value={title} onChange={e=>setTitle(e.target.value)} /></Field>
+      <Field label="تاریخ مراجعه (اختیاری)" htmlFor="rv-date"><input id="rv-date" type="date" className={inputCls} value={visitDate} onChange={e=>setVisitDate(e.target.value)} /></Field>
       <Field label="کدام خدمت را گرفتید؟" htmlFor="rv-svc" error={errors.service}>
         <select id="rv-svc" className={inputCls} value={service} onChange={(e) => setService(e.target.value)} aria-invalid={!!errors.service}>
           <option value="">انتخاب کنید</option>
@@ -329,11 +334,11 @@ function ReviewForm({ salon }: { salon: Salon }) {
       <Field label="تجربه‌ی شما" htmlFor="rv-text" error={errors.text} hint={`دست‌کم ${DECISIONS.reviewMinChars} نویسه. بدون شماره‌ی تلفن، پیوند یا اطلاعات شخصی.`}>
         <textarea id="rv-text" rows={4} className={cn(inputCls, "py-3")} value={text} onChange={(e) => setText(e.target.value)} aria-invalid={!!errors.text} />
       </Field>
-      <Field label="مدرک مراجعه (اختیاری)" htmlFor="rv-ev" error={errors.evidence} hint="مثل رسید یا فاکتور. فقط تیم میکزی آن را می‌بیند و هرگز عمومی نمی‌شود. در این نسخه فایل ارسال نمی‌شود.">
+      <Field label="مدرک مراجعه (اختیاری)" htmlFor="rv-ev" error={errors.evidence} hint="مثل رسید یا فاکتور. فقط تیم میکزی آن را می‌بیند و هرگز عمومی نمی‌شود.">
         <input id="rv-ev" type="file" accept="image/*,application/pdf" className="text-caption" onChange={(e) => setEvidence(e.target.files?.[0] ?? null)} />
       </Field>
       <div className="flex flex-wrap gap-2">
-        <Button type="submit">ثبت نظر</Button>
+        <Button type="submit" disabled={busy}>{busy ? "در حال ارسال…" : "ثبت نظر"}</Button>
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>انصراف</Button>
       </div>
     </form>

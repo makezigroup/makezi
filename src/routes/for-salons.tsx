@@ -14,7 +14,7 @@ const FEATURES = [
   { i: "payment" as const, t: "قیمت روشن", b: "قیمت هر خدمت با تاریخ آخرین بررسی نمایش داده می‌شود." },
   { i: "gallery" as const, t: "نمونه‌کار واقعی", b: "تصویرهای کار خودتان با برچسب خدمت، کنار پروفایل." },
   { i: "verified" as const, t: "تأیید مدارک", b: "پس از بررسی مدارک، برچسب «مدارک تأییدشده» روی پروفایل می‌آید." },
-  { i: "review" as const, t: "پاسخ به نظرها", b: "به نظرهای منتشرشده پاسخ عمومی بدهید. سالن نمی‌تواند نظری را حذف کند." },
+  { i: "review" as const, t: "پاسخ به نظرها", b: "پاسخ رسمی به نظرها را برای بررسی تیم میکزی ارسال کنید. سالن نمی‌تواند نظری را حذف کند." },
   { i: "sort" as const, t: "جایگاه فروشی نیست", b: "ترتیب نتایج بر اساس معیارهای اعلام‌شده است، نه پرداخت." },
 ];
 
@@ -25,13 +25,13 @@ export const Route = createFileRoute("/for-salons")({
 
 function ForSalons() {
   const { addInquiry } = useApp();
-  const [v, setV] = useState({ business: "", name: "", phone: "", city: "tehran", area: "", message: "" });
+  const [v, setV] = useState({ business: "", name: "", phone: "", city: "tehran", area: "", message: "", instagram: "", website: "" });
   const [cats, setCats] = useState<string[]>([]);
   const [err, setErr] = useState<InquiryErrors>({});
   const [sent, setSent] = useState(false);
   const up = (k: keyof typeof v) => (e: { target: { value: string } }) => setV({ ...v, [k]: e.target.value });
   return (
-    <ContentPage title="سالن خود را در میکزی ثبت کنید" body="فرم را پر کنید؛ تیم میکزی برای بررسی اطلاعات با شما تماس می‌گیرد.">
+    <ContentPage title="سالن خود را به میکزی اضافه کنید" body="فرم را پر کنید؛ تیم میکزی برای بررسی اطلاعات با شما تماس می‌گیرد.">
       <div className="mb-14 grid overflow-hidden rounded-sheet bg-card shadow-card md:grid-cols-2">
         <div className="min-h-48 bg-muted pattern-medium md:min-h-80" aria-hidden />
         <div className="flex flex-col justify-center gap-5 p-6 md:p-10">
@@ -57,14 +57,12 @@ function ForSalons() {
             noValidate
             id="listing-request"
             className="flex max-w-2xl scroll-mt-24 flex-col gap-4 rounded-card bg-card p-6 shadow-card"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const er = validateInquiry({ ...v, city: v.city });
               setErr(er);
               if (Object.keys(er).length) return;
-              addInquiry({ ...v, categories: cats });
-              setSent(true);
-              toast.success("درخواست ثبت شد.");
+              try { await addInquiry({ ...v, categories: cats }); setSent(true); toast.success("درخواست ثبت شد."); } catch { toast.error("درخواست ذخیره نشد؛ دوباره تلاش کنید."); }
             }}
           >
             <h2 className="text-h2">درخواست ثبت سالن</h2>
@@ -78,9 +76,11 @@ function ForSalons() {
             <fieldset><legend className="mb-2 text-caption font-semibold">خدمات</legend>
               <div className="flex flex-wrap gap-2">{CATEGORIES.map((c) => <Chip key={c.id} active={cats.includes(c.id)} onClick={() => setCats(cats.includes(c.id) ? cats.filter((x) => x !== c.id) : [...cats, c.id])}>{c.label}</Chip>)}</div>
             </fieldset>
+            <Field label="اینستاگرام (اختیاری)" htmlFor="ig"><input id="ig" dir="ltr" className={inputCls} value={v.instagram} onChange={up("instagram")} /></Field>
+            <Field label="وب‌سایت (اختیاری)" htmlFor="web"><input id="web" type="url" dir="ltr" className={inputCls} value={v.website} onChange={up("website")} /></Field>
             <Field label="توضیح" htmlFor="m" error={err.message}><textarea id="m" rows={3} className={cn(inputCls, "py-3")} value={v.message} onChange={up("message")} /></Field>
             <Button type="submit">ارسال درخواست</Button>
-            <DemoNote>هزینه و شرایط همکاری هنوز اعلام نشده است. این فرم در این نسخه فقط در همین مرورگر ذخیره می‌شود.</DemoNote>
+            <DemoNote>هزینه و شرایط همکاری هنوز اعلام نشده است. این درخواست به‌معنای انتشار خودکار سالن نیست.</DemoNote>
           </form>
         )}
       </div>

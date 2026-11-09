@@ -24,7 +24,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MyReviewsRouteImport } from './routes/my-reviews'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as SalonRouteImport } from './routes/salon'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -37,8 +36,6 @@ import { Route as AdminServiceCategoriesRouteImport } from './routes/admin.servi
 import { Route as AdminVerificationsRouteImport } from './routes/admin.verifications'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as CategoriesCatRouteImport } from './routes/categories.$cat'
-import { Route as SalonIndexRouteImport } from './routes/salon.index'
-import { Route as SalonReviewsRouteImport } from './routes/salon.reviews'
 import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
 import { Route as AdminSalonsIndexRouteImport } from './routes/admin.salons.index'
@@ -121,11 +118,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalonRoute = SalonRouteImport.update({
-  id: '/salon',
-  path: '/salon',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
@@ -186,16 +178,6 @@ const CategoriesCatRoute = CategoriesCatRouteImport.update({
   path: '/categories/$cat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalonIndexRoute = SalonIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonReviewsRoute = SalonReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => SalonRoute,
-} as any)
 const SalonsIndexRoute = SalonsIndexRouteImport.update({
   id: '/salons/',
   path: '/salons/',
@@ -244,7 +226,6 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/my-reviews': typeof MyReviewsRoute
   '/privacy': typeof PrivacyRoute
-  '/salon': typeof SalonRouteWithChildren
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
@@ -255,11 +236,9 @@ export interface FileRoutesByFullPath {
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
-  '/salon/reviews': typeof SalonReviewsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/categories/': typeof CategoriesIndexRoute
-  '/salon/': typeof SalonIndexRoute
   '/salons/': typeof SalonsIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
   '/salons/$slug/$area': typeof SalonsSlugAreaRoute
@@ -291,11 +270,9 @@ export interface FileRoutesByTo {
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
-  '/salon/reviews': typeof SalonReviewsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/categories': typeof CategoriesIndexRoute
-  '/salon': typeof SalonIndexRoute
   '/salons': typeof SalonsIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
   '/salons/$slug/$area': typeof SalonsSlugAreaRoute
@@ -319,7 +296,6 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/my-reviews': typeof MyReviewsRoute
   '/privacy': typeof PrivacyRoute
-  '/salon': typeof SalonRouteWithChildren
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
@@ -330,11 +306,9 @@ export interface FileRoutesById {
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
-  '/salon/reviews': typeof SalonReviewsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/categories/': typeof CategoriesIndexRoute
-  '/salon/': typeof SalonIndexRoute
   '/salons/': typeof SalonsIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
   '/salons/$slug_/$area': typeof SalonsSlugAreaRoute
@@ -359,7 +333,6 @@ export interface FileRouteTypes {
     | '/map'
     | '/my-reviews'
     | '/privacy'
-    | '/salon'
     | '/saved'
     | '/settings'
     | '/terms'
@@ -370,11 +343,9 @@ export interface FileRouteTypes {
     | '/admin/service-categories'
     | '/admin/verifications'
     | '/categories/$cat'
-    | '/salon/reviews'
     | '/salons/$slug'
     | '/admin/'
     | '/categories/'
-    | '/salon/'
     | '/salons/'
     | '/admin/salons/$id'
     | '/salons/$slug/$area'
@@ -406,11 +377,9 @@ export interface FileRouteTypes {
     | '/admin/service-categories'
     | '/admin/verifications'
     | '/categories/$cat'
-    | '/salon/reviews'
     | '/salons/$slug'
     | '/admin'
     | '/categories'
-    | '/salon'
     | '/salons'
     | '/admin/salons/$id'
     | '/salons/$slug/$area'
@@ -433,7 +402,6 @@ export interface FileRouteTypes {
     | '/map'
     | '/my-reviews'
     | '/privacy'
-    | '/salon'
     | '/saved'
     | '/settings'
     | '/terms'
@@ -444,11 +412,9 @@ export interface FileRouteTypes {
     | '/admin/service-categories'
     | '/admin/verifications'
     | '/categories/$cat'
-    | '/salon/reviews'
     | '/salons/$slug'
     | '/admin/'
     | '/categories/'
-    | '/salon/'
     | '/salons/'
     | '/admin/salons/$id'
     | '/salons/$slug_/$area'
@@ -472,7 +438,6 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   MyReviewsRoute: typeof MyReviewsRoute
   PrivacyRoute: typeof PrivacyRoute
-  SalonRoute: typeof SalonRouteWithChildren
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
   TermsRoute: typeof TermsRoute
@@ -592,13 +557,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salon': {
-      id: '/salon'
-      path: '/salon'
-      fullPath: '/salon'
-      preLoaderRoute: typeof SalonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -683,20 +641,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesCatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salon/': {
-      id: '/salon/'
-      path: '/'
-      fullPath: '/salon/'
-      preLoaderRoute: typeof SalonIndexRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/reviews': {
-      id: '/salon/reviews'
-      path: '/reviews'
-      fullPath: '/salon/reviews'
-      preLoaderRoute: typeof SalonReviewsRouteImport
-      parentRoute: typeof SalonRoute
-    }
     '/salons/': {
       id: '/salons/'
       path: '/salons'
@@ -766,18 +710,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface SalonRouteChildren {
-  SalonReviewsRoute: typeof SalonReviewsRoute
-  SalonIndexRoute: typeof SalonIndexRoute
-}
-
-const SalonRouteChildren: SalonRouteChildren = {
-  SalonReviewsRoute: SalonReviewsRoute,
-  SalonIndexRoute: SalonIndexRoute,
-}
-
-const SalonRouteWithChildren = SalonRoute._addFileChildren(SalonRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -794,7 +726,6 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   MyReviewsRoute: MyReviewsRoute,
   PrivacyRoute: PrivacyRoute,
-  SalonRoute: SalonRouteWithChildren,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,

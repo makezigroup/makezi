@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794259012714,
+      "tag": "0000_makezi_directory_security",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794259039470,
+      "tag": "0001_makezi_storage_and_validation",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794259212472,
+      "tag": "0002_lock_trigger_execution",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794259256253,
+      "tag": "0003_protect_review_identity",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794259512642,
+      "tag": "0004_restrict_role_lookup",
+      "breakpoints": true
+    }
+  ]
+}

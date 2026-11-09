@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasReviewed, scoreOf, toggleCompare, validateReview } from "@/lib/rules";
+import { hasReviewed, publicReviews, scoreOf, toggleCompare, validateReview } from "@/lib/rules";
 import { SEED_REVIEWS, type Review } from "@/lib/data";
 import { DECISIONS } from "@/lib/decisions";
 
@@ -28,4 +28,14 @@ describe("reviews", () => {
     const e = validateReview({ service: "x", dims: DECISIONS.ratingDimensions.map(() => 4), text: "خیلی خوب بود، شماره ۰۹۱۲۱۲۳۴۵۶۷ را بگیرید و بپرسید" });
     expect(e.text).toBeDefined();
   });
+});
+
+
+describe("publication rules",()=>{
+ it("only approved reviews are public",()=>{
+  const base=SEED_REVIEWS[0]; if(!base)throw new Error('Missing fixture');
+  const records: Review[]=['pending','approved','rejected','reported','hidden'].map((status,i)=>({...base,id:String(i),status:status as Review['status']}));
+  expect(publicReviews(records,base.salonId).map(r=>r.status)).toEqual(['approved']);
+ });
+ it("requires all six ratings",()=>expect(validateReview({service:'مو',dims:[5,5,5,5,5],text:'تجربه مراجعه خود را با جزئیات کافی برای بررسی می‌نویسم.'}).dims).toBeDefined());
 });

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/mk/layout";
-import { Button, Icon, SectionHead, btn, Dot, inputCls } from "@/components/mk/core";
+import { Button, Icon, SectionHead, StatePanel, btn, Dot, inputCls } from "@/components/mk/core";
 import { ReviewCard, SalonCard, SafeImg } from "@/components/mk/marketplace";
 import { CATEGORIES, CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
@@ -95,8 +95,8 @@ function Home() {
       </section>
 
       <section className="container-mk py-14">
-        <SectionHead eyebrow="تازه بررسی‌شده" title="چند سالن برای شروع" body="مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی. داده‌های این نسخه نمونه‌اند." action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map((s) => <SalonCard key={s.id} salon={s} />)}</div>
+        <SectionHead eyebrow="تازه بررسی‌شده" title="چند سالن برای شروع" body="مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی." action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />
+        {featured.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map((s) => <SalonCard key={s.id} salon={s} />)}</div> : <StatePanel icon="salon" title="هنوز سالنی منتشر نشده است" body="اطلاعات سالن‌ها پس از بررسی تیم میکزی اینجا منتشر می‌شود." action={<Link to="/for-salons" className={btn({ variant: "outline" })}>افزودن سالن به میکزی</Link>} />}
       </section>
 
       <section className="container-mk py-16">
@@ -169,8 +169,8 @@ function Home() {
       </section>
 
       <section className="container-mk py-14">
-        <SectionHead title="آخرین نظرهای بررسی‌شده" body="نظرهای این نسخه نمونه‌اند." />
-        <div className="grid gap-4 md:grid-cols-3">{reviews.filter((r) => r.status === "approved").slice(0, 3).map((r) => <ReviewCard key={r.id} r={r} />)}</div>
+        <SectionHead title="آخرین نظرهای بررسی‌شده" />
+        {reviews.some(r=>r.status==='approved') ? <div className="grid gap-4 md:grid-cols-3">{reviews.filter((r) => r.status === "approved").slice(0, 3).map((r) => <ReviewCard key={r.id} r={r} />)}</div> : <p className="text-muted-foreground">هنوز نظری منتشر نشده است.</p>}
       </section>
 
       <section className="container-mk py-14">

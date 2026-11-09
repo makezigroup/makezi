@@ -4,7 +4,7 @@ import { DemoNote } from "@/components/mk/core";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/terms")({
-  head: () => seo("شرایط استفاده (پیش‌نویس)", "جای‌نگه‌دار شرایط استفاده از میکزی؛ متن تأییدشده هنوز منتشر نشده است."),
+  head: () => seo("شرایط استفاده (پیش‌نویس)", "جای‌نگه‌دار شرایط استفاده از میکزی؛ متن تأییدشده هنوز منتشر نشده است.", { path: "/terms", noindex: true }),
   component: () => (
     <ContentPage title="شرایط استفاده" body="پیش‌نویس — متن حقوقی تأییدشده نیست.">
       <Prose>

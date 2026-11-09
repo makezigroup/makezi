@@ -1,6 +1,6 @@
 import { ATTRIBUTES, CATEGORIES, CITIES } from "@/lib/data";
 import type { DirectorySearch } from "@/lib/filters";
-import { useFmt } from "@/lib/app-store";
+import { useFmt, usePublicSalons } from "@/lib/app-store";
 import { Chip, inputCls } from "./core";
 import { Switch } from "@/components/ui/switch";
 
@@ -9,6 +9,7 @@ const RATING_STEPS = [3, 4, 4.5];
 
 export function FiltersPanel({ s, set, hideLocation }: { s: DirectorySearch; set: (p: Partial<DirectorySearch>) => void; hideLocation?: boolean | undefined }) {
   const fmt = useFmt();
+  const services = [...new Set(usePublicSalons().flatMap(x=>x.services.map(v=>v.name)))];
   const city = CITIES.find((c) => c.slug === (s.city ?? "tehran"));
   const toggle = (label: string, key: "verified" | "open" | "reviewed" | "portfolio") => (
     <label className="flex min-h-11 items-center justify-between gap-3 rounded-input bg-muted px-3 text-caption font-semibold">
@@ -54,6 +55,9 @@ export function FiltersPanel({ s, set, hideLocation }: { s: DirectorySearch; set
           ))}
         </div>
       </fieldset>
+      <label className="flex flex-col gap-2 text-caption font-semibold">خدمت مشخص<select className={inputCls} value={s.service ?? ''} onChange={e=>set({service:e.target.value || undefined})}><option value="">همه‌ی خدمات</option>{services.map(v=><option key={v}>{v}</option>)}</select></label>
+      <label className="flex flex-col gap-2 text-caption font-semibold">حداقل قیمت شروع<input className={inputCls} type="number" min={0} value={s.min ?? ''} onChange={e=>set({min:e.target.value ? Number(e.target.value) : undefined})}/></label>
+      <label className="flex flex-col gap-2 text-caption font-semibold">حداقل تعداد نظر<input className={inputCls} type="number" min={0} value={s.minReviews ?? ''} onChange={e=>set({minReviews:e.target.value ? Number(e.target.value) : undefined})}/></label>
       <fieldset>
         <legend className="mb-2 text-caption font-semibold">حداقل امتیاز</legend>
         <div className="flex flex-wrap gap-2">

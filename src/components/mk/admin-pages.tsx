@@ -13,6 +13,7 @@ import {
 import { OPEN_DECISIONS } from "@/lib/decisions";
 import { useApp, useFmt } from "@/lib/app-store";
 import { getEvents, track, type TrackedEvent } from "@/lib/analytics";
+import { supabase } from "@/integrations/supabase/client";
 import { isoDay, normalizePhone } from "@/lib/format";
 
 export const ADMIN_NAV = [
@@ -26,7 +27,7 @@ export const ADMIN_NAV = [
 ];
 
 const Note = () => (
-  <DemoNote className="mt-6">ابزار داخلی نمایشی است و در این مرورگر ذخیره می‌شود. در نسخه‌ی نهایی فقط کارکنان با نقش مدیر، پس از احراز هویت و بررسی دسترسی در سرور وارد می‌شوند.</DemoNote>
+  <DemoNote className="mt-6">تغییرات مهم کارکنان در سابقه‌ی مدیریت ثبت می‌شود.</DemoNote>
 );
 
 export function AdminHome() {
@@ -40,7 +41,7 @@ export function AdminHome() {
   ];
   return (
     <>
-      <DashTitle title="پیشخوان مدیریت" body="همه‌ی اعداد از داده‌های نمونه‌ی همین مرورگر محاسبه می‌شوند." action={<Link to="/admin/salons/$id" params={{ id: "new" }} className={btn({ size: "sm" })}><Icon name="add" size={18} /> افزودن سالن</Link>} />
+      <DashTitle title="پیشخوان مدیریت" body="همه‌ی اعداد از اطلاعات ثبت‌شده محاسبه می‌شوند." action={<Link to="/admin/salons/$id" params={{ id: "new" }} className={btn({ size: "sm" })}><Icon name="add" size={18} /> افزودن سالن</Link>} />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(([l, v, i]) => (
           <Card key={l} className="flex items-center gap-4">
@@ -121,7 +122,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
   const city = CITIES.find((c) => c.slug === s.city) ?? CITIES[0]!;
   const setSvc = (i: number, p: Partial<Service>) => set({ services: s.services.map((v, j) => (j === i ? { ...v, ...p, updated: isoDay(0) } : v)) });
 
-  const save = () => {
+  const save = async () => {
     const e: SalonErrors = {};
     if (s.name.trim().length < 2) e.name = "نام سالن را بنویسید.";
     if (!/^[a-z0-9-]{3,60}$/.test(s.slug)) e.slug = "فقط حروف کوچک لاتین، عدد و خط تیره (۳ تا ۶۰ نویسه).";
@@ -130,13 +131,11 @@ export function AdminSalonEdit({ id }: { id: string }) {
     if (s.address.trim().length < 3) e.address = "آدرس را بنویسید.";
     if (s.categories.length === 0) e.categories = "دست‌کم یک دسته انتخاب کنید.";
     if (s.openHour >= s.closeHour) e.hours = "ساعت پایان باید بعد از ساعت شروع باشد.";
-    if (s.services.some((v) => !v.name.trim() || v.price <= 0 || (v.priceMax != null && v.priceMax < v.price))) e.services = "هر خدمت نام و قیمت معتبر داشته باشد (سقف قیمت کمتر از کف نباشد).";
+    if (s.services.some((v) => !v.name.trim() || v.price < 0 || (v.priceMax != null && v.priceMax < v.price))) e.services = "هر خدمت نام و قیمت معتبر داشته باشد (سقف قیمت کمتر از کف نباشد).";
     if (s.published && s.services.length === 0) e.services = "برای انتشار، دست‌کم یک خدمت لازم است.";
     setErrors(e);
     if (Object.keys(e).length) { toast.error("چند مورد نیاز به اصلاح دارد."); return; }
-    upsertSalon({ ...s, phone: normalizePhone(s.phone), checkedAt: isoDay(0) });
-    toast.success("پروفایل ذخیره شد.");
-    nav({ to: "/admin/salons" });
+    try { await upsertSalon({ ...s, phone: normalizePhone(s.phone), checkedAt: isoDay(0) }); toast.success("پروفایل ذخیره شد."); nav({ to: "/admin/salons" }); } catch { toast.error("ذخیره نشد؛ دسترسی و اطلاعات را بررسی کنید."); }
   };
 
   return (
@@ -234,7 +233,7 @@ export function AdminReviews() {
     ["approved", "منتشرشده", reviews.filter((r) => r.status === "approved")],
     ["closed", "ردشده یا پنهان", reviews.filter((r) => r.status === "rejected" || r.status === "hidden")],
   ];
-  const act = (r: Review, patch: Partial<Review>, msg: string) => { updateReview(r.id, patch); toast.success(msg); };
+  const act = async (r: Review, patch: Partial<Review>, msg: string) => { try { await updateReview(r.id, patch); toast.success(msg); } catch { toast.error("تغییر ذخیره نشد."); } };
   return (
     <>
       <DashTitle title="بررسی نظرها" body="فقط تیم میکزی می‌تواند نظری را منتشر، رد یا پنهان کند. مدارک مراجعه هرگز عمومی نمی‌شود." />
@@ -250,6 +249,9 @@ export function AdminReviews() {
                   <div key={r.id} className="flex flex-col gap-2">
                     <p className="text-caption text-muted-foreground">{name(r.salonId)}{r.evidenceSubmitted && " · مدرک مراجعه پیوست شده (فقط برای تیم)"}</p>
                     <ReviewCard r={r} report={false} />
+                    {r.evidenceSubmitted && <Button size="sm" variant="outline" onClick={async()=>{const {data}=await supabase.from('review_evidence').select('storage_path').eq('review_id',r.id);const path=data?.[0]?.storage_path;if(!path)return;const result=await supabase.storage.from('visit-evidence').createSignedUrl(path,60);if(result.data)window.open(result.data.signedUrl,'_blank','noopener');}}>مشاهده‌ی مدرک خصوصی</Button>}
+                    <Field label="یادداشت بررسی" htmlFor={'note-'+r.id}><input id={'note-'+r.id} className={inputCls} defaultValue={r.moderationNote ?? ''} onBlur={e=>void act(r,{moderationNote:e.target.value},'یادداشت ذخیره شد.')} /></Field>
+                    <Field label="پاسخ رسمی سالن" htmlFor={'reply-'+r.id}><input id={'reply-'+r.id} className={inputCls} defaultValue={r.reply ?? ''} onBlur={e=>void act(r,{reply:e.target.value},'پاسخ ذخیره شد.')} /></Field>
                     {r.reports.length > 0 && <p className="text-caption text-warning-text">گزارش‌ها: {r.reports.map((x) => x.reason).join("، ")}</p>}
                     <div className="flex flex-wrap gap-2">
                       {r.status !== "approved" && <Button size="sm" onClick={() => { act(r, { status: "approved" }, "نظر منتشر شد."); track("review_approved", { review: r.id }); }}>انتشار</Button>}
@@ -342,7 +344,7 @@ export function AdminCategories() {
 export function AdminInquiries() {
   const { inquiries, updateInquiry } = useApp();
   const fmt = useFmt();
-  const LABEL = { new: "جدید", contacted: "تماس گرفته شد", closed: "بسته‌شده" } as const;
+  const LABEL = { new: "جدید", contacted: "تماس گرفته شد", accepted: "پذیرفته‌شده", closed: "بسته‌شده" } as const;
   return (
     <>
       <DashTitle title="درخواست کسب‌وکارها" body="درخواست‌های معرفی سالن یا اصلاح اطلاعات که از فرم «معرفی سالن» رسیده است." />
@@ -357,6 +359,7 @@ export function AdminInquiries() {
               <p className="text-caption text-muted-foreground"><bdi dir="ltr" className="font-mono">{q.id}</bdi> · {fmt.date(q.date, { day: "numeric", month: "long" })} · {q.name} · <bdi dir="ltr">{fmt.digits(q.phone)}</bdi></p>
               <p className="text-caption">{CITIES.find((c) => c.slug === q.city)?.name} {q.area && `· ${q.area}`} {q.categories.length > 0 && `· ${q.categories.map((c) => getCategory(c)?.label).join("، ")}`}</p>
               {q.message && <p>{q.message}</p>}
+              <Field label="یادداشت داخلی" htmlFor={q.id}><input id={q.id} className={inputCls} defaultValue={q.internalNote ?? ""} onBlur={e=>void updateInquiry(q.id,{internalNote:e.target.value}).catch(()=>toast.error("یادداشت ذخیره نشد."))}/></Field>
               <div className="flex flex-wrap gap-2">
                 {(Object.keys(LABEL) as (keyof typeof LABEL)[]).filter((k) => k !== q.status).map((k) => <Button key={k} size="sm" variant="outline" onClick={() => updateInquiry(q.id, { status: k })}>{LABEL[k]}</Button>)}
                 <Link to="/admin/salons/$id" params={{ id: "new" }} className={btn({ variant: "ghost", size: "sm" })}>ساخت پروفایل</Link>
@@ -373,12 +376,12 @@ export function AdminInquiries() {
 export function AdminAnalytics() {
   const fmt = useFmt();
   const [events, setEvents] = useState<TrackedEvent[]>([]);
-  useEffect(() => setEvents(getEvents()), []);
+  useEffect(() => { void supabase.from('discovery_events').select('name,props,created_at').order('created_at',{ascending:false}).range(0,999).then(({data})=>setEvents((data ?? []).map(x=>({name:x.name as TrackedEvent['name'],at:x.created_at})))); }, []);
   const counts = events.reduce<Record<string, number>>((a, e) => ({ ...a, [e.name]: (a[e.name] ?? 0) + 1 }), {});
   const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   return (
     <>
-      <DashTitle title="شاخص‌های کاوش" body="رویدادهای ثبت‌شده در همین مرورگر. اطلاعات شخصی (نام، شماره، متن نظر) در رویدادها ذخیره نمی‌شود." />
+      <DashTitle title="شاخص‌های کاوش" body="رویدادهای ثبت‌شده‌ی میکزی. اطلاعات شخصی (نام، شماره، متن نظر) در رویدادها ذخیره نمی‌شود." />
       {rows.length === 0 ? <StatePanel icon="sort" title="هنوز رویدادی ثبت نشده" body="در سایت جست‌وجو کنید، صفحه‌ی سالنی را باز کنید یا سالن‌ها را مقایسه کنید." /> : (
         <Card>
           <ul className="flex flex-col divide-y divide-border">

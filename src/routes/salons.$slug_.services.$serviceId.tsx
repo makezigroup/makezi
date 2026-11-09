@@ -6,10 +6,12 @@ import { RatingInline } from "@/components/mk/marketplace";
 import { getCategory, getStaticSalon } from "@/lib/data";
 import { useFmt, usePublicSalons, useSalon } from "@/lib/app-store";
 import { seo } from "@/lib/seo";
+import { getPublicSalon } from "@/lib/directory.functions";
 
 export const Route = createFileRoute("/salons/$slug_/services/$serviceId")({
-  head: ({ params }) => {
-    const s = getStaticSalon(params.slug);
+  loader: ({ params }) => getPublicSalon({ data: params.slug }),
+  head: ({ params, loaderData }) => {
+    const s = loaderData;
     const v = s?.services.find((x) => x.id === params.serviceId);
     return s && v
       ? seo(`${v.name} در ${s.name}`, `قیمت اعلام‌شده، زمان تقریبی و مقایسه‌ی ${v.name} در ${s.name} با سالن‌های دیگر.`, { path: `/salons/${s.slug}/services/${v.id}` })
@@ -20,7 +22,7 @@ export const Route = createFileRoute("/salons/$slug_/services/$serviceId")({
 
 function ServicePage() {
   const { slug, serviceId } = Route.useParams();
-  const salon = useSalon(slug);
+  const salon = Route.useLoaderData();
   const all = usePublicSalons();
   const fmt = useFmt();
   const v = salon?.services.find((x) => x.id === serviceId);
@@ -67,7 +69,6 @@ function ServicePage() {
             </ul>
           )}
         </section>
-        <DemoNote className="mt-8">قیمت‌ها و سالن‌های این نسخه نمونه‌اند.</DemoNote>
       </div>
     </SiteLayout>
   );

@@ -16,6 +16,7 @@ const ST: Record<ReviewStatus, { t: string; tone: "warning" | "success" | "error
   approved: { t: "منتشر شده", tone: "success" },
   rejected: { t: "منتشر نشد", tone: "error" },
   hidden: { t: "پنهان شده", tone: "neutral" },
+  reported: { t: "گزارش‌شده", tone: "warning" },
 };
 
 function MyReviews() {
@@ -26,7 +27,7 @@ function MyReviews() {
       <PageIntro title="نظرهای من" body="هر نظر پیش از انتشار توسط تیم میکزی بررسی می‌شود." />
       <div className="container-mk flex max-w-3xl flex-col gap-4">
         {!phone ? (
-          <StatePanel icon="profile" title="وارد حساب خود نشده‌اید" action={<Link to="/login" className={btn()}>ورود با موبایل</Link>} />
+          <StatePanel icon="profile" title="وارد حساب خود نشده‌اید" action={<Link to="/login" className={btn()}>ورود</Link>} />
         ) : mine.length === 0 ? (
           <StatePanel icon="review" title="هنوز نظری ننوشته‌اید" body="از پروفایل هر سالن می‌توانید تجربه‌تان را بنویسید." action={<Link to="/salons" className={btn()}>کاوش سالن‌ها</Link>} />
         ) : (
@@ -39,6 +40,7 @@ function MyReviews() {
                   <StatusBadge tone={ST[r.status].tone}>{ST[r.status].t}</StatusBadge>
                 </div>
                 <ReviewCard r={r} report={false} />
+                {r.moderationNote && <p className="text-caption text-muted-foreground">بازخورد بررسی: {r.moderationNote}</p>}
               </div>
             );
           })

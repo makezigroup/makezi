@@ -7,7 +7,7 @@ export const Route = createFileRoute("/salons/$slug_/$area")({
   head: ({ params }) => {
     const c = getCity(params.slug), a = getArea(params.slug, params.area);
     return c && a
-      ? seo(`سالن‌های زیبایی ${a.name}، ${c.name}`, `سالن‌های زیبایی ${a.name} با خدمات، قیمت اعلام‌شده و نظر کاربران.`, { path: `/salons/${c.slug}/${a.slug}` })
+      ? seo(`سالن‌های زیبایی ${a.name}، ${c.name}`, `سالن‌های زیبایی ${a.name} با خدمات، قیمت اعلام‌شده و نظر کاربران.`, { path: `/salons/${c.slug}/${a.slug}`, noindex: true })
       : seo("محله پیدا نشد", "این محله در میکزی پیدا نشد.", { noindex: true });
   },
   component: function AreaRoute() {

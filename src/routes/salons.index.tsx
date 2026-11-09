@@ -36,7 +36,7 @@ function Directory() {
     <SiteLayout>
       <div className="container-mk pb-6 pt-8">
         <h1 className="text-h1">جست‌وجوی سالن</h1>
-        <p className="mt-2 text-muted-foreground">همه‌ی اطلاعات را تیم میکزی ثبت و بررسی می‌کند. داده‌های این نسخه نمونه هستند.</p>
+        <p className="mt-2 text-muted-foreground">همه‌ی اطلاعات را تیم میکزی ثبت و بررسی می‌کند. </p>
         <form
           role="search"
           className="mt-5 flex max-w-2xl gap-2"
@@ -75,7 +75,7 @@ function Directory() {
           </div>
           <p className="mb-5 flex items-center gap-2 rounded-input bg-muted px-3 py-2 text-caption"><Icon name="sort" size={16} /> ترتیب نتایج: {SORT_LABEL[sort].how} جایگاه نتایج فروخته نمی‌شود.</p>
           {results.length === 0 ? (
-            <StatePanel title="سالنی با این فیلترها پیدا نشد" body="چند فیلتر را بردارید یا محله‌ی دیگری را امتحان کنید." action={<Button variant="outline" onClick={() => nav({ search: {}, replace: true })}>پاک کردن همه</Button>} />
+            <StatePanel title={salons.length ? "سالنی با این فیلترها پیدا نشد" : "هنوز سالنی منتشر نشده است"} body={salons.length ? "چند فیلتر را بردارید یا محله‌ی دیگری را امتحان کنید." : "اطلاعات پس از بررسی تیم میکزی منتشر می‌شود."} action={<Button variant="outline" onClick={() => nav({ search: {}, replace: true })}>پاک کردن همه</Button>} />
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{results.map((x) => <SalonCard key={x.id} salon={x} />)}</div>
           )}
