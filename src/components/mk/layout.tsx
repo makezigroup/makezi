@@ -140,7 +140,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
-    { title: "کاوش", links: [{ to: "/salons", label: "همه‌ی سالن‌ها" }, { to: "/salons/tehran", label: "سالن‌های تهران" }, { to: "/categories", label: "دسته‌های خدمات" }, { to: "/gallery", label: "نمونه‌کارها" }, { to: "/map", label: "نقشه" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
+    { title: "کاوش", links: [{ to: "/salons", label: "همه‌ی سالن‌ها" }, { to: "/categories", label: "دسته‌های خدمات" }, { to: "/gallery", label: "نمونه‌کارها" }, { to: "/map", label: "نقشه" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
     { title: "کسب‌وکارها", links: [{ to: "/for-salons", label: "معرفی سالن به میکزی" }, { to: "/salon", label: "پاسخ به نظرها (سالن)" }] },
     { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/verify", label: "شفافیت و نظرها" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }] },

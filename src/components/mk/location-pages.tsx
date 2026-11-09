@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { SiteLayout } from "./layout";
 import { Icon, SectionHead, StatePanel, btn } from "./core";
 import { SalonCard } from "./marketplace";
 import { CATEGORIES, getArea, getCity } from "@/lib/data";
 import { usePublicSalons, useFmt } from "@/lib/app-store";
 
-export function Crumbs({ items }: { items: { label: string; to?: string | undefined }[] }) {
+export function Crumbs({ items }: { items: { label: string; link?: ReactNode | undefined }[] }) {
   return (
     <nav aria-label="مسیر" className="mb-4 text-caption text-muted-foreground">
       <ol className="flex flex-wrap items-center gap-1">
@@ -13,7 +14,7 @@ export function Crumbs({ items }: { items: { label: string; to?: string | undefi
         {items.map((it) => (
           <li key={it.label} className="flex items-center gap-1">
             <span aria-hidden>/</span>
-            {it.to ? <Link to={it.to} className="text-muted-foreground">{it.label}</Link> : <span aria-current="page">{it.label}</span>}
+            {it.link ?? <span aria-current="page">{it.label}</span>}
           </li>
         ))}
       </ol>
@@ -28,7 +29,7 @@ export function CityPage({ city: citySlug }: { city: string }) {
   return (
     <SiteLayout>
       <div className="container-mk pt-8">
-        <Crumbs items={[{ label: "سالن‌ها", to: "/salons" }, { label: city.name }]} />
+        <Crumbs items={[{ label: "سالن‌ها", link: <Link to="/salons" className="text-muted-foreground">سالن‌ها</Link> }, { label: city.name }]} />
         <h1 className="text-h1">سالن‌های زیبایی {city.name}</h1>
         <p className="mt-2 max-w-2xl text-body-l text-muted-foreground">{fmt.num(list.length)} سالن در {city.name} با فهرست خدمات، قیمت اعلام‌شده، نمونه‌کار و نظر کاربران. داده‌ها نمونه هستند.</p>
         <section className="mt-8">
@@ -69,7 +70,7 @@ export function AreaPage({ city: citySlug, area: areaSlug }: { city: string; are
   return (
     <SiteLayout>
       <div className="container-mk pt-8">
-        <Crumbs items={[{ label: "سالن‌ها", to: "/salons" }, { label: city.name, to: `/salons/${city.slug}` }, { label: area.name }]} />
+        <Crumbs items={[{ label: "سالن‌ها", link: <Link to="/salons" className="text-muted-foreground">سالن‌ها</Link> }, { label: city.name, link: <Link to="/salons/$slug" params={{ slug: city.slug }} className="text-muted-foreground">{city.name}</Link> }, { label: area.name }]} />
         <h1 className="text-h1">سالن‌های زیبایی {area.name}، {city.name}</h1>
         <p className="mt-2 max-w-2xl text-body-l text-muted-foreground">خدمات، قیمت اعلام‌شده و نظرهای سالن‌های این محله را کنار هم ببینید.</p>
         {cats.length > 0 && (
