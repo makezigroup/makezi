@@ -680,6 +680,7 @@ export type Database = {
       }
     }
     Functions: {
+      convert_partnership: { Args: { request_uuid: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

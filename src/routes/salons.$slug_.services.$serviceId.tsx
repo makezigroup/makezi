@@ -32,7 +32,7 @@ function ServicePage() {
   const cat = getCategory(v.category);
   const others = all
     .filter((s) => s.id !== salon.id)
-    .flatMap((s) => s.services.filter((x) => x.category === v.category).map((x) => ({ s, x })))
+    .flatMap((s) => s.services.filter((x) => x.id === v.id).map((x) => ({ s, x })))
     .sort((a, b) => a.x.price - b.x.price)
     .slice(0, 6);
   return (
@@ -54,7 +54,7 @@ function ServicePage() {
           <Link to="/salons/$slug" params={{ slug: salon.slug }} className={btn({ variant: "outline" })}>پروفایل سالن</Link>
         </div>
         <section className="mt-12">
-          <h2 className="mb-1 text-h2">{cat?.label} در سالن‌های دیگر</h2>
+          <h2 className="mb-1 text-h2">{v.name} در سالن‌های دیگر</h2>
           <p className="mb-4 text-caption text-muted-foreground">مرتب‌شده بر اساس کمترین قیمت اعلام‌شده.</p>
           {others.length === 0 ? <StatePanel title="سالن دیگری این خدمت را ثبت نکرده" /> : (
             <ul className="divide-y divide-border rounded-card bg-card shadow-card">

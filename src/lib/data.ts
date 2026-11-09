@@ -109,6 +109,7 @@ export interface Salon {
   addedAt: string;
   /** ISO date the MAKEZI team last checked the profile. */
   checkedAt: string;
+  seo?: { title?: string; description?: string; noindex?: boolean };
 }
 
 /** standard = community review; verified-visit = evidence checked by the MAKEZI team. */

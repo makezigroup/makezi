@@ -29,6 +29,8 @@ export function SalonProfile({ salon }: { salon: Salon }) {
   const all = usePublicSalons();
   const { reviews } = useApp();
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [returnSearch,setReturnSearch]=useState<Record<string,unknown>|null>(null);
+  useEffect(()=>{try{const value=sessionStorage.getItem('mkz-directory-search');if(value)setReturnSearch(JSON.parse(value));}catch{ /* ignore invalid local state */ }},[]);
   useEffect(() => { track("salon_profile_viewed", { salon: salon.id }); }, [salon.id]);
   const city = getCity(salon.city);
   const similar = all
@@ -40,6 +42,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
   return (
     <SiteLayout>
       <div className="container-mk pt-6">
+        {returnSearch && <Link to="/salons" search={returnSearch} className={btn({variant:'outline',size:'sm'})}>بازگشت به نتایج جست‌وجو</Link>}
         <Crumbs
           items={[
             { label: "سالن‌ها", link: <Link to="/salons" className="text-muted-foreground">سالن‌ها</Link> },
@@ -83,7 +86,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
               <CompareToggle id={salon.id} size="lg" />
               <button
                 className={btn({ variant: "ghost", size: "lg" })}
-                onClick={() => { void navigator.clipboard?.writeText(window.location.href); toast.success("پیوند سالن کپی شد."); }}
+                onClick={async () => { try{await navigator.clipboard.writeText(window.location.href);toast.success('پیوند سالن کپی شد.');}catch{toast.error('کپی پیوند ممکن نشد.');} }}
                 aria-label="کپی پیوند سالن"
               >
                 <Icon name="share" size={20} />

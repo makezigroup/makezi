@@ -29,6 +29,7 @@ function ForSalons() {
   const [cats, setCats] = useState<string[]>([]);
   const [err, setErr] = useState<InquiryErrors>({});
   const [sent, setSent] = useState(false);
+  const [busy,setBusy]=useState(false);
   const up = (k: keyof typeof v) => (e: { target: { value: string } }) => setV({ ...v, [k]: e.target.value });
   return (
     <ContentPage title="سالن خود را به میکزی اضافه کنید" body="فرم را پر کنید؛ تیم میکزی برای بررسی اطلاعات با شما تماس می‌گیرد.">
@@ -62,7 +63,7 @@ function ForSalons() {
               const er = validateInquiry({ ...v, city: v.city });
               setErr(er);
               if (Object.keys(er).length) return;
-              try { await addInquiry({ ...v, categories: cats }); setSent(true); toast.success("درخواست ثبت شد."); } catch { toast.error("درخواست ذخیره نشد؛ دوباره تلاش کنید."); }
+              setBusy(true);try { await addInquiry({ ...v, categories: cats }); setSent(true); toast.success("درخواست ثبت شد."); } catch { toast.error("درخواست ذخیره نشد؛ دوباره تلاش کنید."); }finally{setBusy(false);}
             }}
           >
             <h2 className="text-h2">درخواست ثبت سالن</h2>
@@ -79,7 +80,7 @@ function ForSalons() {
             <Field label="اینستاگرام (اختیاری)" htmlFor="ig"><input id="ig" dir="ltr" className={inputCls} value={v.instagram} onChange={up("instagram")} /></Field>
             <Field label="وب‌سایت (اختیاری)" htmlFor="web"><input id="web" type="url" dir="ltr" className={inputCls} value={v.website} onChange={up("website")} /></Field>
             <Field label="توضیح" htmlFor="m" error={err.message}><textarea id="m" rows={3} className={cn(inputCls, "py-3")} value={v.message} onChange={up("message")} /></Field>
-            <Button type="submit">ارسال درخواست</Button>
+            <Button type="submit" disabled={busy}>{busy?'در حال ثبت…':'ارسال درخواست'}</Button>
             <DemoNote>هزینه و شرایط همکاری هنوز اعلام نشده است. این درخواست به‌معنای انتشار خودکار سالن نیست.</DemoNote>
           </form>
         )}

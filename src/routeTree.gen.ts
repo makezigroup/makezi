@@ -36,6 +36,7 @@ import { Route as ReviewVerificationRouteImport } from './routes/review-verifica
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -198,6 +199,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -358,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -412,6 +419,7 @@ export interface FileRoutesByTo {
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -468,6 +476,7 @@ export interface FileRoutesById {
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -525,6 +534,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/settings'
+    | '/sitemap.xml'
     | '/terms'
     | '/verify'
     | '/admin/activity'
@@ -579,6 +589,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/settings'
+    | '/sitemap.xml'
     | '/terms'
     | '/verify'
     | '/admin/activity'
@@ -634,6 +645,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/search'
     | '/settings'
+    | '/sitemap.xml'
     | '/terms'
     | '/verify'
     | '/admin/activity'
@@ -690,6 +702,7 @@ export interface RootRouteChildren {
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
   CategoriesCatRoute: typeof CategoriesCatRoute
@@ -892,6 +905,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1145,6 +1165,7 @@ const rootRouteChildren: RootRouteChildren = {
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
   CategoriesCatRoute: CategoriesCatRoute,

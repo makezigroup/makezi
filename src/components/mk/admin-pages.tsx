@@ -237,6 +237,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
           ))}
         </Card>
         <div className="flex gap-2"><Button onClick={save}>ذخیره</Button><Link to="/admin/salons" className={btn({ variant: "ghost" })}>انصراف</Link></div>
+        <section className="grid gap-4 sm:grid-cols-2"><h2 className="text-h3 sm:col-span-2">اطلاعات صفحه برای جست‌وجو</h2><Field label="عنوان صفحه"><input className={inputCls} maxLength={150} value={s.seo?.title??''} onChange={e=>set({seo:{...s.seo,title:e.target.value}})}/></Field><Field label="توضیح صفحه"><textarea className={inputCls} maxLength={300} value={s.seo?.description??''} onChange={e=>set({seo:{...s.seo,description:e.target.value}})}/></Field><label><input type="checkbox" checked={s.seo?.noindex??false} onChange={e=>set({seo:{...s.seo,noindex:e.target.checked}})}/> جلوگیری از نمایه‌سازی</label></section>
       </div>
     </>
   );
@@ -361,14 +362,17 @@ export function AdminCategories() {
 
 export function AdminInquiries() {
   const { inquiries, updateInquiry } = useApp();
+  const nav=useNavigate();
+  const [query,setQuery]=useState('');
   const fmt = useFmt();
   const LABEL = { new: "جدید", "under-review": "در حال بررسی", rejected: "ردشده", contacted: "تماس گرفته شد", accepted: "پذیرفته‌شده", closed: "بسته‌شده" } as const;
   return (
     <>
       <DashTitle title="درخواست کسب‌وکارها" body="درخواست‌های معرفی سالن یا اصلاح اطلاعات که از فرم «معرفی سالن» رسیده است." />
+      <input aria-label="جست‌وجوی درخواست" className={inputCls+' mb-4'} value={query} onChange={e=>setQuery(e.target.value)} placeholder="نام سالن، فرد یا وضعیت…" />
       {inquiries.length === 0 ? <StatePanel icon="support" title="درخواستی نرسیده است" body="درخواست‌های فرم «معرفی سالن به میکزی» اینجا نمایش داده می‌شوند." action={<Link to="/for-salons" className={btn({ variant: "outline" })}>دیدن فرم</Link>} /> : (
         <div className="grid gap-4 md:grid-cols-2">
-          {inquiries.map((q) => (
+          {inquiries.filter(q=>!query||`${q.business} ${q.name} ${LABEL[q.status]}`.includes(query)).map((q) => (
             <Card key={q.id} className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-h3">{q.business}</h2>
@@ -381,7 +385,7 @@ export function AdminInquiries() {
               <Field label="یادداشت داخلی" htmlFor={q.id}><input id={q.id} className={inputCls} defaultValue={q.internalNote ?? ""} onBlur={e=>void updateInquiry(q.id,{internalNote:e.target.value}).catch(()=>toast.error("یادداشت ذخیره نشد."))}/></Field>
               <div className="flex flex-wrap gap-2">
                 {(Object.keys(LABEL) as (keyof typeof LABEL)[]).filter((k) => k !== q.status).map((k) => <Button key={k} size="sm" variant="outline" onClick={() => updateInquiry(q.id, { status: k })}>{LABEL[k]}</Button>)}
-                <Link to="/admin/salons/$id" params={{ id: "new" }} className={btn({ variant: "ghost", size: "sm" })}>ساخت پروفایل</Link>
+                <Button variant="outline" size="sm" disabled={q.status!=='accepted'} onClick={async()=>{const {data,error}=await supabase.rpc('convert_partnership',{request_uuid:q.id});if(error||!data){toast.error('ابتدا درخواست را بپذیرید؛ ساخت پروفایل انجام نشد.');return;}nav({to:'/admin/salons/$id',params:{id:data}});}}>ساخت یا بازکردن پیش‌نویس مرتبط</Button>
               </div>
             </Card>
           ))}

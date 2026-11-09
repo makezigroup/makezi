@@ -1,6 +1,6 @@
 export const SITE_URL = "https://makezi.lovable.app";
 
-export function seo(title: string, description: string, opts: { noindex?: boolean; path?: string; jsonLd?: object[] } = {}) {
+export function seo(title: string, description: string, opts: { noindex?: boolean; path?: string; image?: string; jsonLd?: object[] } = {}) {
   const t = `${title} | میکزی MAKEZI`;
   const url = opts.path ? SITE_URL + opts.path : undefined;
   return {
@@ -13,6 +13,7 @@ export function seo(title: string, description: string, opts: { noindex?: boolea
       { property: "og:locale", content: "fa_IR" },
       ...(url ? [{ property: "og:url", content: url }] : []),
       { name: "twitter:card", content: "summary_large_image" },
+      ...(opts.image?.startsWith('https://') ? [{property:'og:image',content:opts.image},{name:'twitter:image',content:opts.image}] : []),
       ...(opts.noindex ? [{ name: "robots", content: "noindex, nofollow" }] : []),
     ],
     links: url && !opts.noindex ? [{ rel: "canonical", href: url }] : [],
