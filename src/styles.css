@@ -173,7 +173,7 @@
 }
 @utility container-mk {
   width: 100%;
-  max-width: var(--container-max);
+  max-width: var(--site-content-max);
   margin-inline: auto;
   padding-inline: 16px;
   @media (min-width: 600px) {
@@ -190,4 +190,25 @@
 @utility ease-mk {
   transition-timing-function: var(--ease-standard);
   transition-duration: var(--motion-base);
+}
+
+/* Approved live-site proportions, preserving the official brand tokens. */
+.hero-search label {
+  min-width: 0;
+  gap: 6px;
+  color: var(--color-text-muted);
+}
+.hero-search input,
+.hero-search select {
+  border: none;
+  box-shadow: none;
+  font-weight: 600;
+}
+@media (min-width: 640px) {
+  .hero-search label + label { border-inline-start: 1px solid var(--color-border); }
+}
+@media (min-width: 1280px) {
+  header .container-mk { gap: 8px; }
+  header nav a { padding-inline: 9px; }
+  header form { max-width: 220px; }
 }

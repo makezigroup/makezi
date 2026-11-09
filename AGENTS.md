@@ -18,3 +18,4 @@
 - `/salons/$slug` serves both city pages and salon profiles (city slugs are reserved); area and service pages use `$slug_` un-nested routes.
 - All number/price/date display goes through `useFmt()` so the Persian/Latin digits toggle applies everywhere.
 - `cn()` uses an extended tailwind-merge that knows the custom `text-{display,h1..label}` size utilities — keep it, or text colours get dropped.
+- Public navigation is a shared header with a collapsible mobile menu, not a persistent bottom bar; preserve access to account, favorites, and comparison through the menu so live-site presentation does not change product behavior.

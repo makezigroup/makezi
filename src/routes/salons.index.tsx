@@ -35,11 +35,11 @@ function Directory() {
   return (
     <SiteLayout>
       <div className="container-mk pb-6 pt-8">
-        <h1 className="text-h1">کاوش سالن‌ها</h1>
+        <h1 className="text-h1">جست‌وجوی سالن</h1>
         <p className="mt-2 text-muted-foreground">همه‌ی اطلاعات را تیم میکزی ثبت و بررسی می‌کند. داده‌های این نسخه نمونه هستند.</p>
         <form
           role="search"
-          className="mt-5 flex gap-2"
+          className="mt-5 flex max-w-2xl gap-2"
           onSubmit={(e) => { e.preventDefault(); track("search_submitted", { source: "directory" }); set({ q: q.trim() || undefined }); }}
         >
           <label htmlFor="dq" className="sr-only">جست‌وجوی سالن، خدمت یا آدرس</label>
@@ -47,9 +47,9 @@ function Directory() {
           <Button type="submit"><Icon name="search" size={20} /> <span className="hidden sm:inline">جست‌وجو</span></Button>
         </form>
       </div>
-      <div className="container-mk grid gap-8 lg:grid-cols-[18rem_1fr]">
+      <div className="container-mk grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
         <aside className="hidden lg:block" aria-label="فیلترها">
-          <div className="sticky top-20 rounded-card bg-card p-5 shadow-card">
+          <div className="sticky top-20 rounded-sheet bg-card p-5 shadow-card">
             <FiltersPanel s={s} set={set} />
           </div>
         </aside>

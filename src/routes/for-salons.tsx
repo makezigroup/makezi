@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ContentPage } from "@/components/mk/content-page";
-import { Button, Chip, DemoNote, Field, Icon, inputCls } from "@/components/mk/core";
+import { Button, Chip, DemoNote, Field, Icon, btn, inputCls } from "@/components/mk/core";
 import { CATEGORIES, CITIES } from "@/lib/data";
 import { validateInquiry, type InquiryErrors } from "@/lib/rules";
 import { useApp } from "@/lib/app-store";
@@ -32,8 +32,16 @@ function ForSalons() {
   const up = (k: keyof typeof v) => (e: { target: { value: string } }) => setV({ ...v, [k]: e.target.value });
   return (
     <ContentPage title="سالن خود را در میکزی ثبت کنید" body="فرم را پر کنید؛ تیم میکزی برای بررسی اطلاعات با شما تماس می‌گیرد.">
-      <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
-        <div className="grid content-start gap-4 sm:grid-cols-2">
+      <div className="mb-14 grid overflow-hidden rounded-sheet bg-card shadow-card md:grid-cols-2">
+        <div className="min-h-48 bg-muted pattern-medium md:min-h-80" aria-hidden />
+        <div className="flex flex-col justify-center gap-5 p-6 md:p-10">
+          <h2 className="text-h2">با کیفیت کار و کامل‌بودن اطلاعاتتان دیده شوید</h2>
+          <p className="text-muted-foreground">اطلاعات، خدمات، قیمت‌ها، نمونه‌کار و مدارک سالن شما را تیم میکزی بررسی می‌کند.</p>
+          <div className="flex flex-wrap gap-3"><a href="#listing-request" className={btn({ variant: "ink" })}>شروع ثبت سالن</a><Link to="/how-it-works" className={btn({ variant: "outline" })}>میکزی چطور کار می‌کند</Link></div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-10">
+        <div className="grid content-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.t} className="flex flex-col gap-2 rounded-card bg-card p-5 shadow-card">
               <span className="grid size-10 place-items-center rounded-full bg-muted"><Icon name={f.i} size={20} /></span>
@@ -47,7 +55,8 @@ function ForSalons() {
         ) : (
           <form
             noValidate
-            className="flex flex-col gap-4 rounded-card bg-card p-6 shadow-card"
+            id="listing-request"
+            className="flex max-w-2xl scroll-mt-24 flex-col gap-4 rounded-card bg-card p-6 shadow-card"
             onSubmit={(e) => {
               e.preventDefault();
               const er = validateInquiry({ ...v, city: v.city });

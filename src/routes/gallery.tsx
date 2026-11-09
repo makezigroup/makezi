@@ -18,7 +18,7 @@ function Gallery() {
   const items = galleryOf(salons).filter((g) => !cat || g.category === cat);
   return (
     <SiteLayout>
-      <PageIntro title="نمونه‌کار سالن‌ها" body="هر تصویر کار یک سالن است. برای دیدن قیمت و نظرها به پروفایل همان سالن بروید.">
+      <PageIntro title="گالری مدل" body="هر تصویر کار یک سالن است. برای دیدن قیمت و نظرها به پروفایل همان سالن بروید.">
         <div className="mt-6 flex flex-wrap gap-2">
           <Chip active={!cat} onClick={() => setCat(null)}>همه</Chip>
           {CATEGORIES.map((c) => <Chip key={c.id} icon={c.icon} active={cat === c.id} onClick={() => setCat(c.id)}>{c.label}</Chip>)}

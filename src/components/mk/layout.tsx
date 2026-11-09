@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { Icon, Logo, LogoMark, btn } from "./core";
+import { Button, Icon, Logo, LogoMark, btn } from "./core";
 import type { IconName } from "./icon-data";
 import { useApp } from "@/lib/app-store";
 import { CompareBar } from "./marketplace";
@@ -10,11 +10,11 @@ import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "خانه", exact: true },
-  { to: "/salons", label: "کاوش سالن‌ها" },
-  { to: "/categories", label: "خدمات" },
-  { to: "/compare", label: "مقایسه" },
-  { to: "/about", label: "درباره‌ی میکزی" },
+  { to: "/salons", label: "جست‌وجوی سالن" },
+  { to: "/map", label: "نقشه" },
+  { to: "/gallery", label: "گالری مدل" },
+  { to: "/how-it-works", label: "چطور کار می‌کند" },
+  { to: "/for-salons", label: "برای سالن‌ها" },
 ] as const;
 
 const ACCOUNT = [
@@ -54,14 +54,14 @@ export function ThemeToggle({ className }: { className?: string | undefined }) {
   const { theme, setTheme } = useApp();
   const dark = theme === "dark";
   return (
-    <button
+    <Button variant="ghost"
       type="button"
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={dark ? "تم روشن" : "تم تیره"}
-      className={cn("grid size-11 place-items-center rounded-full text-foreground hover:bg-muted", className)}
+      className={cn("size-11 min-h-11 rounded-full p-0", className)}
     >
       {dark ? <Sun className="size-5" /> : <Moon className="size-5" />}
-    </button>
+    </Button>
   );
 }
 
@@ -109,7 +109,7 @@ export function SiteHeader() {
         <Logo />
         <nav aria-label="اصلی" className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n }} className="rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-muted" }}>
+            <Link key={n.to} to={n.to} className="whitespace-nowrap rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-muted" }}>
               {n.label}
             </Link>
           ))}
@@ -117,17 +117,17 @@ export function SiteHeader() {
         <div className="flex-1 xl:hidden" />
         <HeaderSearch />
         <div className="flex items-center gap-1">
-          <DigitsToggle />
           <ThemeToggle />
+          <Link to="/my-reviews" className={cn(btn({ variant: "ghost", size: "sm" }), "hidden xl:inline-flex")}><Icon name="review" size={18} /> نظرهای من</Link>
           <AccountMenu />
-          <button className="grid size-11 place-items-center rounded-full hover:bg-muted xl:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="منو">
+          <Button variant="ghost" className="size-11 min-h-11 rounded-full p-0 xl:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="منو">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          </Button>
         </div>
       </div>
       {open && (
         <nav aria-label="منوی موبایل" className="container-mk flex flex-col gap-1 border-t border-border pb-4 pt-2 xl:hidden">
-          {[...NAV, ...(phone ? ACCOUNT : [{ to: "/login", label: "ورود" } as const])].map((n) => (
+          {[...NAV, { to: "/categories", label: "خدمات" }, { to: "/compare", label: "مقایسه" }, ...(phone ? ACCOUNT : [{ to: "/login", label: "ورود" } as const])].map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="rounded-input px-3 py-3 font-semibold text-foreground no-underline hover:bg-muted">
               {n.label}
             </Link>
@@ -140,20 +140,20 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
-    { title: "کاوش", links: [{ to: "/salons", label: "همه‌ی سالن‌ها" }, { to: "/categories", label: "دسته‌های خدمات" }, { to: "/gallery", label: "نمونه‌کارها" }, { to: "/map", label: "نقشه" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
-    { title: "کسب‌وکارها", links: [{ to: "/for-salons", label: "معرفی سالن به میکزی" }, { to: "/salon", label: "پاسخ به نظرها (سالن)" }] },
+    { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/map", label: "نقشه" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
+    { title: "سالن‌ها", links: [{ to: "/for-salons", label: "همکاری با میکزی" }, { to: "/for-salons", label: "ثبت سالن" }, { to: "/salon", label: "پنل سالن" }] },
     { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/verify", label: "شفافیت و نظرها" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }] },
   ];
   return (
-    <footer className="mt-24 bg-inverse text-inverse-foreground">
+    <footer className="mt-24 border-t border-border bg-background text-foreground">
       <div className="container-mk grid gap-10 py-14 md:grid-cols-[1.4fr_repeat(4,1fr)]">
         <div className="flex flex-col gap-3">
           <span className="inline-flex items-center gap-2">
             <LogoMark className="h-8 w-auto" />
-            <span className="font-lat text-xl font-extrabold" dir="ltr">makezi</span>
+            <span className="text-xl font-extrabold">میکزی</span>
           </span>
-          <p className="max-w-xs text-caption opacity-80">راهنمای پیدا کردن، بررسی و مقایسه‌ی سالن‌های زیبایی. میکزی خدمات زیبایی ارائه نمی‌دهد و نوبت رزرو نمی‌کند.</p>
+          <p className="max-w-xs text-caption text-muted-foreground">راهنمای خدمات زیبایی برای انتخاب آگاهانه؛ اطلاعات شفاف و مقایسه‌ی سالن‌ها.</p>
         </div>
         {cols.map((c) => (
           <div key={c.title}>
@@ -161,7 +161,7 @@ export function SiteFooter() {
             <ul className="flex flex-col gap-2">
               {c.links.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-caption text-inverse-foreground no-underline hover:underline">
+                  <Link to={l.to} className="text-caption text-foreground no-underline hover:underline">
                     {l.label}
                   </Link>
                 </li>
@@ -211,17 +211,16 @@ export function BottomNav() {
 
 export function SiteLayout({ children, footer = true }: { children: ReactNode; footer?: boolean | undefined }) {
   return (
-    <div className="flex min-h-screen flex-col pb-16 md:pb-0">
+    <div className="flex min-h-screen flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-lime focus:px-4 focus:py-2 focus:text-brand-ink">
         رفتن به محتوای اصلی
       </a>
       <SiteHeader />
-      <main id="main" className="flex-1">
+      <main id="main">
         {children}
       </main>
       {footer && <SiteFooter />}
       <CompareBar />
-      <BottomNav />
     </div>
   );
 }

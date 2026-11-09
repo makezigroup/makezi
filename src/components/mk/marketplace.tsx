@@ -90,7 +90,7 @@ export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean 
   const fmt = useFmt();
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-card bg-card shadow-card transition-shadow ease-mk hover:shadow-modal">
-      <div className={cn("relative overflow-hidden", compact ? "aspect-[4/3]" : "aspect-[4/5]")}>
+      <div className={cn("relative overflow-hidden", compact ? "aspect-[4/3]" : "aspect-[4/5] max-sm:aspect-[4/3]")}>
         <SafeImg src={salon.image} alt={`تصویر ${salon.name}`} className="size-full transition-transform ease-mk group-hover:scale-[1.02]" />
         {salon.services.length > 0 && (
           <span className="absolute bottom-3 start-3 rounded-full bg-surface px-3 py-1 text-caption font-semibold text-foreground shadow-card">
@@ -238,7 +238,7 @@ export function CompareBar() {
   if (compare.length === 0) return null;
   const items = compare.map((id) => salons.find((s) => s.id === id)).filter(Boolean) as Salon[];
   return (
-    <div className="fixed inset-x-0 bottom-16 z-20 px-3 md:bottom-4">
+    <div className="fixed inset-x-0 bottom-4 z-20 px-3">
       <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 rounded-card bg-inverse p-3 text-inverse-foreground shadow-modal">
         <span className="text-caption font-semibold">مقایسه ({fmt.num(items.length)} از {fmt.num(DECISIONS.compareMax)})</span>
         <ul className="flex flex-1 flex-wrap gap-1">

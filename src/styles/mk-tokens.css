@@ -177,6 +177,7 @@
   --grid-tablet-cols:8;/* @kind other */--grid-tablet-margin:24px;--grid-tablet-gutter:16px;
   --grid-desktop-cols:12;/* @kind other */--grid-desktop-margin:clamp(32px,4vw,64px);--grid-desktop-gutter:24px;
   --container-max:1280px;
+  --site-content-max:1152px;
   --bp-tablet:600px;/* @kind other */--bp-desktop:1024px;/* @kind other */
 
   --z-header:20;/* @kind other */--z-bottomnav:30;/* @kind other */--z-overlay:40;/* @kind other */--z-toast:50;/* @kind other */

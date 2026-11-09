@@ -47,7 +47,7 @@ export function Logo({ className }: { className?: string | undefined }) {
   return (
     <Link to="/" className={cn("inline-flex items-center gap-2 text-foreground no-underline", className)} aria-label="MAKEZI میکزی — صفحه‌ی اصلی">
       <LogoMark className="h-7 w-auto" />
-      <span className="font-lat text-xl font-extrabold lowercase tracking-tight" dir="ltr">makezi</span>
+      <span className="text-xl font-extrabold">میکزی</span>
     </Link>
   );
 }

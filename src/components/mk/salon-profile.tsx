@@ -49,8 +49,8 @@ export function SalonProfile({ salon }: { salon: Salon }) {
         {!salon.published && <DemoNote className="mb-4">این پروفایل منتشر نشده و فقط برای پیش‌نمایش مدیریت قابل دیدن است.</DemoNote>}
 
         {/* A. Header */}
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <div className="grid grid-cols-3 gap-3">
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr]">
+          <div className="grid grid-cols-3 gap-3 max-lg:ms-auto max-lg:w-full max-lg:max-w-sm">
             <SafeImg src={salon.image} alt={`تصویر اصلی ${salon.name}`} eager className="col-span-2 row-span-2 aspect-[4/5] w-full rounded-card" />
             {salon.portfolio.slice(0, 2).map((p, i) => (
               <button key={p.id} type="button" onClick={() => { setLightbox(i); track("portfolio_viewed", { salon: salon.id }); }} className="overflow-hidden rounded-card" aria-label={`بزرگ‌نمایی ${p.title}`}>
