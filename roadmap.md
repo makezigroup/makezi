@@ -1,5 +1,14 @@
 # MAKEZI product transformation
 
+## Complete product architecture
+- [ ] Audit discovery, account, administration, support, persistence, navigation and responsive states against the new brief.
+- [ ] Complete independent service discovery, service details, category filters and typed search results.
+- [ ] Persist contact/problem submissions and provide staff management.
+- [ ] Complete account profile, password flows, event-backed notifications, preferences and safe account-deletion requests.
+- [ ] Complete staff catalog/location/pricing/media, moderation/evidence, users, homepage/SEO and activity management.
+- [ ] Add review/content/verification policies and complete support navigation without inventing legal commitments.
+- [ ] Verify persistence, permissions, desktop/tablet/mobile journeys and SEO; report implemented, partial and blocked work separately.
+
 ## Populated demo preview
 - [x] Add identifiable, idempotent Cloud demo salons, services, reviews, requests and test accounts without modifying real records.
 - [x] Label all sample records, suppress demo verification/contact/indexing, and preserve the approved design.
@@ -25,4 +34,4 @@
 ## Known visual differences
 - This is a partial visual alignment, not a pixel-identical reproduction. Current sample images, eight categories, richer filters, contact/review behavior, and listing form are preserved instead of copying the reference's empty/booking-only states.
 - Live reference inspection covered home, discover, map, gallery, for-salons, help, how-it-works, about, contact, login, account, privacy, terms, saved, verify, my-bookings, salon/onboarding, and the public sample salon profile. Signed-in states were not accessible.
-- No routes, data, business rules, account behavior, dependencies, or integrations were replaced; the existing project still has no connected backend.
+- Visual synchronization preserved product behavior; subsequent work connected Cloud authentication and persistent records.
