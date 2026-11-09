@@ -15,6 +15,7 @@ import { useApp, useFmt } from "@/lib/app-store";
 import { getEvents, track, type TrackedEvent } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { isoDay, normalizePhone } from "@/lib/format";
+import { MediaUpload } from './media-upload';
 
 export const ADMIN_NAV = [
   { to: "/admin", label: "پیشخوان", icon: "salon" as const, exact: true },
@@ -24,6 +25,13 @@ export const ADMIN_NAV = [
   { to: "/admin/service-categories", label: "خدمات و قیمت‌ها", icon: "package" as const },
   { to: "/admin/inquiries", label: "درخواست کسب‌وکارها", icon: "support" as const },
   { to: "/admin/analytics", label: "شاخص‌های کاوش", icon: "sort" as const },
+  { to: "/admin/catalog", label: "کاتالوگ خدمات", icon: "package" as const },
+  { to: "/admin/taxonomy", label: "دسته‌ها و مکان‌ها", icon: "location" as const },
+  { to: "/admin/documents", label: "مدارک خصوصی", icon: "verified" as const },
+  { to: "/admin/support", label: "پیام‌ها و درخواست‌های حساب", icon: "support" as const },
+  { to: "/admin/users", label: "کاربران", icon: "profile" as const },
+  { to: "/admin/homepage", label: "صفحهٔ اول", icon: "salon" as const },
+  { to: "/admin/activity", label: "سابقهٔ اقدامات", icon: "review" as const },
 ];
 
 const Note = () => (
@@ -98,7 +106,7 @@ export function AdminSalons() {
                   <td className="p-3">{fmt.num(s.services.length)}</td>
                   <td className="p-3">{fmt.date(s.checkedAt, { day: "numeric", month: "short", year: "numeric" })}</td>
                   <td className="p-3"><Switch checked={s.published} aria-label={`انتشار ${s.name}`} onCheckedChange={(v) => { upsertSalon({ ...s, published: v }); toast.success(v ? "منتشر شد." : "از نمایش عمومی خارج شد."); }} /></td>
-                  <td className="p-3"><Link to="/admin/salons/$id" params={{ id: s.id }} className={btn({ variant: "outline", size: "sm" })}>ویرایش</Link></td>
+                  <td className="p-3"><Link to="/admin/salons/$id" params={{ id: s.id }} className={btn({ variant: "outline", size: "sm" })}>ویرایش</Link><Button size="sm" variant="ghost" onClick={async()=>{try{await upsertSalon({...s,archived:!s.archived,published:s.archived?s.published:false});toast.success('ذخیره شد.');}catch{toast.error('ذخیره نشد.');}}}>{s.archived?'بازگردانی':'آرشیو'}</Button></td>
                 </tr>
               ))}
             </tbody>
@@ -127,7 +135,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
   useEffect(() => { if (existing) setS(existing); }, [existing?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   if (id !== "new" && !existing) return <StatePanel icon="salon" title="این سالن پیدا نشد" action={<Link to="/admin/salons" className={btn()}>بازگشت</Link>} />;
   const set = (p: Partial<Salon>) => setS((x) => ({ ...x, ...p }));
-  const city = CITIES.find((c) => c.slug === s.city) ?? CITIES[0]!;
+  const city = CITIES.find((c) => c.slug === s.city) ?? CITIES[0];
   const setSvc = (i: number, p: Partial<Service>) => set({ services: s.services.map((v, j) => (j === i ? { ...v, ...p, updated: isoDay(0) } : v)) });
 
   const save = async () => {
@@ -154,7 +162,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
           <Field label="نام سالن" htmlFor="f-name" error={errors.name}><input id="f-name" className={inputCls} value={s.name} onChange={(e) => set({ name: e.target.value })} /></Field>
           <Field label="نشانی صفحه (لاتین)" htmlFor="f-slug" error={errors.slug} hint="مثل salon-name"><input id="f-slug" dir="ltr" className={inputCls} value={s.slug} onChange={(e) => set({ slug: e.target.value.toLowerCase() })} /></Field>
           <Field label="شهر" htmlFor="f-city"><select id="f-city" className={inputCls} value={s.city} onChange={(e) => set({ city: e.target.value })}>{CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}</select></Field>
-          <Field label="محله" htmlFor="f-area"><select id="f-area" className={inputCls} value={s.area} onChange={(e) => set({ area: e.target.value })}>{city.areas.map((a) => <option key={a.slug} value={a.slug}>{a.name}</option>)}</select></Field>
+          <Field label="محله" htmlFor="f-area"><select id="f-area" className={inputCls} value={s.area} onChange={(e) => set({ area: e.target.value })}>{city?.areas.map((a) => <option key={a.slug} value={a.slug}>{a.name}</option>)}</select></Field>
           <Field label="آدرس" htmlFor="f-addr" error={errors.address}><input id="f-addr" className={inputCls} value={s.address} onChange={(e) => set({ address: e.target.value })} /></Field>
           <Field label="تلفن" htmlFor="f-phone" error={errors.phone}><input id="f-phone" dir="ltr" inputMode="tel" className={inputCls} value={s.phone} onChange={(e) => set({ phone: e.target.value })} /></Field>
           <Field label="وب‌سایت (اختیاری)" htmlFor="f-web"><input id="f-web" dir="ltr" className={inputCls} value={s.website ?? ""} onChange={(e) => set({ website: e.target.value || undefined })} /></Field>
@@ -166,6 +174,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
               <SafeImg src={s.image} alt="" className="size-12 shrink-0 rounded-input" />
             </div>
           </Field>
+          <MediaUpload salonId={s.id} onUploaded={url=>set({image:url as ImageKey})} />
         </Card>
 
         <Card className="grid gap-4 md:grid-cols-3">
@@ -174,7 +183,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
           <Field label="پایان" htmlFor="f-ch"><input id="f-ch" type="number" min={1} max={24} className={inputCls} value={s.closeHour} onChange={(e) => set({ closeHour: Number(e.target.value) })} /></Field>
           <Field label="روز تعطیل" htmlFor="f-cd"><select id="f-cd" className={inputCls} value={s.closedDay} onChange={(e) => set({ closedDay: Number(e.target.value) })}>{WEEKDAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}</select></Field>
           <Field label="متن ساعت کاری" htmlFor="f-ht"><input id="f-ht" className={inputCls} value={s.hours} onChange={(e) => set({ hours: e.target.value })} placeholder="شنبه تا پنجشنبه، ۱۰ تا ۲۰" /></Field>
-          <Field label="وضعیت مدارک" htmlFor="f-st"><select id="f-st" className={inputCls} value={s.status} onChange={(e) => set({ status: e.target.value as VerifyStatus })}><option value="unverified">تأییدنشده</option><option value="pending">در انتظار تأیید</option><option value="verified">مدارک تأییدشده</option></select></Field>
+          <Field label="وضعیت مدارک" htmlFor="f-st"><select id="f-st" className={inputCls} value={s.status} onChange={(e) => set({ status: e.target.value as VerifyStatus })}><option value="unverified">تأییدنشده</option><option value="pending">در انتظار تأیید</option>{s.status==='verified'&&<option value="verified">مدارک تأییدشده</option>}</select><Link to="/admin/documents">بررسی مدرک خصوصی</Link></Field>
           <label className="flex min-h-12 items-center justify-between gap-3 self-end rounded-input bg-muted px-3 text-caption font-semibold">منتشرشده <Switch checked={s.published} onCheckedChange={(v) => set({ published: v })} /></label>
         </Card>
 
@@ -219,6 +228,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
           {s.portfolio.map((p, i) => (
             <div key={p.id} className="grid items-center gap-2 sm:grid-cols-[auto_1fr_1fr_1fr_auto]">
               <SafeImg src={p.image} alt="" className="size-12 rounded-input" />
+              <MediaUpload salonId={s.id} onUploaded={url=>set({portfolio:s.portfolio.map((x,j)=>j===i?{...x,image:url as ImageKey}:x)})} />
               <select aria-label="تصویر" className={inputCls} value={p.image} onChange={(e) => set({ portfolio: s.portfolio.map((x, j) => (j === i ? { ...x, image: e.target.value as ImageKey } : x)) })}>{(Object.keys(IMAGES) as ImageKey[]).map((k) => <option key={k} value={k}>{IMAGE_LABEL[k]}</option>)}</select>
               <input aria-label="عنوان" className={inputCls} placeholder="عنوان" value={p.title} onChange={(e) => set({ portfolio: s.portfolio.map((x, j) => (j === i ? { ...x, title: e.target.value } : x)) })} />
               <select aria-label="دسته" className={inputCls} value={p.category} onChange={(e) => set({ portfolio: s.portfolio.map((x, j) => (j === i ? { ...x, category: e.target.value as CategoryId } : x)) })}>{CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}</select>
@@ -299,7 +309,7 @@ export function AdminVerifications() {
                 {s.credentials.length === 0 ? <li className="text-muted-foreground">مدرکی ثبت نشده است.</li> : s.credentials.map((c) => <li key={c.label} className="flex justify-between gap-2"><span>{c.label} · {c.date}</span><VerifyBadge status={c.status} /></li>)}
               </ul>
               <div className="flex flex-wrap gap-2">
-                <Button size="sm" disabled={s.credentials.length === 0} onClick={() => { upsertSalon({ ...s, status: "verified", credentials: s.credentials.map((c) => ({ ...c, status: "verified" })) }); toast.success("مدارک تأیید شد."); }}>تأیید مدارک</Button>
+                <Link to="/admin/documents" className={btn({variant:'outline',size:'sm'})}>بررسی مدرک خصوصی</Link>
                 <Button size="sm" variant="danger" onClick={() => { upsertSalon({ ...s, status: "unverified" }); toast("به «تأییدنشده» برگشت."); }}>نیاز به مدرک بیشتر</Button>
               </div>
             </Card>

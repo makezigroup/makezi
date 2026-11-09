@@ -19,6 +19,7 @@ function Compare() {
   const { compare, toggleCompare, clearCompare, salons, reviews } = useApp();
   const fmt = useFmt();
   const list = compare.map((id) => salons.find((s) => s.id === id)).filter((s): s is Salon => !!s && s.published);
+  const sharedServices = list[0]?.services.filter(v => list.every(s => s.services.some(x => x.id === v.id))) ?? [];
   const row = (label: string, cell: (s: Salon) => ReactNode) => (
     <tr className="border-t border-border">
       <th scope="row" className="sticky start-0 bg-background p-3 text-start text-caption font-semibold text-muted-foreground">{label}</th>
@@ -54,6 +55,7 @@ function Compare() {
                   {DECISIONS.ratingDimensions.map((d, i) => row(d, (s) => { const sc = scoreOf(publicReviews(reviews, s.id)); return sc.count ? fmt.rating(sc.dims[i] ?? 0) : "—"; }))}
                   {row("بازه‌ی قیمت", (s) => priceFrom(s)>0 ? `${fmt.price(priceFrom(s))} تا ${fmt.price(priceTop(s))}` : "قیمت اعلام نشده")}
                   {row("خدمات", (s) => s.categories.map((c) => CATEGORIES.find((x) => x.id === c)?.label).join("، "))}
+                  {sharedServices.map(service => row(service.name, s => { const v = s.services.find(x => x.id === service.id); return v && v.price > 0 ? `${fmt.price(v.price)}${v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ''}` : 'قیمت اعلام نشده'; }))}
                   {row("ساعت کاری", (s) => <span className="flex flex-col gap-1">{s.hours}<OpenBadge salon={s} /></span>)}
                   {row("ویژگی‌ها", (s) => s.attributes.length ? s.attributes.map((a) => ATTRIBUTES.find((x) => x.id === a)?.label).join("، ") : "—")}
                   {row("نمونه‌کار", (s) => fmt.num(s.portfolio.length))}

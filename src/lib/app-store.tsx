@@ -8,6 +8,7 @@ import { reviewFromRow } from "./cloud-data";
 import type { Json } from "@/integrations/supabase/types";
 import { publicReviews, scoreOf, toggleCompare as toggleCompareRule } from "./rules";
 import { track } from "./analytics";
+import { readAll } from './cloud-pages';
 
 // Cloud-backed records; only display preferences remain device-local.
 type Theme = "light" | "dark";
@@ -51,16 +52,15 @@ export function AppStoreProvider({ children, initialSalons = [] }: { children: R
     setPhone(user?.id ?? null); setEmail(user?.email ?? "");
     const role = user ? await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' }) : null;
     const admin = role?.data === true; setIsAdmin(admin);
-    const [s, r, published] = await Promise.all([supabase.from('salons').select('data').order('created_at', { ascending: false }).range(0,99), user ? supabase.from('reviews').select('*').order('created_at', { ascending: false }).range(0,499) : Promise.resolve({data:[],error:null}), supabase.from('published_reviews').select('*').order('created_at',{ascending:false}).range(0,499)]);
-    if (s.error || r.error || published.error) throw new Error('دریافت اطلاعات ممکن نشد. دوباره تلاش کنید.');
-    setSalons((s.data ?? []).map(x => x.data as unknown as Salon));
-    let list = (r.data ?? []).map(reviewFromRow);
-    const publicRows = (published.data ?? []).map(x => ({ isDemo:x.is_demo ?? false, id:x.id ?? '', salonId:x.salon_id ?? '', author:x.author ?? '', date:x.created_at ?? '', service:x.service ?? '', dims:x.dims ?? [], text:x.text ?? '', kind:x.kind as Review['kind'], status:'approved' as const, reply:x.reply ?? undefined, reports:[] }));
+    const [s, r, published] = await Promise.all([readAll((from,to)=>supabase.from('salons').select('data').order('id').range(from,to)), user ? readAll((from,to)=>supabase.from('reviews').select('*').order('id').range(from,to)) : Promise.resolve([]), readAll((from,to)=>supabase.from('published_reviews').select('*').order('id').range(from,to))]);
+    setSalons(s.map(x => x.data as unknown as Salon));
+    let list = r.map(reviewFromRow);
+    const publicRows = published.map(x => ({ isDemo:x.is_demo ?? false, id:x.id ?? '', salonId:x.salon_id ?? '', author:x.author ?? '', date:x.created_at ?? '', service:x.service ?? '', dims:x.dims ?? [], text:x.text ?? '', kind:x.kind as Review['kind'], status:'approved' as const, reply:x.reply ?? undefined, reports:[] }));
     list = [...list,...publicRows.filter(x=>!list.some(r=>r.id===x.id))];
     if (admin) {
-      const [ev, reports, iq] = await Promise.all([supabase.from('review_evidence').select('*'), supabase.from('review_reports').select('*').eq('resolved',false), supabase.from('partnership_requests').select('*').order('created_at',{ascending:false}).range(0,99)]);
-      list = list.map(x => ({ ...x, evidenceSubmitted: ev.data?.some(e => e.review_id === x.id), reports: (reports.data ?? []).filter(p => p.review_id === x.id).map(p => ({ reason: p.reason, date: p.created_at })) }));
-      setInquiries((iq.data ?? []).map(x => ({ isDemo:x.is_demo, id:x.id, business:x.business, name:x.name, phone:x.phone, city:x.city, area:x.area, categories:x.categories, message:x.message, date:x.created_at, status:x.status as InquiryStatus, instagram:x.instagram, website:x.website, internalNote:x.internal_note, salonId:x.salon_id ?? undefined })));
+      const [ev, reports, iq] = await Promise.all([readAll((from,to)=>supabase.from('review_evidence').select('*').order('id').range(from,to)), readAll((from,to)=>supabase.from('review_reports').select('*').eq('resolved',false).order('id').range(from,to)), readAll((from,to)=>supabase.from('partnership_requests').select('*').order('id').range(from,to))]);
+      list = list.map(x => ({ ...x, evidenceSubmitted: ev.some(e => e.review_id === x.id), reports: reports.filter(p => p.review_id === x.id).map(p => ({ reason: p.reason, date: p.created_at })) }));
+      setInquiries(iq.map(x => ({ isDemo:x.is_demo, id:x.id, business:x.business, name:x.name, phone:x.phone, city:x.city, area:x.area, categories:x.categories, message:x.message, date:x.created_at, status:x.status as InquiryStatus, instagram:x.instagram, website:x.website, internalNote:x.internal_note, salonId:x.salon_id ?? undefined })));
     } else setInquiries([]);
     setReviews(list);
     if (user) {

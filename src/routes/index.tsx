@@ -8,8 +8,11 @@ import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
 import { track } from "@/lib/analytics";
 import { seo } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { getProductData } from '@/lib/product.functions';
+import { ServiceCard } from '@/components/mk/service-discovery';
 
 export const Route = createFileRoute("/")({
+  loader: () => getProductData(),
   head: () => seo("انتخاب آگاهانه در زیبایی", "سالن‌های زیبایی را با خدمات، قیمت اعلام‌شده، نمونه‌کار و نظرهای بررسی‌شده پیدا و مقایسه کنید.", { path: "/" }),
   component: Home,
 });
@@ -56,10 +59,13 @@ function HeroSearch() {
 }
 
 function Home() {
+  const product = Route.useLoaderData();
+  const config = product.content.find(c=>c.id==='homepage')?.data;
+  const selected = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['featured']) ? config['featured'] : [];
   const { reviews } = useApp();
   const fmt = useFmt();
   const salons = usePublicSalons();
-  const featured = [...salons].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt)).slice(0, 4);
+  const featured = selected.length ? salons.filter(s=>selected.includes(s.id)) : [...salons].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt)).slice(0, 4);
   const [selectedCity,setSelectedCity] = useState("tehran");
   const recent = [...salons].sort((a,b)=>b.addedAt.localeCompare(a.addedAt)).slice(0,4);
   const nearby = salons.filter(s=>s.city===selectedCity).slice(0,4);
@@ -98,11 +104,12 @@ function Home() {
       </section>
 
       <section className="container-mk py-14">
-        <SectionHead eyebrow="تازه بررسی‌شده" title="چند سالن برای شروع" body="مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی." action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />
+        <SectionHead eyebrow={selected.length?'انتخاب کارکنان':'تازه بررسی‌شده'} title="چند سالن برای شروع" body={selected.length?'انتخاب تیم میکزی برای شروع بررسی.':'مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی.'} action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />
         {featured.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map((s) => <SalonCard key={s.id} salon={s} />)}</div> : <StatePanel icon="salon" title="هنوز سالنی منتشر نشده است" body="اطلاعات سالن‌ها پس از بررسی تیم میکزی اینجا منتشر می‌شود." action={<Link to="/for-salons" className={btn({ variant: "outline" })}>افزودن سالن به میکزی</Link>} />}
       </section>
 
       <section className="container-mk py-14"><SectionHead title="تازه‌اضافه‌شده" body="مرتب‌شده بر اساس تاریخ انتشار پروفایل."/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{recent.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
+      <section className="container-mk py-14"><SectionHead title="خدمات زیبایی" action={<Link to="/services" className={btn({variant:'outline'})}>همهٔ خدمات</Link>}/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{product.services.slice(0,4).map(s=><ServiceCard key={s.id} service={s}/>)}</div></section>
       <section className="container-mk py-14"><SectionHead title="سالن‌های شهر شما"/><label className="mb-6 flex max-w-xs flex-col gap-2 text-caption">شهر<select className={inputCls} value={selectedCity} onChange={e=>setSelectedCity(e.target.value)}>{CITIES.map(c=><option key={c.slug} value={c.slug}>{c.name}</option>)}</select></label><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{nearby.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
       <section className="container-mk py-16">
         <SectionHead eyebrow="سه قدم" title="پیدا کنید، مقایسه کنید، تماس بگیرید" />

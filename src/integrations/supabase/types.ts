@@ -87,17 +87,26 @@ export type Database = {
       }
       directory_categories: {
         Row: {
+          archived: boolean
+          description: string
           id: string
+          image: string
           is_demo: boolean
           label: string
         }
         Insert: {
+          archived?: boolean
+          description?: string
           id: string
+          image?: string
           is_demo?: boolean
           label: string
         }
         Update: {
+          archived?: boolean
+          description?: string
           id?: string
+          image?: string
           is_demo?: boolean
           label?: string
         }
@@ -105,6 +114,7 @@ export type Database = {
       }
       directory_locations: {
         Row: {
+          archived: boolean
           area: string
           city: string
           id: string
@@ -112,6 +122,7 @@ export type Database = {
           label: string
         }
         Insert: {
+          archived?: boolean
           area?: string
           city: string
           id: string
@@ -119,6 +130,7 @@ export type Database = {
           label: string
         }
         Update: {
+          archived?: boolean
           area?: string
           city?: string
           id?: string
@@ -409,6 +421,50 @@ export type Database = {
           },
         ]
       }
+      salon_documents: {
+        Row: {
+          checked_at: string | null
+          checked_by: string | null
+          created_at: string
+          id: string
+          internal_note: string
+          label: string
+          salon_id: string
+          status: string
+          storage_path: string
+        }
+        Insert: {
+          checked_at?: string | null
+          checked_by?: string | null
+          created_at?: string
+          id?: string
+          internal_note?: string
+          label: string
+          salon_id: string
+          status?: string
+          storage_path: string
+        }
+        Update: {
+          checked_at?: string | null
+          checked_by?: string | null
+          created_at?: string
+          id?: string
+          internal_note?: string
+          label?: string
+          salon_id?: string
+          status?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salon_documents_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salons: {
         Row: {
           archived: boolean
@@ -445,6 +501,134 @@ export type Database = {
           name?: string
           published?: boolean
           slug?: string
+        }
+        Relationships: []
+      }
+      service_catalog: {
+        Row: {
+          archived: boolean
+          category_id: string
+          description: string
+          id: string
+          image: string
+          is_demo: boolean
+          name: string
+          seo: Json
+        }
+        Insert: {
+          archived?: boolean
+          category_id: string
+          description?: string
+          id: string
+          image?: string
+          is_demo?: boolean
+          name: string
+          seo?: Json
+        }
+        Update: {
+          archived?: boolean
+          category_id?: string
+          description?: string
+          id?: string
+          image?: string
+          is_demo?: boolean
+          name?: string
+          seo?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_catalog_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "directory_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_content: {
+        Row: {
+          data: Json
+          id: string
+        }
+        Insert: {
+          data?: Json
+          id: string
+        }
+        Update: {
+          data?: Json
+          id?: string
+        }
+        Relationships: []
+      }
+      support_submissions: {
+        Row: {
+          category: string
+          contact: string
+          created_at: string
+          id: string
+          internal_note: string
+          kind: string
+          message: string
+          name: string
+          related_path: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          category: string
+          contact?: string
+          created_at?: string
+          id?: string
+          internal_note?: string
+          kind: string
+          message: string
+          name?: string
+          related_path?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          contact?: string
+          created_at?: string
+          id?: string
+          internal_note?: string
+          kind?: string
+          message?: string
+          name?: string
+          related_path?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_notifications: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          message: string
+          read: boolean
+          record_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          message: string
+          read?: boolean
+          record_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          message?: string
+          read?: boolean
+          record_id?: string
+          user_id?: string
         }
         Relationships: []
       }

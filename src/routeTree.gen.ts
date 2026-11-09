@@ -15,31 +15,51 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContentPolicyRouteImport } from './routes/content-policy'
+import { Route as DeleteAccountRouteImport } from './routes/delete-account'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ForSalonsRouteImport } from './routes/for-salons'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MyReviewsRouteImport } from './routes/my-reviews'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReportProblemRouteImport } from './routes/report-problem'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ReviewGuidelinesRouteImport } from './routes/review-guidelines'
+import { Route as ReviewVerificationRouteImport } from './routes/review-verification'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminCatalogRouteImport } from './routes/admin.catalog'
+import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
+import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
 import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminServiceCategoriesRouteImport } from './routes/admin.service-categories'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
+import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminVerificationsRouteImport } from './routes/admin.verifications'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as CategoriesCatRouteImport } from './routes/categories.$cat'
 import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ServicesServiceIdRouteImport } from './routes/services.$serviceId'
 import { Route as AdminSalonsIndexRouteImport } from './routes/admin.salons.index'
 import { Route as AdminSalonsIdRouteImport } from './routes/admin.salons.$id'
+import { Route as ApiPublicMediaRouteImport } from './routes/api/public/media'
 import { Route as SalonsSlugAreaRouteImport } from './routes/salons.$slug_.$area'
 import { Route as SalonsSlugServicesServiceIdRouteImport } from './routes/salons.$slug_.services.$serviceId'
 
@@ -73,6 +93,16 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContentPolicyRoute = ContentPolicyRouteImport.update({
+  id: '/content-policy',
+  path: '/content-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeleteAccountRoute = DeleteAccountRouteImport.update({
+  id: '/delete-account',
+  path: '/delete-account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -81,6 +111,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
 const ForSalonsRoute = ForSalonsRouteImport.update({
   id: '/for-salons',
   path: '/for-salons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -113,14 +148,49 @@ const MyReviewsRoute = MyReviewsRouteImport.update({
   path: '/my-reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportProblemRoute = ReportProblemRouteImport.update({
+  id: '/report-problem',
+  path: '/report-problem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewGuidelinesRoute = ReviewGuidelinesRouteImport.update({
+  id: '/review-guidelines',
+  path: '/review-guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewVerificationRoute = ReviewVerificationRouteImport.update({
+  id: '/review-verification',
+  path: '/review-verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -143,9 +213,29 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCatalogRoute = AdminCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomepageRoute = AdminHomepageRouteImport.update({
+  id: '/homepage',
+  path: '/homepage',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
@@ -161,6 +251,21 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
 const AdminServiceCategoriesRoute = AdminServiceCategoriesRouteImport.update({
   id: '/service-categories',
   path: '/service-categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTaxonomyRoute = AdminTaxonomyRouteImport.update({
+  id: '/taxonomy',
+  path: '/taxonomy',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminVerificationsRoute = AdminVerificationsRouteImport.update({
@@ -188,6 +293,16 @@ const SalonsSlugRoute = SalonsSlugRouteImport.update({
   path: '/salons/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesServiceIdRoute = ServicesServiceIdRouteImport.update({
+  id: '/services/$serviceId',
+  path: '/services/$serviceId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSalonsIndexRoute = AdminSalonsIndexRouteImport.update({
   id: '/salons/',
   path: '/salons/',
@@ -197,6 +312,11 @@ const AdminSalonsIdRoute = AdminSalonsIdRouteImport.update({
   id: '/salons/$id',
   path: '/salons/$id',
   getParentRoute: () => AdminRoute,
+} as any)
+const ApiPublicMediaRoute = ApiPublicMediaRouteImport.update({
+  id: '/api/public/media',
+  path: '/api/public/media',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SalonsSlugAreaRoute = SalonsSlugAreaRouteImport.update({
   id: '/salons/$slug_/$area',
@@ -217,30 +337,50 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/content-policy': typeof ContentPolicyRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/my-reviews': typeof MyReviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/report-problem': typeof ReportProblemRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/review-guidelines': typeof ReviewGuidelinesRoute
+  '/review-verification': typeof ReviewVerificationRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/catalog': typeof AdminCatalogRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin/': typeof AdminIndexRoute
   '/categories/': typeof CategoriesIndexRoute
   '/salons/': typeof SalonsIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
+  '/api/public/media': typeof ApiPublicMediaRoute
   '/salons/$slug/$area': typeof SalonsSlugAreaRoute
   '/admin/salons/': typeof AdminSalonsIndexRoute
   '/salons/$slug/services/$serviceId': typeof SalonsSlugServicesServiceIdRoute
@@ -251,30 +391,50 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/content-policy': typeof ContentPolicyRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/my-reviews': typeof MyReviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/report-problem': typeof ReportProblemRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/review-guidelines': typeof ReviewGuidelinesRoute
+  '/review-verification': typeof ReviewVerificationRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/catalog': typeof AdminCatalogRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin': typeof AdminIndexRoute
   '/categories': typeof CategoriesIndexRoute
   '/salons': typeof SalonsIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
+  '/api/public/media': typeof ApiPublicMediaRoute
   '/salons/$slug/$area': typeof SalonsSlugAreaRoute
   '/admin/salons': typeof AdminSalonsIndexRoute
   '/salons/$slug/services/$serviceId': typeof SalonsSlugServicesServiceIdRoute
@@ -287,30 +447,50 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/content-policy': typeof ContentPolicyRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/discover': typeof DiscoverRoute
   '/for-salons': typeof ForSalonsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/my-reviews': typeof MyReviewsRoute
+  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/report-problem': typeof ReportProblemRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/review-guidelines': typeof ReviewGuidelinesRoute
+  '/review-verification': typeof ReviewVerificationRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/catalog': typeof AdminCatalogRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
   '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
+  '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin/': typeof AdminIndexRoute
   '/categories/': typeof CategoriesIndexRoute
   '/salons/': typeof SalonsIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
+  '/api/public/media': typeof ApiPublicMediaRoute
   '/salons/$slug_/$area': typeof SalonsSlugAreaRoute
   '/admin/salons/': typeof AdminSalonsIndexRoute
   '/salons/$slug_/services/$serviceId': typeof SalonsSlugServicesServiceIdRoute
@@ -324,30 +504,50 @@ export interface FileRouteTypes {
     | '/admin'
     | '/compare'
     | '/contact'
+    | '/content-policy'
+    | '/delete-account'
     | '/discover'
     | '/for-salons'
+    | '/forgot-password'
     | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/login'
     | '/map'
     | '/my-reviews'
+    | '/notifications'
     | '/privacy'
+    | '/register'
+    | '/report-problem'
+    | '/reset-password'
+    | '/review-guidelines'
+    | '/review-verification'
     | '/saved'
+    | '/search'
     | '/settings'
     | '/terms'
     | '/verify'
+    | '/admin/activity'
     | '/admin/analytics'
+    | '/admin/catalog'
+    | '/admin/documents'
+    | '/admin/homepage'
     | '/admin/inquiries'
     | '/admin/reviews'
     | '/admin/service-categories'
+    | '/admin/support'
+    | '/admin/taxonomy'
+    | '/admin/users'
     | '/admin/verifications'
     | '/categories/$cat'
     | '/salons/$slug'
+    | '/services/$serviceId'
     | '/admin/'
     | '/categories/'
     | '/salons/'
+    | '/services/'
     | '/admin/salons/$id'
+    | '/api/public/media'
     | '/salons/$slug/$area'
     | '/admin/salons/'
     | '/salons/$slug/services/$serviceId'
@@ -358,30 +558,50 @@ export interface FileRouteTypes {
     | '/account'
     | '/compare'
     | '/contact'
+    | '/content-policy'
+    | '/delete-account'
     | '/discover'
     | '/for-salons'
+    | '/forgot-password'
     | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/login'
     | '/map'
     | '/my-reviews'
+    | '/notifications'
     | '/privacy'
+    | '/register'
+    | '/report-problem'
+    | '/reset-password'
+    | '/review-guidelines'
+    | '/review-verification'
     | '/saved'
+    | '/search'
     | '/settings'
     | '/terms'
     | '/verify'
+    | '/admin/activity'
     | '/admin/analytics'
+    | '/admin/catalog'
+    | '/admin/documents'
+    | '/admin/homepage'
     | '/admin/inquiries'
     | '/admin/reviews'
     | '/admin/service-categories'
+    | '/admin/support'
+    | '/admin/taxonomy'
+    | '/admin/users'
     | '/admin/verifications'
     | '/categories/$cat'
     | '/salons/$slug'
+    | '/services/$serviceId'
     | '/admin'
     | '/categories'
     | '/salons'
+    | '/services'
     | '/admin/salons/$id'
+    | '/api/public/media'
     | '/salons/$slug/$area'
     | '/admin/salons'
     | '/salons/$slug/services/$serviceId'
@@ -393,30 +613,50 @@ export interface FileRouteTypes {
     | '/admin'
     | '/compare'
     | '/contact'
+    | '/content-policy'
+    | '/delete-account'
     | '/discover'
     | '/for-salons'
+    | '/forgot-password'
     | '/gallery'
     | '/help'
     | '/how-it-works'
     | '/login'
     | '/map'
     | '/my-reviews'
+    | '/notifications'
     | '/privacy'
+    | '/register'
+    | '/report-problem'
+    | '/reset-password'
+    | '/review-guidelines'
+    | '/review-verification'
     | '/saved'
+    | '/search'
     | '/settings'
     | '/terms'
     | '/verify'
+    | '/admin/activity'
     | '/admin/analytics'
+    | '/admin/catalog'
+    | '/admin/documents'
+    | '/admin/homepage'
     | '/admin/inquiries'
     | '/admin/reviews'
     | '/admin/service-categories'
+    | '/admin/support'
+    | '/admin/taxonomy'
+    | '/admin/users'
     | '/admin/verifications'
     | '/categories/$cat'
     | '/salons/$slug'
+    | '/services/$serviceId'
     | '/admin/'
     | '/categories/'
     | '/salons/'
+    | '/services/'
     | '/admin/salons/$id'
+    | '/api/public/media'
     | '/salons/$slug_/$area'
     | '/admin/salons/'
     | '/salons/$slug_/services/$serviceId'
@@ -429,23 +669,36 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
+  ContentPolicyRoute: typeof ContentPolicyRoute
+  DeleteAccountRoute: typeof DeleteAccountRoute
   DiscoverRoute: typeof DiscoverRoute
   ForSalonsRoute: typeof ForSalonsRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
   HelpRoute: typeof HelpRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   MyReviewsRoute: typeof MyReviewsRoute
+  NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
+  RegisterRoute: typeof RegisterRoute
+  ReportProblemRoute: typeof ReportProblemRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  ReviewGuidelinesRoute: typeof ReviewGuidelinesRoute
+  ReviewVerificationRoute: typeof ReviewVerificationRoute
   SavedRoute: typeof SavedRoute
+  SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
   CategoriesCatRoute: typeof CategoriesCatRoute
   SalonsSlugRoute: typeof SalonsSlugRoute
+  ServicesServiceIdRoute: typeof ServicesServiceIdRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
   SalonsIndexRoute: typeof SalonsIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
+  ApiPublicMediaRoute: typeof ApiPublicMediaRoute
   SalonsSlugAreaRoute: typeof SalonsSlugAreaRoute
   SalonsSlugServicesServiceIdRoute: typeof SalonsSlugServicesServiceIdRoute
 }
@@ -494,6 +747,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/content-policy': {
+      id: '/content-policy'
+      path: '/content-policy'
+      fullPath: '/content-policy'
+      preLoaderRoute: typeof ContentPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delete-account': {
+      id: '/delete-account'
+      path: '/delete-account'
+      fullPath: '/delete-account'
+      preLoaderRoute: typeof DeleteAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -506,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/for-salons'
       fullPath: '/for-salons'
       preLoaderRoute: typeof ForSalonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -550,6 +824,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -557,11 +838,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report-problem': {
+      id: '/report-problem'
+      path: '/report-problem'
+      fullPath: '/report-problem'
+      preLoaderRoute: typeof ReportProblemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review-guidelines': {
+      id: '/review-guidelines'
+      path: '/review-guidelines'
+      fullPath: '/review-guidelines'
+      preLoaderRoute: typeof ReviewGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review-verification': {
+      id: '/review-verification'
+      path: '/review-verification'
+      fullPath: '/review-verification'
+      preLoaderRoute: typeof ReviewVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -592,11 +915,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/analytics': {
       id: '/admin/analytics'
       path: '/analytics'
       fullPath: '/admin/analytics'
       preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/catalog': {
+      id: '/admin/catalog'
+      path: '/catalog'
+      fullPath: '/admin/catalog'
+      preLoaderRoute: typeof AdminCatalogRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/documents': {
+      id: '/admin/documents'
+      path: '/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AdminDocumentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/homepage': {
+      id: '/admin/homepage'
+      path: '/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AdminHomepageRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/inquiries': {
@@ -618,6 +969,27 @@ declare module '@tanstack/react-router' {
       path: '/service-categories'
       fullPath: '/admin/service-categories'
       preLoaderRoute: typeof AdminServiceCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/taxonomy': {
+      id: '/admin/taxonomy'
+      path: '/taxonomy'
+      fullPath: '/admin/taxonomy'
+      preLoaderRoute: typeof AdminTaxonomyRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/verifications': {
@@ -655,6 +1027,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$serviceId': {
+      id: '/services/$serviceId'
+      path: '/services/$serviceId'
+      fullPath: '/services/$serviceId'
+      preLoaderRoute: typeof ServicesServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/salons/': {
       id: '/admin/salons/'
       path: '/salons'
@@ -668,6 +1054,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/salons/$id'
       preLoaderRoute: typeof AdminSalonsIdRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/public/media': {
+      id: '/api/public/media'
+      path: '/api/public/media'
+      fullPath: '/api/public/media'
+      preLoaderRoute: typeof ApiPublicMediaRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/salons/$slug_/$area': {
       id: '/salons/$slug_/$area'
@@ -687,10 +1080,17 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCatalogRoute: typeof AdminCatalogRoute
+  AdminDocumentsRoute: typeof AdminDocumentsRoute
+  AdminHomepageRoute: typeof AdminHomepageRoute
   AdminInquiriesRoute: typeof AdminInquiriesRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminServiceCategoriesRoute: typeof AdminServiceCategoriesRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminTaxonomyRoute: typeof AdminTaxonomyRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminVerificationsRoute: typeof AdminVerificationsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminSalonsIdRoute: typeof AdminSalonsIdRoute
@@ -698,10 +1098,17 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCatalogRoute: AdminCatalogRoute,
+  AdminDocumentsRoute: AdminDocumentsRoute,
+  AdminHomepageRoute: AdminHomepageRoute,
   AdminInquiriesRoute: AdminInquiriesRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminServiceCategoriesRoute: AdminServiceCategoriesRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminTaxonomyRoute: AdminTaxonomyRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminVerificationsRoute: AdminVerificationsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminSalonsIdRoute: AdminSalonsIdRoute,
@@ -717,23 +1124,36 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
+  ContentPolicyRoute: ContentPolicyRoute,
+  DeleteAccountRoute: DeleteAccountRoute,
   DiscoverRoute: DiscoverRoute,
   ForSalonsRoute: ForSalonsRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
   HelpRoute: HelpRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   MyReviewsRoute: MyReviewsRoute,
+  NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,
+  RegisterRoute: RegisterRoute,
+  ReportProblemRoute: ReportProblemRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  ReviewGuidelinesRoute: ReviewGuidelinesRoute,
+  ReviewVerificationRoute: ReviewVerificationRoute,
   SavedRoute: SavedRoute,
+  SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
   CategoriesCatRoute: CategoriesCatRoute,
   SalonsSlugRoute: SalonsSlugRoute,
+  ServicesServiceIdRoute: ServicesServiceIdRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
   SalonsIndexRoute: SalonsIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
+  ApiPublicMediaRoute: ApiPublicMediaRoute,
   SalonsSlugAreaRoute: SalonsSlugAreaRoute,
   SalonsSlugServicesServiceIdRoute: SalonsSlugServicesServiceIdRoute,
 }

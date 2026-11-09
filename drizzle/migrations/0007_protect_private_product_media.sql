@@ -1,0 +1,9 @@
+CREATE POLICY product_media_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='makezi-media' AND (public.has_role(auth.uid(),'admin') OR name LIKE 'avatars/'||auth.uid()::text||'/%'));
+CREATE POLICY product_media_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id='makezi-media' AND (public.has_role(auth.uid(),'admin') OR name LIKE 'avatars/'||auth.uid()::text||'/%') AND lower(storage.extension(name)) IN ('jpg','jpeg','png','webp'));
+CREATE POLICY product_media_delete ON storage.objects FOR DELETE TO authenticated USING(bucket_id='makezi-media' AND (public.has_role(auth.uid(),'admin') OR name LIKE 'avatars/'||auth.uid()::text||'/%'));
+CREATE POLICY salon_document_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='salon-documents' AND public.has_role(auth.uid(),'admin'));
+CREATE POLICY salon_document_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id='salon-documents' AND public.has_role(auth.uid(),'admin') AND lower(storage.extension(name)) IN ('jpg','jpeg','png','webp','pdf'));
+CREATE POLICY salon_document_delete ON storage.objects FOR DELETE TO authenticated USING(bucket_id='salon-documents' AND public.has_role(auth.uid(),'admin'));
+CREATE FUNCTION public.check_document_decision() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF NEW.status IN ('accepted','rejected') AND (NEW.checked_by IS DISTINCT FROM auth.uid() OR NEW.checked_at IS NULL) THEN RAISE EXCEPTION 'Staff decision requires current reviewer and time'; END IF; RETURN NEW; END $$;
+CREATE TRIGGER document_decision BEFORE INSERT OR UPDATE ON public.salon_documents FOR EACH ROW EXECUTE FUNCTION public.check_document_decision();
+REVOKE ALL ON FUNCTION public.check_document_decision() FROM PUBLIC,anon,authenticated;

@@ -15,6 +15,9 @@ import { AppStoreProvider } from "../lib/app-store";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { getPublicDirectory } from "@/lib/directory.functions";
+import { getProductData } from '@/lib/product.functions';
+import { ProductProvider } from '@/lib/product-context';
+import { Button } from '@/components/mk/core';
 
 function NotFoundComponent() {
   return (
@@ -49,21 +52,21 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          صفحه بارگذاری نشد
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          دریافت اطلاعات ممکن نشد؛ دوباره تلاش کنید یا به صفحهٔ اصلی برگردید.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
-          </button>
+            تلاش دوباره
+          </Button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
@@ -77,7 +80,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: () => getPublicDirectory(),
+  loader: async () => { const [salons, product] = await Promise.all([getPublicDirectory(), getProductData()]); return { salons, product }; },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -127,14 +130,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const initialSalons = Route.useLoaderData();
+  const { salons: initialSalons, product } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <AppStoreProvider initialSalons={initialSalons}>
+        <ProductProvider data={product}>
         <Outlet />
         <Toaster position="top-center" dir="rtl" />
+        </ProductProvider>
       </AppStoreProvider>
     </QueryClientProvider>
   );

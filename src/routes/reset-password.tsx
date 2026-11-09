@@ -1,0 +1,11 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { ContentPage } from '@/components/mk/content-page';
+import { Button, Field, StatePanel, btn, inputCls } from '@/components/mk/core';
+import { supabase } from '@/integrations/supabase/client';
+import { seo } from '@/lib/seo';
+export const Route = createFileRoute('/reset-password')({ head: () => seo('رمز عبور جدید', 'تغییر رمز با پیوند بازیابی حساب میکزی.', { noindex: true }), component: ResetPassword });
+function ResetPassword() { const [allowed, setAllowed] = useState(false), [busy, setBusy] = useState(false), [message, setMessage] = useState(''), [done, setDone] = useState(false);
+  useEffect(() => { const recovering = window.location.hash.includes('type=recovery'); if (recovering) setAllowed(true); const { data } = supabase.auth.onAuthStateChange(event => { if (event === 'PASSWORD_RECOVERY') setAllowed(true); }); return () => data.subscription.unsubscribe(); }, []);
+  return <ContentPage title="رمز عبور جدید">{done ? <StatePanel title="رمز تغییر کرد" action={<Link to="/account" className={btn()}>حساب من</Link>} /> : !allowed ? <StatePanel title="پیوند بازیابی را باز کنید" action={<Link to="/forgot-password" className={btn()}>درخواست پیوند تازه</Link>} /> : <form className="flex max-w-md flex-col gap-4" onSubmit={async e => { e.preventDefault(); const f = new FormData(e.currentTarget), password = String(f.get('password')); if (password !== f.get('confirm')) { setMessage('تکرار رمز یکسان نیست.'); return; } setBusy(true); const { error } = await supabase.auth.updateUser({ password }); if (error) setMessage('تغییر رمز ممکن نشد؛ پیوند تازه دریافت کنید.'); else setDone(true); setBusy(false); }}><Field label="رمز جدید" htmlFor="new-password"><input id="new-password" name="password" type="password" minLength={8} required autoComplete="new-password" className={inputCls} /></Field><Field label="تکرار رمز" htmlFor="confirm-password"><input id="confirm-password" name="confirm" type="password" minLength={8} required className={inputCls} /></Field><Button disabled={busy}>{busy ? 'در حال ذخیره…' : 'ذخیرهٔ رمز'}</Button>{message && <p role="alert">{message}</p>}</form>}</ContentPage>;
+}

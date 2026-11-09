@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout, PageIntro } from "@/components/mk/layout";
 import { Button, DemoNote, Field, inputCls } from "@/components/mk/core";
 import { Switch } from "@/components/ui/switch";
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { seo } from "@/lib/seo";
+import { MediaUpload } from '@/components/mk/media-upload';
 
 export const Route = createFileRoute("/settings")({
   head: () => seo("تنظیمات", "تنظیمات نمایش و نام نمایشی در نظرها.", { noindex: true }),
@@ -36,7 +37,7 @@ function Settings() {
           <label className="flex min-h-12 items-center justify-between">تم تیره <Switch checked={theme === "dark"} onCheckedChange={(v) => setTheme(v ? "dark" : "light")} /></label>
           <label className="flex min-h-12 items-center justify-between">ارقام فارسی <Switch checked={faDigits} onCheckedChange={setFaDigits} /></label>
         </section>
-        {phone && <section className="flex flex-col gap-4"><Field label="پیوند تصویر پروفایل (اختیاری)" htmlFor="avatar"><input id="avatar" type="url" className={inputCls} value={avatar} onChange={e=>setAvatar(e.target.value)} /></Field><label className="flex justify-between">دریافت اعلان‌ها<Switch checked={notifications} onCheckedChange={setNotifications}/></label><label className="flex justify-between">حساب خصوصی<Switch checked={privateAccount} onCheckedChange={setPrivate}/></label><Button onClick={save}>ذخیره‌ی تنظیمات حساب</Button></section>}
+        {phone && <section className="flex flex-col gap-4"><MediaUpload onUploaded={setAvatar}/><label className="flex justify-between">اعلان‌های بررسی نظرها<Switch checked={notifications} onCheckedChange={setNotifications}/></label><DemoNote>اطلاعات خصوصی حساب و مدارک شما عمومی نیستند؛ نام نمایشی همراه نظر منتشر می‌شود.</DemoNote><Button onClick={save}>ذخیره‌ی تنظیمات حساب</Button><form className="flex flex-col gap-3" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const {error}=await supabase.auth.updateUser({password:String(f.get('password')),current_password:String(f.get('current'))});error?toast.error('رمز تغییر نکرد؛ رمز فعلی را بررسی کنید.'):toast.success('رمز تغییر کرد.');}}><h2 className="text-h3">تغییر رمز</h2><input name="current" aria-label="رمز فعلی" type="password" required autoComplete="current-password" className={inputCls}/><input name="password" aria-label="رمز جدید" type="password" minLength={8} required autoComplete="new-password" className={inputCls}/><Button variant="outline">تغییر رمز</Button></form><Link to="/delete-account" className="text-error-text">درخواست حذف حساب</Link></section>}
         <DemoNote>تم و نوع ارقام روی این دستگاه ذخیره می‌شوند؛ تنظیمات حساب به حساب شما متصل‌اند.</DemoNote>
       </div>
     </SiteLayout>

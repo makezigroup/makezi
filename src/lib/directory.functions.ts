@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import type { Salon } from './data';
+import { readAll } from './cloud-pages';
 
 export const getPublicDirectory = createServerFn({ method: 'GET' }).handler(async () => {
   const key = process.env['SUPABASE_PUBLISHABLE_KEY']!;
@@ -14,9 +15,8 @@ export const getPublicDirectory = createServerFn({ method: 'GET' }).handler(asyn
       return fetch(input, { ...init, headers });
     } },
   });
-  const { data, error } = await client.from('salons').select('data').order('created_at', { ascending: false }).range(0, 99);
-  if (error) throw new Error('اطلاعات سالن‌ها دریافت نشد.');
-  return (data ?? []).map(r => r.data as unknown as Salon);
+  const data = await readAll((from, to) => client.from('salons').select('data').order('id').range(from, to));
+  return data.map(r => r.data as unknown as Salon);
 });
 
 export const getPublicSalon = createServerFn({ method: 'GET' })

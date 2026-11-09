@@ -1,0 +1,8 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState } from 'react';
+import { ContentPage } from '@/components/mk/content-page';
+import { Button, Field, inputCls } from '@/components/mk/core';
+import { supabase } from '@/integrations/supabase/client';
+import { seo } from '@/lib/seo';
+export const Route = createFileRoute('/register')({ head: () => seo('ساخت حساب', 'ساخت حساب میکزی برای نظر، ذخیره و مقایسهٔ سالن‌ها.', { noindex: true }), component: Register });
+function Register() { const [busy, setBusy] = useState(false), [message, setMessage] = useState(''); return <ContentPage title="ساخت حساب میکزی"><form className="flex max-w-md flex-col gap-4" onSubmit={async e => { e.preventDefault(); const f = new FormData(e.currentTarget); setBusy(true); const result = await supabase.auth.signUp({ email: String(f.get('email')), password: String(f.get('password')), options: { emailRedirectTo: `${window.location.origin}/verify` } }); setMessage(result.error ? 'ثبت‌نام ممکن نشد؛ ایمیل و رمز را بررسی کنید.' : result.data.session ? 'حساب ساخته شد.' : 'پیوند تأیید به ایمیل شما ارسال می‌شود؛ پوشهٔ هرزنامه را هم بررسی کنید.'); setBusy(false); }}><Field label="ایمیل" htmlFor="register-email"><input id="register-email" name="email" type="email" required className={inputCls} /></Field><Field label="رمز عبور" htmlFor="register-password"><input id="register-password" name="password" type="password" minLength={8} required autoComplete="new-password" className={inputCls} /></Field><Button disabled={busy}>{busy ? 'در حال ثبت…' : 'ساخت حساب'}</Button>{message && <p role="status">{message}</p>}<Link to="/login">ورود به حساب</Link></form></ContentPage>; }

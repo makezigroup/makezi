@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "خانه" },
   { to: "/salons", label: "جست‌وجوی سالن" },
-  { to: "/categories", label: "خدمات" },
+  { to: "/services", label: "خدمات" },
   { to: "/compare", label: "مقایسه" },
   { to: "/about", label: "درباره‌ی میکزی" },
 ] as const;
@@ -21,6 +21,8 @@ const ACCOUNT = [
   { to: "/account", label: "پروفایل من", icon: "profile" },
   { to: "/my-reviews", label: "نظرهای من", icon: "review" },
   { to: "/saved", label: "علاقه‌مندی‌ها", icon: "save" },
+  { to: "/compare", label: "مقایسهٔ ذخیره‌شده", icon: "sort" },
+  { to: "/notifications", label: "اعلان‌ها", icon: "support" },
   { to: "/settings", label: "تنظیمات", icon: "support" },
 ] as const;
 
@@ -89,7 +91,7 @@ function HeaderSearch() {
       onSubmit={(e) => {
         e.preventDefault();
         track("search_submitted", { source: "header" });
-        nav({ to: "/salons", search: { q: q || undefined } });
+        nav({ to: "/search", search: { q: q || undefined } });
       }}
       className="hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border-strong bg-surface px-4 lg:flex lg:max-w-xs"
     >
@@ -140,10 +142,10 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
-    { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/map", label: "نقشه" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
+    { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/services", label: "خدمات" }, { to: "/categories", label: "دسته‌ها" }, { to: "/map", label: "نمای شماتیک مکان‌ها" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
     { title: "سالن‌ها", links: [{ to: "/for-salons", label: "سالن خود را به میکزی اضافه کنید" }] },
     { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
-    { title: "قوانین", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }] },
+    { title: "قوانین و پشتیبانی", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }, { to: "/review-guidelines", label: "راهنمای نظر" }, { to: "/review-verification", label: "تأیید مراجعه" }, { to: "/content-policy", label: "سیاست محتوا" }, { to: "/report-problem", label: "گزارش مشکل" }] },
   ];
   return (
     <footer className="mt-24 border-t border-border bg-background text-foreground">

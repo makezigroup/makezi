@@ -2,10 +2,11 @@ import { z } from "zod";
 import { CATEGORY_IDS, CATEGORIES, getCity, areaName, isOpenAt, priceFrom, type Review, type Salon } from "./data";
 import { DECISIONS } from "./decisions";
 import { publicReviews, scoreOf } from "./rules";
+import { normalizeSearch } from './product-schemas';
 
 export const directorySearch = z.object({
   q: z.string().optional(),
-  cat: z.enum(CATEGORY_IDS).optional(),
+  cat: z.string().max(80).optional(),
   city: z.string().optional(),
   area: z.string().optional(),
   max: z.number().optional(),
@@ -38,18 +39,19 @@ export const activeFilterCount = (s: DirectorySearch) =>
   [s.cat, s.city, s.area, s.max, s.rating, s.verified, s.open, s.reviewed, s.portfolio, s.attrs?.length].filter(Boolean).length;
 
 export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearch, now = new Date()) {
-  const q = s.q?.trim();
+  const q = s.q ? normalizeSearch(s.q) : '';
+  const selectedPrice = (x: Salon) => { const prices = x.services.filter(v => (!s.service || v.name === s.service || v.id === s.service) && (!s.cat || v.category === s.cat) && v.price > 0).map(v => v.price); return prices.length ? Math.min(...prices) : 0; };
   const score = new Map(list.map((x) => [x.id, scoreOf(publicReviews(reviews, x.id))]));
   let out = list.filter((x) => {
     if (!x.published || x.archived) return false;
     if (!DECISIONS.showUnverifiedSalons && x.status !== "verified") return false;
     if (s.verified && x.status !== "verified") return false;
-    if (s.cat && !x.categories.includes(s.cat) && !x.services.some((v) => v.category === s.cat)) return false;
+    if (s.cat && !x.categories.some(c=>c===s.cat) && !x.services.some((v) => v.category === s.cat)) return false;
     if (s.city && x.city !== s.city) return false;
     if (s.area && x.area !== s.area) return false;
-    if (s.max && priceFrom(x) > s.max) return false;
-    if (s.min && priceFrom(x) < s.min) return false;
-    if (s.service && !x.services.some(v=>v.name === s.service)) return false;
+    if (s.max && (!selectedPrice(x) || selectedPrice(x) > s.max)) return false;
+    if (s.min && selectedPrice(x) < s.min) return false;
+    if (s.service && !x.services.some(v=>v.name === s.service || v.id === s.service)) return false;
     if (s.minReviews && (score.get(x.id)?.count ?? 0) < s.minReviews) return false;
     if (s.rating) {
       const avg = score.get(x.id)?.avg;
@@ -59,7 +61,7 @@ export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearc
     if (s.portfolio && x.portfolio.length === 0) return false;
     if (s.open && !isOpenAt(x, now)) return false;
     if (s.attrs?.length && !s.attrs.every((a) => (x.attributes as string[]).includes(a))) return false;
-    if (q && ![x.name, x.address, getCity(x.city)?.name ?? x.city, areaName(x.city,x.area), ...x.categories.map(c=>CATEGORIES.find(v=>v.id===c)?.label ?? ''), ...x.services.map(v=>v.name)].some(v=>v.includes(q))) return false;
+    if (q && ![x.name, x.address, getCity(x.city)?.name ?? x.city, areaName(x.city,x.area), ...x.categories.map(c=>CATEGORIES.find(v=>v.id===c)?.label ?? ''), ...x.services.map(v=>v.name)].some(v=>normalizeSearch(v).includes(q))) return false;
     return true;
   });
   const sort = s.sort ?? "distance";
@@ -67,8 +69,8 @@ export function filterSalons(list: Salon[], reviews: Review[], s: DirectorySearc
     const sa = score.get(a.id), sb = score.get(b.id);
     if (!sa || !sb) return 0;
     switch (sort) {
-      case "price": return priceFrom(a) - priceFrom(b);
-      case "price-desc": return priceFrom(b) - priceFrom(a);
+      case "price": return (selectedPrice(a) || Infinity) - (selectedPrice(b) || Infinity);
+      case "price-desc": return selectedPrice(b) - selectedPrice(a);
       case "rating": return (sb.avg ?? -1) - (sa.avg ?? -1);
       case "reviews": return sb.count - sa.count;
       case "newest": return b.addedAt.localeCompare(a.addedAt);

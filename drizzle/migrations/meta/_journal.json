@@ -43,6 +43,20 @@
       "when": 1794260142357,
       "tag": "0005_identify_makezi_demo_records",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794262699968,
+      "tag": "0006_complete_product_catalog_support_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794262815374,
+      "tag": "0007_protect_private_product_media",
+      "breakpoints": true
     }
   ]
 }

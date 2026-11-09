@@ -1,0 +1,12 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { z } from 'zod';
+import { SiteLayout, PageIntro } from '@/components/mk/layout';
+import { StatePanel, Button, inputCls } from '@/components/mk/core';
+import { SalonCard } from '@/components/mk/marketplace';
+import { ServiceCard } from '@/components/mk/service-discovery';
+import { usePublicSalons } from '@/lib/app-store';
+import { getProductData } from '@/lib/product.functions';
+import { normalizeSearch } from '@/lib/product-schemas';
+import { seo } from '@/lib/seo';
+export const Route = createFileRoute('/search')({ validateSearch: z.object({ q: z.string().optional() }), loader: () => getProductData(), head: () => seo('نتایج جست‌وجو', 'جست‌وجوی سالن، خدمت، دسته و مکان در میکزی.', { noindex: true }), component: Search });
+function Search() { const { q = '' } = Route.useSearch(), nav = Route.useNavigate(), { services, categories, locations } = Route.useLoaderData(), salons = usePublicSalons(); const match = (v: string) => q.trim() && normalizeSearch(v).includes(normalizeSearch(q)); const sl = salons.filter(s => match(s.name)), sv = services.filter(s => match(s.name)), ct = categories.filter(c => match(c.label)), lc = locations.filter(l => match(l.label)); return <SiteLayout><PageIntro title="نتایج جست‌وجو" /><div className="container-mk"><form className="mb-8 flex gap-3" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); nav({ search: { q: String(f.get('q') ?? '') } }); }}><input name="q" aria-label="جست‌وجو" defaultValue={q} className={inputCls} /><Button type="submit">جست‌وجو</Button></form>{!sl.length && !sv.length && !ct.length && !lc.length && <StatePanel title={q ? 'نتیجه‌ای پیدا نشد' : 'نام سالن، خدمت یا مکان را بنویسید'} />}{sv.length > 0 && <><h2 className="mb-4 text-h2">خدمات</h2><div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{sv.map(s => <ServiceCard key={s.id} service={s} />)}</div></>}{sl.length > 0 && <><h2 className="mb-4 text-h2">سالن‌ها</h2><div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{sl.map(s => <SalonCard key={s.id} salon={s} />)}</div></>}{ct.length > 0 && <section className="mb-8"><h2 className="text-h2">دسته‌ها</h2>{ct.map(c => <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="block py-3">{c.label}</Link>)}</section>}{lc.length > 0 && <section><h2 className="text-h2">مکان‌ها</h2>{lc.map(l => <Link key={l.id} to="/salons" search={{ city: l.city, area: l.area || undefined }} className="block py-3">{l.label}</Link>)}</section>}</div></SiteLayout>; }

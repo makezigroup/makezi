@@ -3,12 +3,14 @@ import type { DirectorySearch } from "@/lib/filters";
 import { useFmt, usePublicSalons } from "@/lib/app-store";
 import { Chip, inputCls } from "./core";
 import { Switch } from "@/components/ui/switch";
+import { useProduct } from '@/lib/product-context';
 
 const PRICE_STEPS = [300000, 500000, 700000, 1000000, 1500000];
 const RATING_STEPS = [3, 4, 4.5];
 
 export function FiltersPanel({ s, set, hideLocation }: { s: DirectorySearch; set: (p: Partial<DirectorySearch>) => void; hideLocation?: boolean | undefined }) {
   const fmt = useFmt();
+  const {categories,locations}=useProduct();
   const services = [...new Set(usePublicSalons().flatMap(x=>x.services.map(v=>v.name)))];
   const city = CITIES.find((c) => c.slug === (s.city ?? "tehran"));
   const toggle = (label: string, key: "verified" | "open" | "reviewed" | "portfolio") => (
@@ -25,14 +27,14 @@ export function FiltersPanel({ s, set, hideLocation }: { s: DirectorySearch; set
             شهر
             <select className={inputCls} value={s.city ?? ""} onChange={(e) => set({ city: e.target.value || undefined, area: undefined })}>
               <option value="">همه‌ی شهرها</option>
-              {CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+              {locations.filter(l=>!l.area).map((c) => <option key={c.id} value={c.city}>{c.label}</option>)}
             </select>
           </label>
           <label className="flex flex-col gap-2 text-caption font-semibold">
             محله
             <select className={inputCls} value={s.area ?? ""} onChange={(e) => set({ area: e.target.value || undefined, city: e.target.value ? (s.city ?? "tehran") : s.city })}>
               <option value="">همه‌ی محله‌ها</option>
-              {city?.areas.map((a) => <option key={a.slug} value={a.slug}>{a.name}</option>)}
+              {locations.filter(l=>l.area&&l.city===(s.city??'tehran')).map((a) => <option key={a.id} value={a.area}>{a.label}</option>)}
             </select>
           </label>
         </div>
@@ -41,7 +43,7 @@ export function FiltersPanel({ s, set, hideLocation }: { s: DirectorySearch; set
         <legend className="mb-2 text-caption font-semibold">خدمت</legend>
         <div className="flex flex-wrap gap-2">
           <Chip active={!s.cat} onClick={() => set({ cat: undefined })}>همه</Chip>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <Chip key={c.id} active={s.cat === c.id} onClick={() => set({ cat: s.cat === c.id ? undefined : c.id })}>{c.label}</Chip>
           ))}
         </div>

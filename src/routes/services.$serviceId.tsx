@@ -1,0 +1,19 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState } from 'react';
+import { SiteLayout, PageIntro } from '@/components/mk/layout';
+import { StatePanel, DemoNote, btn, inputCls } from '@/components/mk/core';
+import { SalonCard, ReviewCard, SafeImg } from '@/components/mk/marketplace';
+import { ServiceCard } from '@/components/mk/service-discovery';
+import { getProductData } from '@/lib/product.functions';
+import { useApp, useFmt, usePublicSalons } from '@/lib/app-store';
+import { seo } from '@/lib/seo';
+export const Route = createFileRoute('/services/$serviceId')({ loader: () => getProductData(), head: ({ params, loaderData }) => { const s = loaderData?.services.find(v => v.id === params.serviceId); return seo(s?.name ?? 'خدمت پیدا نشد', s?.description || 'سالن‌های ارائه‌دهنده، قیمت‌های اعلام‌شده و نظرهای مرتبط با این خدمت.', { path: `/services/${params.serviceId}`, noindex: !s || s.is_demo }); }, component: ServiceDetail });
+function ServiceDetail() {
+  const { serviceId } = Route.useParams(), { services, categories, locations } = Route.useLoaderData(), salons = usePublicSalons(), { reviews } = useApp(), fmt = useFmt();
+  const [city, setCity] = useState(''), [max, setMax] = useState('');
+  const service = services.find(v => v.id === serviceId);
+  if (!service) return <SiteLayout><PageIntro title="خدمت پیدا نشد" /><div className="container-mk"><StatePanel title="این خدمت در دسترس نیست" action={<Link to="/services" className={btn()}>خدمات</Link>} /></div></SiteLayout>;
+  const all = salons.filter(s => s.services.some(v => v.id === serviceId)), list = all.filter(s => (!city || s.city === city) && (!max || s.services.some(v => v.id === serviceId && v.price > 0 && v.price <= Number(max))));
+  const relatedReviews = reviews.filter(r => r.status === 'approved' && r.service === service.name && all.some(s => s.id === r.salonId));
+  return <SiteLayout><PageIntro title={service.name} body={service.description || 'اطلاعات خدمت و قیمت‌های اعلام‌شدهٔ سالن‌های ارائه‌دهنده'} /><div className="container-mk"><SafeImg src={service.image || 'interior'} alt={service.name} className="mb-6 aspect-[3/1] max-h-80 w-full rounded-card" />{service.is_demo && <DemoNote>این اطلاعات و تصاویر نمونه‌اند؛ قیمت‌های نمایش‌داده‌شده قیمت بازار واقعی نیستند.</DemoNote>}<Link to="/categories/$cat" params={{ cat: service.category_id }}>{categories.find(c => c.id === service.category_id)?.label}</Link><div className="my-6 grid gap-3 sm:grid-cols-2"><select aria-label="شهر" className={inputCls} value={city} onChange={e => setCity(e.target.value)}><option value="">همهٔ شهرها</option>{locations.filter(l => !l.area).map(l => <option key={l.id} value={l.city}>{l.label}</option>)}</select><input aria-label="حداکثر قیمت" className={inputCls} type="number" min={0} value={max} onChange={e => setMax(e.target.value)} placeholder="حداکثر قیمت اعلام‌شده (تومان)" /></div><h2 className="mb-4 text-h2">سالن‌های ارائه‌دهنده</h2>{list.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{list.map(s => <div key={s.id}><SalonCard salon={s} /><p className="mt-2">{s.services.filter(v => v.id === serviceId).map(v => v.price > 0 ? `${fmt.price(v.price)}${v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ''} · ${fmt.date(v.updated)}` : 'قیمت اعلام نشده').join('، ')}</p></div>)}</div> : <StatePanel title="سالنی با این فیلتر پیدا نشد" />}<h2 className="mb-4 mt-10 text-h2">نظرهای مرتبط</h2>{relatedReviews.length ? <div className="grid gap-4 md:grid-cols-2">{relatedReviews.map(r => <ReviewCard key={r.id} r={r} />)}</div> : <StatePanel title="هنوز نظری برای این خدمت منتشر نشده" />}<h2 className="mb-4 mt-10 text-h2">خدمات مرتبط</h2><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{services.filter(v => v.category_id === service.category_id && v.id !== service.id).slice(0, 4).map(v => <ServiceCard key={v.id} service={v} />)}</div></div></SiteLayout>;
+}
