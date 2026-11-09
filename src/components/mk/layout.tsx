@@ -4,15 +4,51 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { Icon, Logo, LogoMark, btn } from "./core";
 import type { IconName } from "./icon-data";
 import { useApp } from "@/lib/app-store";
+import { CompareBar } from "./marketplace";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/discover", label: "جست‌وجوی سالن" },
-  { to: "/map", label: "نقشه" },
-  { to: "/gallery", label: "گالری مدل" },
-  { to: "/how-it-works", label: "میکزی چطور کار می‌کند" },
-  { to: "/for-salons", label: "برای سالن‌ها" },
+  { to: "/", label: "خانه", exact: true },
+  { to: "/salons", label: "کاوش سالن‌ها" },
+  { to: "/categories", label: "خدمات" },
+  { to: "/compare", label: "مقایسه" },
+  { to: "/about", label: "درباره‌ی میکزی" },
 ] as const;
+
+const ACCOUNT = [
+  { to: "/account", label: "پروفایل من", icon: "profile" },
+  { to: "/my-reviews", label: "نظرهای من", icon: "review" },
+  { to: "/saved", label: "علاقه‌مندی‌ها", icon: "save" },
+  { to: "/settings", label: "تنظیمات", icon: "support" },
+] as const;
+
+function AccountMenu() {
+  const { phone, signOut } = useApp();
+  if (!phone)
+    return (
+      <Link to="/login" className={cn(btn({ variant: "ink", size: "sm" }), "hidden sm:inline-flex")}>
+        <Icon name="profile" size={18} /> ورود
+      </Link>
+    );
+  return (
+    <DropdownMenu dir="rtl">
+      <DropdownMenuTrigger className={cn(btn({ variant: "ink", size: "sm" }), "hidden sm:inline-flex")}>
+        <Icon name="profile" size={18} /> حساب من
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-48">
+        {ACCOUNT.map((a) => (
+          <DropdownMenuItem key={a.to} asChild>
+            <Link to={a.to} className="flex min-h-10 items-center gap-2 no-underline text-foreground"><Icon name={a.icon} size={18} /> {a.label}</Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={signOut} className="min-h-10">خروج</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export function ThemeToggle({ className }: { className?: string | undefined }) {
   const { theme, setTheme } = useApp();
@@ -52,13 +88,14 @@ function HeaderSearch() {
       role="search"
       onSubmit={(e) => {
         e.preventDefault();
-        nav({ to: "/discover", search: { q: q || undefined } });
+        track("search_submitted", { source: "header" });
+        nav({ to: "/salons", search: { q: q || undefined } });
       }}
       className="hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border-strong bg-surface px-4 lg:flex lg:max-w-xs"
     >
       <Icon name="search" size={20} className="text-muted-foreground" />
       <label htmlFor="hq" className="sr-only">جست‌وجوی خدمت یا سالن</label>
-      <input id="hq" value={q} onChange={(e) => setQ(e.target.value)} placeholder="خدمت یا سالن…" className="h-11 min-w-0 flex-1 bg-transparent text-caption outline-none" />
+      <input id="hq" value={q} onChange={(e) => setQ(e.target.value)} placeholder="سالن، خدمت یا آدرس…" className="h-11 min-w-0 flex-1 bg-transparent text-caption outline-none" />
     </form>
   );
 }
@@ -72,7 +109,7 @@ export function SiteHeader() {
         <Logo />
         <nav aria-label="اصلی" className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} className="rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-muted" }}>
+            <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n }} className="rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-muted" }}>
               {n.label}
             </Link>
           ))}
@@ -82,10 +119,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-1">
           <DigitsToggle />
           <ThemeToggle />
-          <Link to={phone ? "/account" : "/login"} className={cn(btn({ variant: "ink", size: "sm" }), "hidden sm:inline-flex")}>
-            <Icon name="profile" size={18} />
-            {phone ? "حساب من" : "ورود"}
-          </Link>
+          <AccountMenu />
           <button className="grid size-11 place-items-center rounded-full hover:bg-muted xl:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="منو">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -93,7 +127,7 @@ export function SiteHeader() {
       </div>
       {open && (
         <nav aria-label="منوی موبایل" className="container-mk flex flex-col gap-1 border-t border-border pb-4 pt-2 xl:hidden">
-          {[...NAV, { to: "/my-bookings", label: "نوبت‌های من" } as const, { to: phone ? "/account" : "/login", label: phone ? "حساب من" : "ورود" } as const].map((n) => (
+          {[...NAV, ...(phone ? ACCOUNT : [{ to: "/login", label: "ورود" } as const])].map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="rounded-input px-3 py-3 font-semibold text-foreground no-underline hover:bg-muted">
               {n.label}
             </Link>
@@ -106,9 +140,9 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
-    { title: "مشتریان", links: [{ to: "/discover", label: "جست‌وجوی سالن" }, { to: "/map", label: "نقشه" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-bookings", label: "نوبت‌های من" }] },
-    { title: "سالن‌ها", links: [{ to: "/for-salons", label: "همکاری با میکزی" }, { to: "/salon/onboarding", label: "ثبت سالن" }, { to: "/salon", label: "پنل سالن" }] },
-    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
+    { title: "کاوش", links: [{ to: "/salons", label: "همه‌ی سالن‌ها" }, { to: "/salons/tehran", label: "سالن‌های تهران" }, { to: "/categories", label: "دسته‌های خدمات" }, { to: "/gallery", label: "نمونه‌کارها" }, { to: "/map", label: "نقشه" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
+    { title: "کسب‌وکارها", links: [{ to: "/for-salons", label: "معرفی سالن به میکزی" }, { to: "/salon", label: "پاسخ به نظرها (سالن)" }] },
+    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/verify", label: "شفافیت و نظرها" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }] },
   ];
   return (
@@ -119,7 +153,7 @@ export function SiteFooter() {
             <LogoMark className="h-8 w-auto" />
             <span className="font-lat text-xl font-extrabold" dir="ltr">makezi</span>
           </span>
-          <p className="max-w-xs text-caption opacity-80">بازار خدمات زیبایی برای انتخاب آگاهانه: قیمت ثبت‌شده، مدارک بررسی‌شده و نظرهای تأییدشده.</p>
+          <p className="max-w-xs text-caption opacity-80">راهنمای پیدا کردن، بررسی و مقایسه‌ی سالن‌های زیبایی. میکزی خدمات زیبایی ارائه نمی‌دهد و نوبت رزرو نمی‌کند.</p>
         </div>
         {cols.map((c) => (
           <div key={c.title}>
@@ -145,10 +179,10 @@ export function SiteFooter() {
 }
 
 const BOTTOM: { to: string; label: string; icon: IconName }[] = [
-  { to: "/discover", label: "جست‌وجو", icon: "search" },
-  { to: "/map", label: "نقشه", icon: "map" },
-  { to: "/gallery", label: "گالری", icon: "gallery" },
-  { to: "/my-bookings", label: "نوبت‌ها", icon: "calendar" },
+  { to: "/salons", label: "سالن‌ها", icon: "search" },
+  { to: "/categories", label: "خدمات", icon: "nail" },
+  { to: "/compare", label: "مقایسه", icon: "sort" },
+  { to: "/saved", label: "علاقه‌مندی", icon: "save" },
   { to: "/account", label: "حساب", icon: "profile" },
 ];
 
@@ -186,6 +220,7 @@ export function SiteLayout({ children, footer = true }: { children: ReactNode; f
         {children}
       </main>
       {footer && <SiteFooter />}
+      <CompareBar />
       <BottomNav />
     </div>
   );

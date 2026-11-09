@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ICONS, type IconName } from "./icon-data";
 import { cn } from "@/lib/utils";
-import { BOOKING_STATUS, type BookingStatus, type VerifyStatus } from "@/lib/data";
+import type { VerifyStatus } from "@/lib/data";
 import { CheckCircle2, AlertTriangle, XCircle, Info, Clock } from "lucide-react";
 
 /** MAKEZI brand line icon (24px grid, 1.75 stroke). */
@@ -115,11 +115,6 @@ export function VerifyBadge({ status, className }: { status: VerifyStatus; class
       تأییدنشده
     </StatusBadge>
   );
-}
-
-export function BookingBadge({ status }: { status: BookingStatus }) {
-  const s = BOOKING_STATUS[status];
-  return <StatusBadge tone={s.tone}>{s.label}</StatusBadge>;
 }
 
 export function Chip({ active, onClick, children, icon }: { active?: boolean | undefined; onClick?: () => void; children: ReactNode; icon?: IconName | undefined }) {

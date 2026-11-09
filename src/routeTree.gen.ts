@@ -21,7 +21,6 @@ import { Route as HelpRouteImport } from './routes/help'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
-import { Route as MyBookingsRouteImport } from './routes/my-bookings'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SalonRouteImport } from './routes/salon'
 import { Route as SavedRouteImport } from './routes/saved'
@@ -29,24 +28,13 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
-import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
-import { Route as AdminDisputesRouteImport } from './routes/admin.disputes'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminSalonsRouteImport } from './routes/admin.salons'
 import { Route as AdminServiceCategoriesRouteImport } from './routes/admin.service-categories'
 import { Route as AdminVerificationsRouteImport } from './routes/admin.verifications'
-import { Route as BookingSalonIdRouteImport } from './routes/booking.$salonId'
 import { Route as SalonIndexRouteImport } from './routes/salon.index'
-import { Route as SalonAnalyticsRouteImport } from './routes/salon.analytics'
-import { Route as SalonAvailabilityRouteImport } from './routes/salon.availability'
-import { Route as SalonBookingsRouteImport } from './routes/salon.bookings'
-import { Route as SalonCredentialsRouteImport } from './routes/salon.credentials'
-import { Route as SalonOnboardingRouteImport } from './routes/salon.onboarding'
-import { Route as SalonPortfolioRouteImport } from './routes/salon.portfolio'
-import { Route as SalonProfileRouteImport } from './routes/salon.profile'
 import { Route as SalonReviewsRouteImport } from './routes/salon.reviews'
-import { Route as SalonServicesRouteImport } from './routes/salon.services'
-import { Route as SalonSettingsRouteImport } from './routes/salon.settings'
+import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -109,11 +97,6 @@ const MapRoute = MapRouteImport.update({
   path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MyBookingsRoute = MyBookingsRouteImport.update({
-  id: '/my-bookings',
-  path: '/my-bookings',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -149,16 +132,6 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBookingsRoute = AdminBookingsRouteImport.update({
-  id: '/bookings',
-  path: '/bookings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDisputesRoute = AdminDisputesRouteImport.update({
-  id: '/disputes',
-  path: '/disputes',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminReviewsRoute = AdminReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
@@ -179,49 +152,9 @@ const AdminVerificationsRoute = AdminVerificationsRouteImport.update({
   path: '/verifications',
   getParentRoute: () => AdminRoute,
 } as any)
-const BookingSalonIdRoute = BookingSalonIdRouteImport.update({
-  id: '/booking/$salonId',
-  path: '/booking/$salonId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SalonIndexRoute = SalonIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonAnalyticsRoute = SalonAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonAvailabilityRoute = SalonAvailabilityRouteImport.update({
-  id: '/availability',
-  path: '/availability',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonBookingsRoute = SalonBookingsRouteImport.update({
-  id: '/bookings',
-  path: '/bookings',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonCredentialsRoute = SalonCredentialsRouteImport.update({
-  id: '/credentials',
-  path: '/credentials',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonOnboardingRoute = SalonOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonPortfolioRoute = SalonPortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonProfileRoute = SalonProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => SalonRoute,
 } as any)
 const SalonReviewsRoute = SalonReviewsRouteImport.update({
@@ -229,15 +162,10 @@ const SalonReviewsRoute = SalonReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => SalonRoute,
 } as any)
-const SalonServicesRoute = SalonServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
-  getParentRoute: () => SalonRoute,
-} as any)
-const SalonSettingsRoute = SalonSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => SalonRoute,
+const SalonsIndexRoute = SalonsIndexRouteImport.update({
+  id: '/salons/',
+  path: '/salons/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SalonsSlugRoute = SalonsSlugRouteImport.update({
   id: '/salons/$slug',
@@ -258,33 +186,21 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
   '/salon': typeof SalonRouteWithChildren
   '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/bookings': typeof AdminBookingsRoute
-  '/admin/disputes': typeof AdminDisputesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/salons': typeof AdminSalonsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/booking/$salonId': typeof BookingSalonIdRoute
-  '/salon/analytics': typeof SalonAnalyticsRoute
-  '/salon/availability': typeof SalonAvailabilityRoute
-  '/salon/bookings': typeof SalonBookingsRoute
-  '/salon/credentials': typeof SalonCredentialsRoute
-  '/salon/onboarding': typeof SalonOnboardingRoute
-  '/salon/portfolio': typeof SalonPortfolioRoute
-  '/salon/profile': typeof SalonProfileRoute
   '/salon/reviews': typeof SalonReviewsRoute
-  '/salon/services': typeof SalonServicesRoute
-  '/salon/settings': typeof SalonSettingsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/salon/': typeof SalonIndexRoute
+  '/salons/': typeof SalonsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -298,32 +214,20 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/bookings': typeof AdminBookingsRoute
-  '/admin/disputes': typeof AdminDisputesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/salons': typeof AdminSalonsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/booking/$salonId': typeof BookingSalonIdRoute
-  '/salon/analytics': typeof SalonAnalyticsRoute
-  '/salon/availability': typeof SalonAvailabilityRoute
-  '/salon/bookings': typeof SalonBookingsRoute
-  '/salon/credentials': typeof SalonCredentialsRoute
-  '/salon/onboarding': typeof SalonOnboardingRoute
-  '/salon/portfolio': typeof SalonPortfolioRoute
-  '/salon/profile': typeof SalonProfileRoute
   '/salon/reviews': typeof SalonReviewsRoute
-  '/salon/services': typeof SalonServicesRoute
-  '/salon/settings': typeof SalonSettingsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin': typeof AdminIndexRoute
   '/salon': typeof SalonIndexRoute
+  '/salons': typeof SalonsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -339,33 +243,21 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/privacy': typeof PrivacyRoute
   '/salon': typeof SalonRouteWithChildren
   '/saved': typeof SavedRoute
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/bookings': typeof AdminBookingsRoute
-  '/admin/disputes': typeof AdminDisputesRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/salons': typeof AdminSalonsRoute
   '/admin/service-categories': typeof AdminServiceCategoriesRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/booking/$salonId': typeof BookingSalonIdRoute
-  '/salon/analytics': typeof SalonAnalyticsRoute
-  '/salon/availability': typeof SalonAvailabilityRoute
-  '/salon/bookings': typeof SalonBookingsRoute
-  '/salon/credentials': typeof SalonCredentialsRoute
-  '/salon/onboarding': typeof SalonOnboardingRoute
-  '/salon/portfolio': typeof SalonPortfolioRoute
-  '/salon/profile': typeof SalonProfileRoute
   '/salon/reviews': typeof SalonReviewsRoute
-  '/salon/services': typeof SalonServicesRoute
-  '/salon/settings': typeof SalonSettingsRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/salon/': typeof SalonIndexRoute
+  '/salons/': typeof SalonsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -382,33 +274,21 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/login'
     | '/map'
-    | '/my-bookings'
     | '/privacy'
     | '/salon'
     | '/saved'
     | '/terms'
     | '/verify'
     | '/admin/analytics'
-    | '/admin/bookings'
-    | '/admin/disputes'
     | '/admin/reviews'
     | '/admin/salons'
     | '/admin/service-categories'
     | '/admin/verifications'
-    | '/booking/$salonId'
-    | '/salon/analytics'
-    | '/salon/availability'
-    | '/salon/bookings'
-    | '/salon/credentials'
-    | '/salon/onboarding'
-    | '/salon/portfolio'
-    | '/salon/profile'
     | '/salon/reviews'
-    | '/salon/services'
-    | '/salon/settings'
     | '/salons/$slug'
     | '/admin/'
     | '/salon/'
+    | '/salons/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -422,32 +302,20 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/login'
     | '/map'
-    | '/my-bookings'
     | '/privacy'
     | '/saved'
     | '/terms'
     | '/verify'
     | '/admin/analytics'
-    | '/admin/bookings'
-    | '/admin/disputes'
     | '/admin/reviews'
     | '/admin/salons'
     | '/admin/service-categories'
     | '/admin/verifications'
-    | '/booking/$salonId'
-    | '/salon/analytics'
-    | '/salon/availability'
-    | '/salon/bookings'
-    | '/salon/credentials'
-    | '/salon/onboarding'
-    | '/salon/portfolio'
-    | '/salon/profile'
     | '/salon/reviews'
-    | '/salon/services'
-    | '/salon/settings'
     | '/salons/$slug'
     | '/admin'
     | '/salon'
+    | '/salons'
   id:
     | '__root__'
     | '/'
@@ -462,33 +330,21 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/login'
     | '/map'
-    | '/my-bookings'
     | '/privacy'
     | '/salon'
     | '/saved'
     | '/terms'
     | '/verify'
     | '/admin/analytics'
-    | '/admin/bookings'
-    | '/admin/disputes'
     | '/admin/reviews'
     | '/admin/salons'
     | '/admin/service-categories'
     | '/admin/verifications'
-    | '/booking/$salonId'
-    | '/salon/analytics'
-    | '/salon/availability'
-    | '/salon/bookings'
-    | '/salon/credentials'
-    | '/salon/onboarding'
-    | '/salon/portfolio'
-    | '/salon/profile'
     | '/salon/reviews'
-    | '/salon/services'
-    | '/salon/settings'
     | '/salons/$slug'
     | '/admin/'
     | '/salon/'
+    | '/salons/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -504,14 +360,13 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
-  MyBookingsRoute: typeof MyBookingsRoute
   PrivacyRoute: typeof PrivacyRoute
   SalonRoute: typeof SalonRouteWithChildren
   SavedRoute: typeof SavedRoute
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
-  BookingSalonIdRoute: typeof BookingSalonIdRoute
   SalonsSlugRoute: typeof SalonsSlugRoute
+  SalonsIndexRoute: typeof SalonsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -600,13 +455,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/my-bookings': {
-      id: '/my-bookings'
-      path: '/my-bookings'
-      fullPath: '/my-bookings'
-      preLoaderRoute: typeof MyBookingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -656,20 +504,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/bookings': {
-      id: '/admin/bookings'
-      path: '/bookings'
-      fullPath: '/admin/bookings'
-      preLoaderRoute: typeof AdminBookingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/disputes': {
-      id: '/admin/disputes'
-      path: '/disputes'
-      fullPath: '/admin/disputes'
-      preLoaderRoute: typeof AdminDisputesRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/reviews': {
       id: '/admin/reviews'
       path: '/reviews'
@@ -698,67 +532,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVerificationsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/booking/$salonId': {
-      id: '/booking/$salonId'
-      path: '/booking/$salonId'
-      fullPath: '/booking/$salonId'
-      preLoaderRoute: typeof BookingSalonIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/salon/': {
       id: '/salon/'
       path: '/'
       fullPath: '/salon/'
       preLoaderRoute: typeof SalonIndexRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/analytics': {
-      id: '/salon/analytics'
-      path: '/analytics'
-      fullPath: '/salon/analytics'
-      preLoaderRoute: typeof SalonAnalyticsRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/availability': {
-      id: '/salon/availability'
-      path: '/availability'
-      fullPath: '/salon/availability'
-      preLoaderRoute: typeof SalonAvailabilityRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/bookings': {
-      id: '/salon/bookings'
-      path: '/bookings'
-      fullPath: '/salon/bookings'
-      preLoaderRoute: typeof SalonBookingsRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/credentials': {
-      id: '/salon/credentials'
-      path: '/credentials'
-      fullPath: '/salon/credentials'
-      preLoaderRoute: typeof SalonCredentialsRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/onboarding': {
-      id: '/salon/onboarding'
-      path: '/onboarding'
-      fullPath: '/salon/onboarding'
-      preLoaderRoute: typeof SalonOnboardingRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/portfolio': {
-      id: '/salon/portfolio'
-      path: '/portfolio'
-      fullPath: '/salon/portfolio'
-      preLoaderRoute: typeof SalonPortfolioRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/profile': {
-      id: '/salon/profile'
-      path: '/profile'
-      fullPath: '/salon/profile'
-      preLoaderRoute: typeof SalonProfileRouteImport
       parentRoute: typeof SalonRoute
     }
     '/salon/reviews': {
@@ -768,19 +546,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonReviewsRouteImport
       parentRoute: typeof SalonRoute
     }
-    '/salon/services': {
-      id: '/salon/services'
-      path: '/services'
-      fullPath: '/salon/services'
-      preLoaderRoute: typeof SalonServicesRouteImport
-      parentRoute: typeof SalonRoute
-    }
-    '/salon/settings': {
-      id: '/salon/settings'
-      path: '/settings'
-      fullPath: '/salon/settings'
-      preLoaderRoute: typeof SalonSettingsRouteImport
-      parentRoute: typeof SalonRoute
+    '/salons/': {
+      id: '/salons/'
+      path: '/salons'
+      fullPath: '/salons/'
+      preLoaderRoute: typeof SalonsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/salons/$slug': {
       id: '/salons/$slug'
@@ -794,8 +565,6 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
-  AdminBookingsRoute: typeof AdminBookingsRoute
-  AdminDisputesRoute: typeof AdminDisputesRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSalonsRoute: typeof AdminSalonsRoute
   AdminServiceCategoriesRoute: typeof AdminServiceCategoriesRoute
@@ -805,8 +574,6 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
-  AdminBookingsRoute: AdminBookingsRoute,
-  AdminDisputesRoute: AdminDisputesRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSalonsRoute: AdminSalonsRoute,
   AdminServiceCategoriesRoute: AdminServiceCategoriesRoute,
@@ -817,30 +584,12 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface SalonRouteChildren {
-  SalonAnalyticsRoute: typeof SalonAnalyticsRoute
-  SalonAvailabilityRoute: typeof SalonAvailabilityRoute
-  SalonBookingsRoute: typeof SalonBookingsRoute
-  SalonCredentialsRoute: typeof SalonCredentialsRoute
-  SalonOnboardingRoute: typeof SalonOnboardingRoute
-  SalonPortfolioRoute: typeof SalonPortfolioRoute
-  SalonProfileRoute: typeof SalonProfileRoute
   SalonReviewsRoute: typeof SalonReviewsRoute
-  SalonServicesRoute: typeof SalonServicesRoute
-  SalonSettingsRoute: typeof SalonSettingsRoute
   SalonIndexRoute: typeof SalonIndexRoute
 }
 
 const SalonRouteChildren: SalonRouteChildren = {
-  SalonAnalyticsRoute: SalonAnalyticsRoute,
-  SalonAvailabilityRoute: SalonAvailabilityRoute,
-  SalonBookingsRoute: SalonBookingsRoute,
-  SalonCredentialsRoute: SalonCredentialsRoute,
-  SalonOnboardingRoute: SalonOnboardingRoute,
-  SalonPortfolioRoute: SalonPortfolioRoute,
-  SalonProfileRoute: SalonProfileRoute,
   SalonReviewsRoute: SalonReviewsRoute,
-  SalonServicesRoute: SalonServicesRoute,
-  SalonSettingsRoute: SalonSettingsRoute,
   SalonIndexRoute: SalonIndexRoute,
 }
 
@@ -859,14 +608,13 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
-  MyBookingsRoute: MyBookingsRoute,
   PrivacyRoute: PrivacyRoute,
   SalonRoute: SalonRouteWithChildren,
   SavedRoute: SavedRoute,
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
-  BookingSalonIdRoute: BookingSalonIdRoute,
   SalonsSlugRoute: SalonsSlugRoute,
+  SalonsIndexRoute: SalonsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

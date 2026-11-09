@@ -1,5 +1,6 @@
-// SAMPLE DATA ONLY. Every name, number and photo is a placeholder (Brand Book rule:
-// never present sample data as real). Replace with live data once a backend exists.
+// SAMPLE DATA ONLY. Every salon name, price, review and photo is a placeholder
+// (Brand Book rule: never present sample data as real). In the product, the MAKEZI
+// team enters and maintains all salon information through the admin panel.
 import heroNails from "@/assets/hero-nails.jpg";
 import nailArt from "@/assets/g-nail-art.jpg";
 import extension from "@/assets/g-extension.jpg";
@@ -9,16 +10,56 @@ import interior from "@/assets/salon-interior.jpg";
 import type { IconName } from "@/components/mk/icon-data";
 
 export const IMAGES = { heroNails, nailArt, extension, hair, makeup, interior };
+export type ImageKey = keyof typeof IMAGES;
+export const IMAGE_LABEL: Record<ImageKey, string> = {
+  heroNails: "ژلیش صورتی",
+  nailArt: "طراحی ناخن",
+  extension: "کاشت ناخن",
+  hair: "مو",
+  makeup: "آرایش",
+  interior: "فضای سالن",
+};
 
-export type CategoryId = "nail" | "hair" | "skin" | "makeup";
-export const CATEGORIES: { id: CategoryId; label: string; icon: IconName }[] = [
-  { id: "nail", label: "ناخن", icon: "nail" },
-  { id: "hair", label: "مو", icon: "hair" },
-  { id: "skin", label: "پوست", icon: "skin" },
-  { id: "makeup", label: "آرایش", icon: "makeup" },
+export type CategoryId = "nail" | "hair" | "color" | "makeup" | "lash" | "brow" | "skin" | "care";
+export const CATEGORY_IDS = ["nail", "hair", "color", "makeup", "lash", "brow", "skin", "care"] as const;
+export const CATEGORIES: { id: CategoryId; label: string; icon: IconName; image?: ImageKey; body: string }[] = [
+  { id: "nail", label: "ناخن", icon: "nail", image: "nailArt", body: "کاشت، ژلیش، مانیکور و طراحی ناخن." },
+  { id: "hair", label: "مو", icon: "hair", image: "hair", body: "کوتاهی، براشینگ و حالت‌دهی مو." },
+  { id: "color", label: "رنگ و مش", icon: "hair", image: "hair", body: "رنگ ریشه، رنگ کامل، مش و لایت." },
+  { id: "makeup", label: "میکاپ", icon: "makeup", image: "makeup", body: "آرایش روزانه و مجلسی." },
+  { id: "lash", label: "مژه", icon: "makeup", body: "اکستنشن و لیفت مژه." },
+  { id: "brow", label: "ابرو", icon: "makeup", body: "اصلاح، فرم‌دهی و لیفت ابرو." },
+  { id: "skin", label: "پوست و فیشیال", icon: "skin", body: "پاکسازی، آبرسانی و مراقبت پوست." },
+  { id: "care", label: "اصلاح و مراقبت", icon: "barber", body: "اپیلاسیون، اصلاح صورت و مراقبت بدن." },
 ];
+export const getCategory = (id: string) => CATEGORIES.find((c) => c.id === id);
 
-export const AREAS = ["[محله ۱]", "[محله ۲]", "[محله ۳]", "[محله ۴]"];
+export interface Area { slug: string; name: string }
+export interface City { slug: string; name: string; areas: Area[] }
+export const CITIES: City[] = [
+  {
+    slug: "tehran",
+    name: "تهران",
+    areas: [
+      { slug: "area-1", name: "[محله ۱]" },
+      { slug: "area-2", name: "[محله ۲]" },
+      { slug: "area-3", name: "[محله ۳]" },
+      { slug: "area-4", name: "[محله ۴]" },
+    ],
+  },
+];
+export const getCity = (slug: string) => CITIES.find((c) => c.slug === slug);
+export const getArea = (city: string, area: string) => getCity(city)?.areas.find((a) => a.slug === area);
+export const areaName = (city: string, area: string) => getArea(city, area)?.name ?? area;
+
+export type AttrId = "women" | "parking" | "access" | "sterile" | "card";
+export const ATTRIBUTES: { id: AttrId; label: string }[] = [
+  { id: "women", label: "فقط بانوان" },
+  { id: "parking", label: "پارکینگ" },
+  { id: "access", label: "دسترسی ویلچر" },
+  { id: "sterile", label: "ابزار استریل یک‌بارمصرف" },
+  { id: "card", label: "پرداخت با کارت در محل" },
+];
 
 export type VerifyStatus = "verified" | "pending" | "unverified";
 
@@ -28,61 +69,80 @@ export interface Service {
   category: CategoryId;
   durationMin: number;
   price: number;
+  /** Upper bound when the salon publishes a range. */
+  priceMax?: number | undefined;
   priceFrom?: boolean | undefined;
   note?: string | undefined;
+  /** ISO date of the last check by the MAKEZI team. */
   updated: string;
 }
-export interface Staff {
-  id: string;
-  name: string;
-  role: string;
-  specialties: string[];
-  years: number;
-}
-export interface Review {
-  id: string;
-  author: string;
-  date: string;
-  service: string;
-  overall: number;
-  dims: number[];
-  text: string;
-  reply?: string | undefined;
-  bookingVerified: true;
-}
-export interface Credential {
-  label: string;
-  date: string;
-  status: VerifyStatus;
-}
+export interface Staff { id: string; name: string; role: string; specialties: string[]; years: number }
+export interface Credential { label: string; date: string; status: VerifyStatus }
+export interface PortfolioItem { id: string; image: ImageKey; title: string; category: CategoryId; serviceId?: string | undefined; tags: string[] }
+
 export interface Salon {
   id: string;
   slug: string;
   name: string;
+  published: boolean;
   status: VerifyStatus;
-  area: string;
+  city: string;
+  area: string; // area slug
+  address: string;
   distanceKm: number;
   categories: CategoryId[];
-  image: string;
+  image: ImageKey;
   about: string;
-  address: string;
+  phone: string;
+  website?: string | undefined;
+  instagram?: string | undefined;
+  openHour: number;
+  closeHour: number;
+  /** JS weekday the salon is closed (5 = Friday). */
+  closedDay: number;
   hours: string;
+  attributes: AttrId[];
   map: { x: number; y: number };
   services: Service[];
   staff: Staff[];
-  reviews: Review[];
+  portfolio: PortfolioItem[];
   credentials: Credential[];
-  /** days ahead (0..13) that are closed */
-  closedWeekday: number;
-  profileCompleteness: number;
+  /** ISO date the profile was published. */
+  addedAt: string;
+  /** ISO date the MAKEZI team last checked the profile. */
+  checkedAt: string;
 }
 
+/** standard = community review; verified-visit = evidence checked by the MAKEZI team. */
+export type ReviewKind = "community" | "verified-visit";
+export type ReviewStatus = "pending" | "approved" | "rejected" | "hidden";
+export interface Review {
+  id: string;
+  salonId: string;
+  author: string;
+  /** Owner of the review in this demo (phone). Never shown publicly. */
+  userKey?: string | undefined;
+  date: string; // ISO
+  service: string;
+  /** One value per DECISIONS.ratingDimensions, 1..5. */
+  dims: number[];
+  text: string;
+  reply?: string | undefined;
+  kind: ReviewKind;
+  /** User asked for verification and attached evidence (evidence itself is never public). */
+  evidenceSubmitted?: boolean | undefined;
+  status: ReviewStatus;
+  reports: { reason: string; date: string }[];
+  moderationNote?: string | undefined;
+}
+export const reviewOverall = (r: Review) => (r.dims.length ? r.dims.reduce((a, b) => a + b, 0) / r.dims.length : 0);
+
 const svc = (id: string, name: string, category: CategoryId, durationMin: number, price: number, extra: Partial<Service> = {}): Service => ({
-  id, name, category, durationMin, price, updated: "۱۲ مهر ۱۴۰۵", ...extra,
+  id, name, category, durationMin, price, updated: "2026-10-04", ...extra,
 });
 
 const NAIL = [
-  svc("n1", "کاشت ناخن ژل", "nail", 120, 850000, { priceFrom: true, note: "بر اساس طول ناخن" }),
+  svc("n1", "کاشت ناخن ژل", "nail", 120, 850000, { priceFrom: true, priceMax: 1100000, note: "بر اساس طول ناخن" }),
   svc("n2", "ژلیش دست", "nail", 60, 450000),
   svc("n3", "مانیکور روسی", "nail", 75, 520000),
   svc("n4", "ترمیم کاشت", "nail", 90, 600000, { priceFrom: true }),
@@ -91,15 +151,18 @@ const NAIL = [
 const HAIR = [
   svc("h1", "کوتاهی مو", "hair", 45, 380000),
   svc("h2", "براشینگ", "hair", 40, 300000),
-  svc("h3", "رنگ ریشه", "hair", 120, 1200000, { priceFrom: true, note: "بر اساس مقدار رنگ" }),
+  svc("c1", "رنگ ریشه", "color", 120, 1200000, { priceFrom: true, note: "بر اساس مقدار رنگ" }),
+  svc("c2", "مش و لایت", "color", 240, 3500000, { priceFrom: true, priceMax: 6000000, note: "بر اساس طول و حجم مو" }),
 ];
 const SKIN = [
   svc("k1", "پاکسازی پوست", "skin", 75, 900000),
   svc("k2", "آبرسانی پوست", "skin", 50, 650000),
+  svc("k3", "اپیلاسیون صورت", "care", 30, 200000),
 ];
 const MAKEUP = [
   svc("m1", "آرایش روزانه", "makeup", 60, 700000),
-  svc("m2", "اصلاح و فرم‌دهی ابرو", "makeup", 30, 250000),
+  svc("b1", "اصلاح و فرم‌دهی ابرو", "brow", 30, 250000),
+  svc("l1", "اکستنشن مژه", "lash", 120, 1400000, { priceFrom: true }),
 ];
 
 const STAFF: Staff[] = [
@@ -108,117 +171,92 @@ const STAFF: Staff[] = [
   { id: "st3", name: "[متخصص ۳]", role: "متخصص مو و پوست", specialties: ["رنگ مو", "پاکسازی"], years: 8 },
 ];
 
-const REVIEWS = (seed: number): Review[] => [
-  { id: `r${seed}1`, author: "مریم ک.", date: "مهر ۱۴۰۵", service: "ژلیش دست", overall: 4.8, dims: [5, 4.5, 5, 4.5], text: "رنگ همان شد که در نمونه‌کار دیده بودم. قیمت هم همان بود که نوشته بود.", reply: "ممنون از شما. منتظر دیدار بعدی هستیم.", bookingVerified: true },
-  { id: `r${seed}2`, author: "سارا ر.", date: "شهریور ۱۴۰۵", service: "کاشت ناخن ژل", overall: 4.0, dims: [4.5, 4, 4.5, 3], text: "کار تمیز بود ولی بیست دقیقه دیرتر از ساعت نوبت شروع شد.", bookingVerified: true },
-  { id: `r${seed}3`, author: "نگار ت.", date: "شهریور ۱۴۰۵", service: "مانیکور روسی", overall: 4.6, dims: [4.5, 5, 4.5, 4.5], text: "محیط مرتب بود و ابزارها جلوی خودم از بسته‌ی استریل باز شد.", bookingVerified: true },
-  { id: `r${seed}4`, author: "الهام م.", date: "مرداد ۱۴۰۵", service: "ژلیش دست", overall: 4.4, dims: [4.5, 4, 4.5, 4.5], text: "زمان کار طبق اعلام سالن یک ساعت بود و همان‌قدر طول کشید.", bookingVerified: true },
-  { id: `r${seed}5`, author: "زهرا ب.", date: "مرداد ۱۴۰۵", service: "ترمیم کاشت", overall: 4.7, dims: [5, 4.5, 4.5, 5], text: "توضیح دادند چرا قیمت ترمیم برای من کمی بیشتر شد؛ قبل از شروع کار.", reply: "ممنون که نوشتید.", bookingVerified: true },
-];
-
 const CREDS: Credential[] = [
-  { label: "مدرک فنی کاشت ناخن", date: "فروردین ۱۴۰۵", status: "verified" },
+  { label: "مدرک فنی", date: "فروردین ۱۴۰۵", status: "verified" },
   { label: "مجوز بهداشت محل کار", date: "مهر ۱۴۰۵", status: "verified" },
-  { label: "دستگاه استریل اتوکلاو", date: "مهر ۱۴۰۵", status: "verified" },
+  { label: "پروانه‌ی کسب", date: "مهر ۱۴۰۵", status: "verified" },
 ];
 
-function salon(i: number, p: Partial<Salon> & Pick<Salon, "status" | "categories" | "services" | "image">): Salon {
+const FA = "۰۱۲۳۴۵۶۷۸۹";
+function salon(i: number, p: Partial<Salon> & Pick<Salon, "status" | "categories" | "services" | "image" | "portfolio">): Salon {
+  const area = CITIES[0]!.areas[(i - 1) % 4]!;
   return {
     id: `s${i}`,
     slug: `salon-${i}`,
-    name: `سالن [نام ${"۰۱۲۳۴۵۶۷۸۹"[i] ?? i}]`,
-    area: AREAS[(i - 1) % AREAS.length] ?? "[محله]",
+    name: `سالن [نام ${FA[i] ?? i}]`,
+    published: true,
+    city: "tehran",
+    area: area.slug,
+    address: `[آدرس نمونه]، ${area.name}`,
     distanceKm: 0.6 + i * 0.55,
-    about: "این متن نمونه است. سالن در این بخش درباره‌ی تخصص، روش کار و ابزارهای خود توضیح می‌دهد.",
-    address: "[آدرس نمونه]، [محله]",
+    about: "این متن نمونه است. تیم میکزی در این بخش اطلاعات بررسی‌شده درباره‌ی تخصص، روش کار و فضای سالن را می‌نویسد.",
+    phone: `0210000000${i}`,
+    instagram: `salon_sample_${i}`,
+    openHour: 10,
+    closeHour: 20,
+    closedDay: 5,
     hours: "شنبه تا پنجشنبه، ۱۰ تا ۲۰",
+    attributes: ["women", "card"],
     map: { x: 15 + ((i * 37) % 70), y: 15 + ((i * 53) % 65) },
     staff: STAFF.slice(0, 2 + (i % 2)),
-    reviews: REVIEWS(i),
     credentials: p.status === "verified" ? CREDS : CREDS.map((c) => ({ ...c, status: "pending" as const })),
-    closedWeekday: 5,
-    profileCompleteness: 80,
+    addedAt: `2026-${String(4 + i).padStart(2, "0")}-1${i}`,
+    checkedAt: "2026-10-04",
     ...p,
   };
 }
 
+const pf = (id: string, image: ImageKey, title: string, category: CategoryId, serviceId: string | undefined, tags: string[]): PortfolioItem => ({ id, image, title, category, serviceId, tags });
+
 export const SALONS: Salon[] = [
-  salon(1, { status: "verified", categories: ["nail"], services: NAIL, image: nailArt, profileCompleteness: 95 }),
-  salon(2, { status: "verified", categories: ["nail", "makeup"], services: [...NAIL.slice(1, 4), ...MAKEUP], image: heroNails, reviews: REVIEWS(2).slice(0, 2), profileCompleteness: 85 }),
-  salon(3, { status: "pending", categories: ["nail"], services: NAIL.slice(0, 3).map((s) => ({ ...s, price: s.price - 70000 })), image: extension, profileCompleteness: 70 }),
-  salon(4, { status: "verified", categories: ["hair", "skin"], services: [...HAIR, ...SKIN], image: hair, profileCompleteness: 90 }),
-  salon(5, { status: "verified", categories: ["makeup", "skin"], services: [...MAKEUP, ...SKIN], image: makeup, reviews: [], profileCompleteness: 75 }),
-  salon(6, { status: "unverified", categories: ["nail", "hair"], services: [NAIL[1]!, NAIL[4]!, HAIR[0]!], image: interior, reviews: REVIEWS(6).slice(0, 1), profileCompleteness: 55 }),
+  salon(1, { status: "verified", categories: ["nail"], services: NAIL, image: "nailArt", attributes: ["women", "sterile", "card"], portfolio: [pf("g1", "nailArt", "ژلیش لیمویی", "nail", "n2", ["ناخن کوتاه"]), pf("g6", "extension", "کاشت بی‌رنگ", "nail", "n1", ["ناخن بلند"])] }),
+  salon(2, { status: "verified", categories: ["nail", "makeup", "brow", "lash"], services: [...NAIL.slice(1, 4), ...MAKEUP], image: "heroNails", attributes: ["women", "parking", "card"], portfolio: [pf("g3", "heroNails", "ژلیش نود صورتی", "nail", "n2", ["بیضی"]), pf("g8", "nailArt", "مانیکور روسی", "nail", "n3", ["طبیعی"])] }),
+  salon(3, { status: "pending", categories: ["nail"], services: NAIL.slice(0, 3).map((s) => ({ ...s, price: s.price - 70000, updated: "2026-08-20" })), image: "extension", portfolio: [pf("g2", "extension", "کاشت بادامی کروم", "nail", "n1", ["بادامی"])], checkedAt: "2026-08-20" }),
+  salon(4, { status: "verified", categories: ["hair", "color", "skin", "care"], services: [...HAIR, ...SKIN], image: "hair", attributes: ["women", "access", "parking", "card"], website: "https://example.com", portfolio: [pf("g4", "hair", "براشینگ موج‌دار", "hair", "h2", ["موی بلند"]), pf("g7", "hair", "رنگ ریشه‌ی قهوه‌ای", "color", "c1", ["رنگ"])] }),
+  salon(5, { status: "verified", categories: ["makeup", "brow", "lash", "skin"], services: [...MAKEUP, ...SKIN.slice(0, 2)], image: "makeup", attributes: ["women", "sterile"], portfolio: [pf("g5", "makeup", "آرایش روزانه‌ی طبیعی", "makeup", "m1", ["روزانه"])] }),
+  salon(6, { status: "unverified", categories: ["nail", "hair"], services: [NAIL[1]!, NAIL[4]!, HAIR[0]!], image: "interior", attributes: [], portfolio: [], instagram: undefined, checkedAt: "2026-06-01", closeHour: 18 }),
 ];
 
-export const getSalon = (slugOrId: string) => SALONS.find((s) => s.slug === slugOrId || s.id === slugOrId);
-export const priceFrom = (s: Salon) => Math.min(...s.services.map((v) => v.price));
-export const avgRating = (s: Salon) =>
-  s.reviews.length ? s.reviews.reduce((a, r) => a + r.overall, 0) / s.reviews.length : 0;
-export const dimAverages = (s: Salon) =>
-  [0, 1, 2, 3].map((d) => (s.reviews.length ? s.reviews.reduce((a, r) => a + (r.dims[d] ?? 0), 0) / s.reviews.length : 0));
+export const getStaticSalon = (slugOrId: string) => SALONS.find((s) => s.slug === slugOrId || s.id === slugOrId);
+export const priceFrom = (s: Salon) => (s.services.length ? Math.min(...s.services.map((v) => v.price)) : 0);
+export const priceTop = (s: Salon) => (s.services.length ? Math.max(...s.services.map((v) => v.priceMax ?? v.price)) : 0);
 
-/** Deterministic sample availability: time slots for salon + ISO day. */
-const ALL_SLOTS = ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
-export function slotsFor(salonId: string, iso: string): string[] {
-  const d = new Date(iso + "T12:00:00");
-  const s = getSalon(salonId);
-  if (s && d.getDay() === s.closedWeekday) return [];
-  const seed = (Number(salonId.replace(/\D/g, "")) * 7 + d.getDate() * 3) % 5;
-  return ALL_SLOTS.filter((_, i) => (i + seed) % 3 !== 0);
+/** Open now from the published hours (hours are as entered by the MAKEZI team). */
+export function isOpenAt(s: Salon, d: Date) {
+  if (d.getDay() === s.closedDay) return false;
+  const h = d.getHours() + d.getMinutes() / 60;
+  return h >= s.openHour && h < s.closeHour;
 }
-export const openSlotsToday = (s: Salon, today: string) => slotsFor(s.id, today).length;
 
-export interface GalleryItem {
-  id: string;
-  image: string;
-  title: string;
-  category: CategoryId;
-  serviceId: string;
-  salonSlug: string;
-  tags: string[];
-}
-export const GALLERY: GalleryItem[] = [
-  { id: "g1", image: nailArt, title: "ژلیش لیمویی", category: "nail", serviceId: "n2", salonSlug: "salon-1", tags: ["ناخن کوتاه", "گرد"] },
-  { id: "g2", image: extension, title: "کاشت بادامی کروم", category: "nail", serviceId: "n1", salonSlug: "salon-3", tags: ["ناخن بلند", "بادامی"] },
-  { id: "g3", image: heroNails, title: "ژلیش نود صورتی", category: "nail", serviceId: "n2", salonSlug: "salon-2", tags: ["ناخن کوتاه", "بیضی"] },
-  { id: "g4", image: hair, title: "براشینگ موج‌دار", category: "hair", serviceId: "h2", salonSlug: "salon-4", tags: ["موی بلند"] },
-  { id: "g5", image: makeup, title: "آرایش روزانه‌ی طبیعی", category: "makeup", serviceId: "m1", salonSlug: "salon-5", tags: ["روزانه"] },
-  { id: "g6", image: extension, title: "کاشت بی‌رنگ", category: "nail", serviceId: "n1", salonSlug: "salon-1", tags: ["ناخن بلند"] },
-  { id: "g7", image: hair, title: "رنگ ریشه‌ی قهوه‌ای", category: "hair", serviceId: "h3", salonSlug: "salon-4", tags: ["رنگ"] },
-  { id: "g8", image: nailArt, title: "مانیکور روسی", category: "nail", serviceId: "n3", salonSlug: "salon-2", tags: ["طبیعی"] },
+const R = (salonId: string, n: number, author: string, date: string, service: string, dims: number[], text: string, extra: Partial<Review> = {}): Review => ({
+  id: `r-${salonId}-${n}`, salonId, author, date, service, dims, text, kind: "community", status: "approved", reports: [], ...extra,
+});
+const REVIEW_SET = (id: string): Review[] => [
+  R(id, 1, "مریم ک.", "2026-10-02", "ژلیش دست", [5, 5, 4.5, 5, 4, 5], "رنگ همان شد که در نمونه‌کار دیده بودم. قیمت هم همان بود که نوشته شده بود.", { kind: "verified-visit", reply: "ممنون از شما." }),
+  R(id, 2, "سارا ر.", "2026-09-18", "کاشت ناخن ژل", [4, 4.5, 4, 4, 3.5, 4], "کار تمیز بود ولی بیست دقیقه دیرتر از ساعتی که گفته بودند شروع شد."),
+  R(id, 3, "نگار ت.", "2026-09-05", "مانیکور روسی", [4.5, 5, 4.5, 4.5, 4, 4.5], "محیط مرتب بود و ابزارها جلوی خودم از بسته‌ی استریل باز شد.", { kind: "verified-visit" }),
+  R(id, 4, "الهام م.", "2026-08-21", "ژلیش دست", [4.5, 4, 4.5, 4.5, 4, 4.5], "زمان کار حدود یک ساعت بود، همان‌طور که در صفحه نوشته شده."),
+  R(id, 5, "زهرا ب.", "2026-08-02", "ترمیم کاشت", [5, 4.5, 4.5, 5, 4, 5], "قبل از شروع کار توضیح دادند چرا قیمت ترمیم برای من کمی بیشتر شد.", { reply: "ممنون که نوشتید." }),
 ];
 
-export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled" | "change-requested" | "cancel-requested";
-export interface Booking {
-  id: string;
-  salonId: string;
-  serviceIds: string[];
-  staffId: string | null;
-  date: string;
-  time: string;
-  status: BookingStatus;
-  customerName: string;
-  phone: string;
-  note?: string;
-  total: number;
-  reviewed?: boolean;
-  createdAt: string;
-}
+export const SEED_REVIEWS: Review[] = [
+  ...REVIEW_SET("s1"),
+  ...REVIEW_SET("s2").slice(0, 2),
+  ...REVIEW_SET("s3").slice(0, 3),
+  ...REVIEW_SET("s4"),
+  ...REVIEW_SET("s6").slice(0, 1),
+  R("s4", 9, "کاربر نمونه", "2026-10-06", "کوتاهی مو", [2, 3, 2, 2, 2, 2], "نمونه‌ی نظری که منتظر بررسی تیم میکزی است.", { status: "pending", evidenceSubmitted: true }),
+  R("s1", 9, "کاربر نمونه", "2026-10-05", "ژلیش دست", [1, 1, 1, 1, 1, 1], "نمونه‌ی نظر گزارش‌شده برای آزمایش صف بررسی.", { reports: [{ reason: "محتوای نامرتبط", date: "2026-10-06" }] }),
+];
 
-export const BOOKING_STATUS: Record<BookingStatus, { label: string; tone: "success" | "warning" | "error" | "info" | "neutral" }> = {
-  pending: { label: "در انتظار تأیید سالن", tone: "warning" },
-  confirmed: { label: "تأییدشده", tone: "success" },
-  completed: { label: "انجام‌شده", tone: "info" },
-  cancelled: { label: "لغوشده", tone: "error" },
-  "change-requested": { label: "درخواست تغییر زمان", tone: "warning" },
-  "cancel-requested": { label: "درخواست لغو", tone: "warning" },
-};
+export interface GalleryItem extends PortfolioItem { salonId: string }
+export const galleryOf = (salons: Salon[]): GalleryItem[] => salons.flatMap((s) => s.portfolio.map((p) => ({ ...p, salonId: s.id })));
 
 export const FAQ = [
-  { q: "قیمت‌های میکزی از کجا می‌آید؟", a: "هر سالن قیمت خدمات خود را ثبت می‌کند و تاریخ آخرین به‌روزرسانی کنار قیمت نمایش داده می‌شود. اگر قیمت «از» باشد، دلیل تغییر آن هم نوشته می‌شود." },
-  { q: "«تأییدشده» یعنی چه؟", a: "یعنی مدارک این سالن (مثل مدرک فنی و مجوز بهداشت) بررسی و تأیید شده است. این برچسب درباره‌ی مدارک است، نه تضمین کیفیت کار." },
-  { q: "چه کسی می‌تواند نظر بنویسد؟", a: "فقط کسی که از طریق میکزی نوبت گرفته و نوبتش انجام شده است. به همین دلیل کنار هر نظر نوشته شده «نظر تأییدشده»." },
-  { q: "پرداخت چطور انجام می‌شود؟", a: "روش پرداخت هنوز نهایی نشده است. در این نسخه پرداخت آنلاین وجود ندارد." },
-  { q: "سیاست لغو نوبت چیست؟", a: "سیاست لغو هنوز تعیین نشده است. در حال حاضر می‌توانید درخواست لغو یا تغییر زمان ثبت کنید تا سالن بررسی کند." },
+  { q: "اطلاعات سالن‌ها از کجا می‌آید؟", a: "تیم میکزی اطلاعات هر سالن (خدمات، قیمت، ساعت کاری، تماس و نمونه‌کار) را جمع‌آوری، بررسی و منتشر می‌کند. تاریخ آخرین بررسی کنار اطلاعات نوشته می‌شود." },
+  { q: "آیا میکزی نوبت رزرو می‌کند؟", a: "نه. میکزی راهنمای پیدا کردن، بررسی و مقایسه‌ی سالن‌هاست. برای هماهنگی، مستقیم با خود سالن تماس بگیرید." },
+  { q: "قیمت‌ها قطعی است؟", a: "قیمت‌ها همان چیزی است که سالن در زمان بررسی اعلام کرده است. قیمت نهایی را سالن تعیین می‌کند و ممکن است تغییر کرده باشد." },
+  { q: "«مدارک تأییدشده» یعنی چه؟", a: "یعنی تیم میکزی مدارکی مثل مدرک فنی و مجوز بهداشت را دیده و بررسی کرده است. این برچسب درباره‌ی مدارک است، نه تضمین کیفیت کار." },
+  { q: "«مراجعه‌ی تأییدشده» در نظرها یعنی چه؟", a: "نویسنده‌ی نظر مدرکی از مراجعه (مثل رسید) فرستاده و تیم میکزی آن را بررسی کرده است. خود مدرک هرگز عمومی نمی‌شود. بقیه‌ی نظرها «نظر کاربر» هستند." },
+  { q: "سالن می‌تواند نظر منفی را حذف کند؟", a: "نه. سالن فقط می‌تواند پاسخ عمومی بنویسد. حذف یا پنهان کردن نظر فقط با بررسی تیم میکزی و طبق قوانین محتوا انجام می‌شود." },
 ];
