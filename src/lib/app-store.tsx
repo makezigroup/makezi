@@ -9,10 +9,10 @@ import type { Json } from "@/integrations/supabase/types";
 import { publicReviews, scoreOf, toggleCompare as toggleCompareRule } from "./rules";
 import { track } from "./analytics";
 
-// Client-side demo state (no backend connected). Persisted in this browser only.
+// Cloud-backed records; only display preferences remain device-local.
 type Theme = "light" | "dark";
-export type InquiryStatus = "new" | "contacted" | "accepted" | "closed";
-export interface Inquiry { id: string; business: string; name: string; phone: string; city: string; area: string; categories: string[]; message: string; date: string; status: InquiryStatus; instagram?: string; website?: string; internalNote?: string; salonId?: string | undefined }
+export type InquiryStatus = "new" | "under-review" | "contacted" | "accepted" | "rejected" | "closed";
+export interface Inquiry { isDemo?: boolean; id: string; business: string; name: string; phone: string; city: string; area: string; categories: string[]; message: string; date: string; status: InquiryStatus; instagram?: string; website?: string; internalNote?: string; salonId?: string | undefined }
 
 interface Store {
   theme: Theme; setTheme: (t: Theme) => void;
@@ -55,12 +55,12 @@ export function AppStoreProvider({ children, initialSalons = [] }: { children: R
     if (s.error || r.error || published.error) throw new Error('دریافت اطلاعات ممکن نشد. دوباره تلاش کنید.');
     setSalons((s.data ?? []).map(x => x.data as unknown as Salon));
     let list = (r.data ?? []).map(reviewFromRow);
-    const publicRows = (published.data ?? []).map(x => ({ id:x.id ?? '', salonId:x.salon_id ?? '', author:x.author ?? '', date:x.created_at ?? '', service:x.service ?? '', dims:x.dims ?? [], text:x.text ?? '', kind:x.kind as Review['kind'], status:'approved' as const, reply:x.reply ?? undefined, reports:[] }));
+    const publicRows = (published.data ?? []).map(x => ({ isDemo:x.is_demo ?? false, id:x.id ?? '', salonId:x.salon_id ?? '', author:x.author ?? '', date:x.created_at ?? '', service:x.service ?? '', dims:x.dims ?? [], text:x.text ?? '', kind:x.kind as Review['kind'], status:'approved' as const, reply:x.reply ?? undefined, reports:[] }));
     list = [...list,...publicRows.filter(x=>!list.some(r=>r.id===x.id))];
     if (admin) {
       const [ev, reports, iq] = await Promise.all([supabase.from('review_evidence').select('*'), supabase.from('review_reports').select('*').eq('resolved',false), supabase.from('partnership_requests').select('*').order('created_at',{ascending:false}).range(0,99)]);
       list = list.map(x => ({ ...x, evidenceSubmitted: ev.data?.some(e => e.review_id === x.id), reports: (reports.data ?? []).filter(p => p.review_id === x.id).map(p => ({ reason: p.reason, date: p.created_at })) }));
-      setInquiries((iq.data ?? []).map(x => ({ id:x.id, business:x.business, name:x.name, phone:x.phone, city:x.city, area:x.area, categories:x.categories, message:x.message, date:x.created_at, status:x.status as InquiryStatus, instagram:x.instagram, website:x.website, internalNote:x.internal_note, salonId:x.salon_id ?? undefined })));
+      setInquiries((iq.data ?? []).map(x => ({ isDemo:x.is_demo, id:x.id, business:x.business, name:x.name, phone:x.phone, city:x.city, area:x.area, categories:x.categories, message:x.message, date:x.created_at, status:x.status as InquiryStatus, instagram:x.instagram, website:x.website, internalNote:x.internal_note, salonId:x.salon_id ?? undefined })));
     } else setInquiries([]);
     setReviews(list);
     if (user) {
@@ -85,7 +85,7 @@ export function AppStoreProvider({ children, initialSalons = [] }: { children: R
     signOut:()=>{run(supabase.auth.signOut().then(checked)); setPhone(null);setIsAdmin(false);setSaved([]);setCompare([]);setInquiries([]);setReviews(x=>x.filter(r=>r.status==='approved'));setSalons(x=>x.filter(s=>s.published));},
     saved,toggleSaved:id=>{if(!phone){toast.error('برای ذخیره‌ی سالن وارد حساب شوید.');return;} run((async()=>{const has=saved.includes(id); await checked(has?await supabase.from('favorites').delete().eq('user_id',phone).eq('salon_id',id):await supabase.from('favorites').insert({user_id:phone,salon_id:id}));setSaved(x=>has?x.filter(v=>v!==id):[...x,id]);track(has?'salon_unfavorited':'salon_favorited',{salon:id});})());},
     compare,toggleCompare,clearCompare:()=>{setCompare([]);if(phone)run(supabase.from('comparisons').upsert({user_id:phone,salon_ids:[]}).then(checked));},
-    salons,upsertSalon:async s=>{await checked(await supabase.from('salons').upsert({id:s.id,slug:s.slug,name:s.name,city:s.city,area:s.area,published:s.published,archived:s.archived ?? false,data:s as unknown as Json}));await refresh();},
+    salons,upsertSalon:async s=>{await checked(await supabase.from('salons').upsert({id:s.id,slug:s.slug,name:s.name,city:s.city,area:s.area,published:s.published,archived:s.archived ?? false,is_demo:s.isDemo ?? false,data:s as unknown as Json}));await refresh();},
     reviews,addReview:async(r,evidence)=>{
       if(!phone)throw new Error('ابتدا وارد حساب شوید.');
       const {data,error}=await supabase.from('reviews').insert({salon_id:r.salonId,user_id:phone,author:displayName.trim()||'کاربر میکزی',service:r.service,dims:r.dims,text:r.text,title:r.title ?? '',visit_date:r.visitDate || null}).select('id').single();

@@ -60,6 +60,9 @@ function Home() {
   const fmt = useFmt();
   const salons = usePublicSalons();
   const featured = [...salons].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt)).slice(0, 4);
+  const [selectedCity,setSelectedCity] = useState("tehran");
+  const recent = [...salons].sort((a,b)=>b.addedAt.localeCompare(a.addedAt)).slice(0,4);
+  const nearby = salons.filter(s=>s.city===selectedCity).slice(0,4);
   const gallery = galleryOf(salons).slice(0, 4);
   return (
     <SiteLayout>
@@ -99,6 +102,8 @@ function Home() {
         {featured.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map((s) => <SalonCard key={s.id} salon={s} />)}</div> : <StatePanel icon="salon" title="هنوز سالنی منتشر نشده است" body="اطلاعات سالن‌ها پس از بررسی تیم میکزی اینجا منتشر می‌شود." action={<Link to="/for-salons" className={btn({ variant: "outline" })}>افزودن سالن به میکزی</Link>} />}
       </section>
 
+      <section className="container-mk py-14"><SectionHead title="تازه‌اضافه‌شده" body="مرتب‌شده بر اساس تاریخ انتشار پروفایل."/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{recent.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
+      <section className="container-mk py-14"><SectionHead title="سالن‌های شهر شما"/><label className="mb-6 flex max-w-xs flex-col gap-2 text-caption">شهر<select className={inputCls} value={selectedCity} onChange={e=>setSelectedCity(e.target.value)}>{CITIES.map(c=><option key={c.slug} value={c.slug}>{c.name}</option>)}</select></label><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{nearby.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
       <section className="container-mk py-16">
         <SectionHead eyebrow="سه قدم" title="پیدا کنید، مقایسه کنید، تماس بگیرید" />
         <ol className="grid gap-4 md:grid-cols-3">

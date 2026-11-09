@@ -24,9 +24,11 @@ function Directory() {
   const now = useNow();
   const set = (p: Partial<DirectorySearch>) => {
     track("filter_applied", { keys: Object.keys(p).join(",") });
-    nav({ search: (prev) => ({ ...prev, ...p }), replace: true });
+    nav({ search: (prev) => ({ ...prev, ...p, page: p.page ?? 1 }), replace: true });
   };
   const results = filterSalons(salons, reviews, now ? s : { ...s, open: undefined }, now ?? new Date());
+  const pages = Math.max(1,Math.ceil(results.length/12));
+  const page = Math.min(s.page ?? 1,pages);
   const [q, setQ] = useState(s.q ?? "");
   const count = activeFilterCount(s);
   const sort: SortKey = s.sort ?? "distance";
@@ -77,8 +79,9 @@ function Directory() {
           {results.length === 0 ? (
             <StatePanel title={salons.length ? "سالنی با این فیلترها پیدا نشد" : "هنوز سالنی منتشر نشده است"} body={salons.length ? "چند فیلتر را بردارید یا محله‌ی دیگری را امتحان کنید." : "اطلاعات پس از بررسی تیم میکزی منتشر می‌شود."} action={<Button variant="outline" onClick={() => nav({ search: {}, replace: true })}>پاک کردن همه</Button>} />
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{results.map((x) => <SalonCard key={x.id} salon={x} />)}</div>
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{results.slice((page-1)*12,page*12).map((x) => <SalonCard key={x.id} salon={x} />)}</div>
           )}
+          {pages > 1 && <div className="mt-6 flex items-center justify-center gap-4"><Button variant="outline" disabled={page===1} onClick={()=>set({page:page-1})}>قبلی</Button><span>{fmt.num(page)} از {fmt.num(pages)}</span><Button variant="outline" disabled={page===pages} onClick={()=>set({page:page+1})}>بعدی</Button></div>}
         </section>
       </div>
     </SiteLayout>

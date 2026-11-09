@@ -5,6 +5,7 @@ import { Crumbs } from "@/components/mk/location-pages";
 import { RatingInline } from "@/components/mk/marketplace";
 import { getCategory, getStaticSalon } from "@/lib/data";
 import { useFmt, usePublicSalons, useSalon } from "@/lib/app-store";
+import { canContactSalon, servicePriceLabel } from "@/lib/cloud-data";
 import { seo } from "@/lib/seo";
 import { getPublicSalon } from "@/lib/directory.functions";
 
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/salons/$slug_/services/$serviceId")({
     const s = loaderData;
     const v = s?.services.find((x) => x.id === params.serviceId);
     return s && v
-      ? seo(`${v.name} در ${s.name}`, `قیمت اعلام‌شده، زمان تقریبی و مقایسه‌ی ${v.name} در ${s.name} با سالن‌های دیگر.`, { path: `/salons/${s.slug}/services/${v.id}` })
+      ? seo(`${v.name} در ${s.name}`, `قیمت اعلام‌شده، زمان تقریبی و مقایسه‌ی ${v.name} در ${s.name} با سالن‌های دیگر.`, { path: `/salons/${s.slug}/services/${v.id}`, noindex: !!s.isDemo })
       : seo("خدمت پیدا نشد", "این خدمت پیدا نشد.", { noindex: true });
   },
   component: ServicePage,
@@ -38,17 +39,18 @@ function ServicePage() {
     <SiteLayout>
       <div className="container-mk max-w-4xl pt-8">
         <Crumbs items={[{ label: "سالن‌ها", link: <Link to="/salons" className="text-muted-foreground">سالن‌ها</Link> }, { label: salon.name, link: <Link to="/salons/$slug" params={{ slug: salon.slug }} className="text-muted-foreground">{salon.name}</Link> }, { label: v.name }]} />
+        {salon.isDemo && <DemoNote className="mb-4">اطلاعات نمونه — خدمت و قیمت ساختگی برای آزمایش محصول.</DemoNote>}
         <h1 className="text-h1">{v.name}</h1>
         <p className="mt-2 text-muted-foreground">در <Link to="/salons/$slug" params={{ slug: salon.slug }}>{salon.name}</Link> · {cat?.label}</p>
         <dl className="mt-6 grid gap-4 rounded-card bg-card p-5 shadow-card sm:grid-cols-3">
-          <div><dt className="text-caption text-muted-foreground">قیمت اعلام‌شده</dt><dd className="text-h3">{v.priceFrom && !v.priceMax && "از "}{fmt.price(v.price)}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</dd></div>
+          <div><dt className="text-caption text-muted-foreground">قیمت اعلام‌شده</dt><dd className="text-h3">{v.priceFrom && !v.priceMax && "از "}{servicePriceLabel(v.price,fmt.price)}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</dd></div>
           <div><dt className="text-caption text-muted-foreground">زمان تقریبی</dt><dd className="text-h3">{fmt.duration(v.durationMin)}</dd></div>
           <div><dt className="text-caption text-muted-foreground">آخرین بررسی</dt><dd className="text-h3">{fmt.date(v.updated, { day: "numeric", month: "long" })}</dd></div>
         </dl>
         {v.note && <p className="mt-3 text-caption">{v.note}</p>}
         <p className="mt-3 text-label text-muted-foreground">قیمت نهایی را سالن تعیین می‌کند؛ پیش از مراجعه با سالن تماس بگیرید.</p>
         <div className="mt-5 flex flex-wrap gap-2">
-          <a href={`tel:${salon.phone}`} className={btn()}><Icon name="call" size={20} /> تماس با سالن</a>
+          {canContactSalon(salon) && <a href={`tel:${salon.phone}`} className={btn()}><Icon name="call" size={20} /> تماس با سالن</a>}
           <Link to="/salons/$slug" params={{ slug: salon.slug }} className={btn({ variant: "outline" })}>پروفایل سالن</Link>
         </div>
         <section className="mt-12">
@@ -63,7 +65,7 @@ function ServicePage() {
                     <p className="text-caption text-muted-foreground">{s.name}</p>
                     <RatingInline salonId={s.id} />
                   </div>
-                  <span className="font-semibold">{fmt.price(x.price)}</span>
+                  <span className="font-semibold">{servicePriceLabel(x.price,fmt.price)}</span>
                 </li>
               ))}
             </ul>

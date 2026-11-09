@@ -30,7 +30,7 @@ export function useNow() {
 
 export function OpenBadge({ salon }: { salon: Salon }) {
   const now = useNow();
-  if (!now) return null;
+  if (!now || salon.isDemo) return null;
   return isOpenAt(salon, now) ? (
     <span className="inline-flex items-center gap-1.5 text-caption"><Dot className="size-2" /> اکنون باز است</span>
   ) : (
@@ -99,6 +99,7 @@ export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean 
           </span>
         )}
         <SaveButton id={salon.id} className="absolute end-3 top-3 z-[1]" />
+        {salon.isDemo && <span className="absolute start-3 top-3 rounded-full bg-surface px-3 py-1 text-label text-foreground">اطلاعات نمونه</span>}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="text-h3 leading-snug">
@@ -106,7 +107,7 @@ export function SalonCard({ salon, compact }: { salon: Salon; compact?: boolean 
             {salon.name}
           </Link>
         </h3>
-        <VerifyBadge status={salon.status} className="self-start" />
+        {salon.isDemo ? <StatusBadge tone="neutral">اطلاعات نمونه</StatusBadge> : <VerifyBadge status={salon.status} className="self-start" />}
         <RatingInline salonId={salon.id} />
         <p className="flex items-center gap-1 text-caption text-muted-foreground">
           <Icon name="location" size={16} /> {areaName(salon.city, salon.area)}
@@ -136,7 +137,7 @@ export function RatingSummary({ salonId }: { salonId: string }) {
             {s.count === 0 ? "هنوز نظری منتشر نشده است." : `${fmt.num(s.count)} نظر منتشر شده؛ امتیاز کلی از ${fmt.num(DECISIONS.minReviewsForScore)} نظر به بعد نمایش داده می‌شود.`}
           </p>
         )}
-        {s.count > 0 && <span className="mt-2 text-label text-muted-foreground">{fmt.num(s.verifiedCount)} مورد با مراجعه‌ی تأییدشده</span>}
+        {s.verifiedCount > 0 && <span className="mt-2 text-label text-muted-foreground">{fmt.num(s.verifiedCount)} مورد با مراجعه‌ی تأییدشده</span>}
       </div>
       {s.count > 0 && (
         <ul className="grid gap-2.5 sm:grid-cols-2 sm:gap-x-8">
@@ -156,6 +157,7 @@ export function RatingSummary({ salonId }: { salonId: string }) {
 }
 
 export function ReviewKindBadge({ r }: { r: Review }) {
+  if (r.isDemo) return <StatusBadge tone="neutral">اطلاعات نمونه — نظر ساختگی</StatusBadge>;
   return r.kind === "verified-visit" ? (
     <StatusBadge tone="success">مراجعه‌ی تأییدشده</StatusBadge>
   ) : (
@@ -182,6 +184,7 @@ export function ReviewCard({ r, report = true }: { r: Review; report?: boolean |
         </span>
       </header>
       <ReviewKindBadge r={r} />
+      {r.title && <h3 className="text-caption font-semibold">{r.title}</h3>}
       <p>{r.text}</p>
       {r.reply && (
         <div className="rounded-input border-s-2 border-foreground bg-muted px-3 py-2 text-caption">

@@ -5,6 +5,7 @@ import { SALONS } from "@/lib/data";
 
 const fa = makeFmt(true);
 describe("Persian formatting", () => {
+  it("accepts persisted timestamps as well as date-only values", () => expect(fa.date('2026-11-09T12:00:00+00:00', {year:'numeric',month:'numeric',day:'numeric'})).toBe(fa.date('2026-11-09',{year:'numeric',month:'numeric',day:'numeric'})));
   it("formats prices with Persian separators and unit after", () => expect(fa.price(250000)).toBe("۲۵۰٬۰۰۰ تومان"));
   it("formats ratings with Persian decimal mark", () => expect(fa.ratingOf5(4.6)).toBe("۴٫۶ از ۵"));
   it("latin digit option", () => expect(makeFmt(false).price(250000)).toBe("250,000 تومان"));

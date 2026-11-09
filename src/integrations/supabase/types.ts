@@ -88,14 +88,17 @@ export type Database = {
       directory_categories: {
         Row: {
           id: string
+          is_demo: boolean
           label: string
         }
         Insert: {
           id: string
+          is_demo?: boolean
           label: string
         }
         Update: {
           id?: string
+          is_demo?: boolean
           label?: string
         }
         Relationships: []
@@ -105,18 +108,21 @@ export type Database = {
           area: string
           city: string
           id: string
+          is_demo: boolean
           label: string
         }
         Insert: {
           area?: string
           city: string
           id: string
+          is_demo?: boolean
           label: string
         }
         Update: {
           area?: string
           city?: string
           id?: string
+          is_demo?: boolean
           label?: string
         }
         Relationships: []
@@ -175,6 +181,7 @@ export type Database = {
           id: string
           instagram: string
           internal_note: string
+          is_demo: boolean
           message: string
           name: string
           phone: string
@@ -191,6 +198,7 @@ export type Database = {
           id?: string
           instagram?: string
           internal_note?: string
+          is_demo?: boolean
           message?: string
           name: string
           phone: string
@@ -207,6 +215,7 @@ export type Database = {
           id?: string
           instagram?: string
           internal_note?: string
+          is_demo?: boolean
           message?: string
           name?: string
           phone?: string
@@ -229,6 +238,7 @@ export type Database = {
           avatar_url: string | null
           display_name: string
           id: string
+          is_demo: boolean
           notifications: boolean
           private_account: boolean
         }
@@ -236,6 +246,7 @@ export type Database = {
           avatar_url?: string | null
           display_name?: string
           id: string
+          is_demo?: boolean
           notifications?: boolean
           private_account?: boolean
         }
@@ -243,6 +254,7 @@ export type Database = {
           avatar_url?: string | null
           display_name?: string
           id?: string
+          is_demo?: boolean
           notifications?: boolean
           private_account?: boolean
         }
@@ -341,6 +353,7 @@ export type Database = {
           created_at: string
           dims: number[]
           id: string
+          is_demo: boolean
           kind: string
           moderation_note: string | null
           reply: string | null
@@ -357,6 +370,7 @@ export type Database = {
           created_at?: string
           dims: number[]
           id?: string
+          is_demo?: boolean
           kind?: string
           moderation_note?: string | null
           reply?: string | null
@@ -373,6 +387,7 @@ export type Database = {
           created_at?: string
           dims?: number[]
           id?: string
+          is_demo?: boolean
           kind?: string
           moderation_note?: string | null
           reply?: string | null
@@ -402,6 +417,7 @@ export type Database = {
           created_at: string
           data: Json
           id: string
+          is_demo: boolean
           name: string
           published: boolean
           slug: string
@@ -413,6 +429,7 @@ export type Database = {
           created_at?: string
           data: Json
           id: string
+          is_demo?: boolean
           name: string
           published?: boolean
           slug: string
@@ -424,6 +441,7 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          is_demo?: boolean
           name?: string
           published?: boolean
           slug?: string
@@ -456,6 +474,7 @@ export type Database = {
           created_at: string | null
           dims: number[] | null
           id: string | null
+          is_demo: boolean | null
           kind: string | null
           reply: string | null
           salon_id: string | null

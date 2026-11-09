@@ -11,7 +11,7 @@ import { DECISIONS } from "@/lib/decisions";
 import { hasReviewed, publicReviews, validateReview, type ReviewErrors } from "@/lib/rules";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
 import { track } from "@/lib/analytics";
-import { validContactPhone, validWebsite } from "@/lib/cloud-data";
+import { canContactSalon, servicePriceLabel, validContactPhone, validWebsite } from "@/lib/cloud-data";
 import { cn } from "@/lib/utils";
 
 export const directionsUrl = (s: Salon) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.address)}`;
@@ -47,6 +47,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
             { label: salon.name },
           ]}
         />
+        {salon.isDemo && <DemoNote className="mb-4">اطلاعات نمونه — این سالن، قیمت‌ها، نظرها و تصاویر ساختگی‌اند و به کسب‌وکار واقعی تعلق ندارند.</DemoNote>}
         {!salon.published && <DemoNote className="mb-4">این پروفایل منتشر نشده و فقط برای پیش‌نمایش مدیریت قابل دیدن است.</DemoNote>}
 
         {/* A. Header */}
@@ -61,7 +62,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2">
-              <VerifyBadge status={salon.status} />
+              {!salon.isDemo && <VerifyBadge status={salon.status} />}
               {salon.categories.map((c) => <StatusBadge key={c} tone="neutral" icon={false}>{getCategory(c)?.label}</StatusBadge>)}
             </div>
             <h1 className="text-h1">{salon.name}</h1>
@@ -70,10 +71,10 @@ export function SalonProfile({ salon }: { salon: Salon }) {
             <p className="flex flex-wrap items-center gap-2 text-muted-foreground"><Icon name="clock" size={20} /> {salon.hours} · <OpenBadge salon={salon} /></p>
             {salon.services.length > 0 && <p className="text-caption">بازه‌ی قیمت اعلام‌شده: از {fmt.price(priceFrom(salon))}</p>}
             <div className="mt-2 flex flex-wrap gap-2">
-              {validContactPhone(salon.phone) && <a href={`tel:${salon.phone}`}  onClick={() => track("phone_contact_clicked", { salon: salon.id })} className={btn({ size: "lg" }) + " flex-1"}>
+              {canContactSalon(salon) && <a href={`tel:${salon.phone}`}  onClick={() => track("phone_contact_clicked", { salon: salon.id })} className={btn({ size: "lg" }) + " flex-1"}>
                 <Icon name="call" size={20} /> تماس با سالن
               </a>}
-              {salon.address && <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ variant: "outline", size: "lg" })}>
+              {!salon.isDemo && salon.address && <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ variant: "outline", size: "lg" })}>
                 <Icon name="route" size={20} /> مسیریابی
               </a>}
             </div>
@@ -150,7 +151,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
                           <Link to="/salons/$slug/services/$serviceId" params={{ slug: salon.slug, serviceId: v.id }} className="font-semibold text-foreground">{v.name}</Link>
                           <p className="text-caption text-muted-foreground">حدود {fmt.duration(v.durationMin)} · بررسی {fmt.date(v.updated, { day: "numeric", month: "long" })}{v.note && ` · ${v.note}`}</p>
                         </div>
-                        <span className="font-semibold">{v.priceFrom && !v.priceMax && "از "}{fmt.price(v.price)}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</span>
+                        <span className="font-semibold">{v.priceFrom && !v.priceMax && "از "}{servicePriceLabel(v.price,fmt.price)}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</span>
                       </li>
                     ))}
                   </ul>
@@ -175,7 +176,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
               ))}
             </div>
           )}
-          <p className="mt-3 text-label text-muted-foreground">تصاویر منتشرشده متعلق به نمونه‌کار ثبت‌شده‌ی سالن هستند.</p>
+          <p className="mt-3 text-label text-muted-foreground">{salon.isDemo ? "تصاویر نمونه برای نمایش محصول؛ کار واقعی این سالن نیستند." : "تصاویر منتشرشده متعلق به نمونه‌کار ثبت‌شده‌ی سالن هستند."}</p>
           <Dialog open={lightbox != null} onOpenChange={(o) => !o && setLightbox(null)}>
             <DialogContent className="max-w-3xl p-2" dir="rtl">
               {lightbox != null && salon.portfolio[lightbox] && (
@@ -204,14 +205,14 @@ export function SalonProfile({ salon }: { salon: Salon }) {
           <div className="grid gap-4 md:grid-cols-2">
             <ul className="flex flex-col gap-3 rounded-card bg-card p-5 shadow-card">
               <li className="flex items-center gap-2"><Icon name="location" size={20} /> {salon.address}</li>
-              <li className="flex items-center gap-2"><Icon name="call" size={20} /> <a href={`tel:${salon.phone}`} onClick={() => track("phone_contact_clicked", { salon: salon.id })}><bdi dir="ltr">{fmt.digits(salon.phone)}</bdi></a></li>
+              <li className="flex items-center gap-2"><Icon name="call" size={20} /> {canContactSalon(salon) ? <a href={`tel:${salon.phone}`}><bdi dir="ltr">{fmt.digits(salon.phone)}</bdi></a> : "اطلاعات تماس نمونه — تماس واقعی غیرفعال"}</li>
               <li className="flex items-center gap-2"><Icon name="clock" size={20} /> {salon.hours}</li>
-              {validWebsite(salon.website) && <li className="flex items-center gap-2"><Icon name="share" size={20} /> <a href={salon.website} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_contact_clicked", { salon: salon.id })}>وب‌سایت سالن</a></li>}
-              {salon.instagram && <li className="flex items-center gap-2"><Icon name="camera" size={20} /> <a href={`https://instagram.com/${salon.instagram}`} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("instagram_contact_clicked", { salon: salon.id, kind: "instagram" })}><bdi dir="ltr">@{salon.instagram}</bdi></a></li>}
+              {!salon.isDemo && validWebsite(salon.website) && <li className="flex items-center gap-2"><Icon name="share" size={20} /> <a href={salon.website} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_contact_clicked", { salon: salon.id })}>وب‌سایت سالن</a></li>}
+              {!salon.isDemo && salon.instagram && <li className="flex items-center gap-2"><Icon name="camera" size={20} /> <a href={`https://instagram.com/${salon.instagram}`} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("instagram_contact_clicked", { salon: salon.id, kind: "instagram" })}><bdi dir="ltr">@{salon.instagram}</bdi></a></li>}
             </ul>
             <div className="relative overflow-hidden rounded-card bg-muted" style={{ backgroundImage: "url(/pattern-open.svg)", backgroundSize: "cover" }}>
               <span className="absolute grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink text-ink-foreground shadow-modal" style={{ left: `${salon.map.x}%`, top: `${salon.map.y}%` }} aria-hidden><Icon name="salon" size={18} /></span>
-              <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ size: "sm" }) + " absolute bottom-3 start-3"}>مسیریابی در نقشه</a>
+              {!salon.isDemo && <a href={directionsUrl(salon)} target="_blank" rel="noopener noreferrer" onClick={() => track("directions_clicked", { salon: salon.id })} className={btn({ size: "sm" }) + " absolute bottom-3 start-3"}>مسیریابی در نقشه</a>}
               <div className="aspect-[16/9]" />
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/mk/layout";
-import { Icon, VerifyBadge, btn, DemoNote, StatePanel } from "@/components/mk/core";
+import { Icon, StatusBadge, VerifyBadge, btn, DemoNote, StatePanel } from "@/components/mk/core";
 import { RatingInline, SafeImg } from "@/components/mk/marketplace";
 import { priceFrom } from "@/lib/data";
 import { directorySearch, filterSalons } from "@/lib/filters";
@@ -39,7 +39,7 @@ function MapPage() {
                     <SafeImg src={x.image} alt="" className="size-16 rounded-sm" />
                     <span className="flex min-w-0 flex-col gap-0.5">
                       <span className="font-semibold">{x.name}</span>
-                      <span className="text-caption text-muted-foreground">از {fmt.price(priceFrom(x))} · {fmt.rating(x.distanceKm)} کیلومتر</span>
+                      <span className="text-caption text-muted-foreground">از {fmt.price(priceFrom(x))}</span>
                     </span>
                   </button>
                 </li>
@@ -59,7 +59,7 @@ function MapPage() {
                   <SafeImg src={cur.image} alt="" className="size-20 rounded-sm" />
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="font-semibold">{cur.name}</span>
-                    <VerifyBadge status={cur.status} className="self-start" />
+                    {cur.isDemo ? <StatusBadge tone="neutral">اطلاعات نمونه</StatusBadge> : <VerifyBadge status={cur.status} className="self-start" />}
                     <RatingInline salonId={cur.id} />
                   </div>
                   <Link to="/salons/$slug" params={{ slug: cur.slug }} className={btn({ size: "sm" })}>پروفایل</Link>

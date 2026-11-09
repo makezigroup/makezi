@@ -1,11 +1,17 @@
 # MAKEZI product transformation
 
+## Populated demo preview
+- [x] Add identifiable, idempotent Cloud demo salons, services, reviews, requests and test accounts without modifying real records.
+- [x] Label all sample records, suppress demo verification/contact/indexing, and preserve the approved design.
+- [x] Populate homepage, location filters and missing-price states; verify comparison, favorites, admin and mobile views.
+- [x] Deliver counts, test results and safe demo-removal instructions.
+
 - [x] Replace browser demo accounts and records with Cloud authentication and protected persistence.
 - [x] Remove salon-owner dashboard; align navigation and direct contact with discovery.
 - [x] Persist reviews, private evidence, favorites, partnership requests and admin moderation with audit history.
 - [x] Preserve visual identity; show accurate empty states and persisted profile metadata.
 - [x] Verify public/mobile flows and partnership persistence; document all incomplete requirements in the implementation report.
-- [ ] Verify authenticated review/admin workflows — no administrator or real salon records exist yet.
+- [x] Verify authenticated favorites, comparison, admin and denied-user views using securely provisioned demo accounts.
 - [ ] Connect salon image uploads — public storage is blocked by workspace policy.
 
 ## Previous visual synchronization

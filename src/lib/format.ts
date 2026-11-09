@@ -19,7 +19,7 @@ export function makeFmt(faDigits: boolean) {
     duration: (min: number) => `${digits(min)} دقیقه`,
     date: (iso: string, opts: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric", month: "long" }) =>
       new Intl.DateTimeFormat(faDigits ? "fa-IR-u-ca-persian" : "fa-IR-u-ca-persian-nu-latn", opts).format(
-        new Date(iso + "T12:00:00"),
+        new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso + "T12:00:00" : iso),
       ),
   };
 }

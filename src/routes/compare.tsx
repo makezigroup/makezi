@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout, PageIntro } from "@/components/mk/layout";
-import { Button, Icon, StatePanel, VerifyBadge, btn } from "@/components/mk/core";
+import { Button, Icon, StatePanel, StatusBadge, VerifyBadge, btn } from "@/components/mk/core";
 import { OpenBadge, SafeImg } from "@/components/mk/marketplace";
 import { ATTRIBUTES, CATEGORIES, areaName, priceFrom, priceTop, type Salon } from "@/lib/data";
 import { DECISIONS } from "@/lib/decisions";
@@ -8,7 +8,7 @@ import { publicReviews, scoreOf } from "@/lib/rules";
 import { useApp, useFmt } from "@/lib/app-store";
 import { seo } from "@/lib/seo";
 import type { ReactNode } from "react";
-import { validContactPhone } from "@/lib/cloud-data";
+import { canContactSalon } from "@/lib/cloud-data";
 
 export const Route = createFileRoute("/compare")({
   head: () => seo("مقایسه‌ی سالن‌ها", `تا ${DECISIONS.compareMax} سالن را کنار هم مقایسه کنید: قیمت، امتیاز، خدمات، ویژگی‌ها و مدارک.`, { noindex: true }),
@@ -49,7 +49,7 @@ function Compare() {
                 </thead>
                 <tbody>
                   {row("محله", (s) => areaName(s.city, s.area))}
-                  {row("وضعیت مدارک", (s) => <VerifyBadge status={s.status} />)}
+                  {row("وضعیت مدارک", (s) => s.isDemo ? <StatusBadge tone="neutral">اطلاعات نمونه</StatusBadge> : <VerifyBadge status={s.status} />)}
                   {row("امتیاز کلی", (s) => { const sc = scoreOf(publicReviews(reviews, s.id)); return sc.avg == null ? <span className="text-muted-foreground">نظر کافی نیست ({fmt.num(sc.count)})</span> : <span><b>{fmt.rating(sc.avg)}</b> از ۵ · {fmt.num(sc.count)} نظر</span>; })}
                   {DECISIONS.ratingDimensions.map((d, i) => row(d, (s) => { const sc = scoreOf(publicReviews(reviews, s.id)); return sc.count ? fmt.rating(sc.dims[i] ?? 0) : "—"; }))}
                   {row("بازه‌ی قیمت", (s) => priceFrom(s)>0 ? `${fmt.price(priceFrom(s))} تا ${fmt.price(priceTop(s))}` : "قیمت اعلام نشده")}
@@ -57,7 +57,7 @@ function Compare() {
                   {row("ساعت کاری", (s) => <span className="flex flex-col gap-1">{s.hours}<OpenBadge salon={s} /></span>)}
                   {row("ویژگی‌ها", (s) => s.attributes.length ? s.attributes.map((a) => ATTRIBUTES.find((x) => x.id === a)?.label).join("، ") : "—")}
                   {row("نمونه‌کار", (s) => fmt.num(s.portfolio.length))}
-                  {row("تماس", (s) => validContactPhone(s.phone) ? <a href={`tel:${s.phone}`} className={btn({ variant: "outline", size: "sm" })}><Icon name="call" size={16} /> تماس</a> : "اطلاعات تماس موجود نیست")}
+                  {row("تماس", (s) => canContactSalon(s) ? <a href={`tel:${s.phone}`} className={btn({ variant: "outline", size: "sm" })}><Icon name="call" size={16} /> تماس</a> : "اطلاعات تماس موجود نیست")}
                 </tbody>
               </table>
             </div>

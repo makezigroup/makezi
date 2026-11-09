@@ -1,0 +1,15 @@
+ALTER TABLE public.salons ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.reviews ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.partnership_requests ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.directory_categories ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.directory_locations ADD COLUMN is_demo boolean NOT NULL DEFAULT false;
+ALTER TABLE public.salons ADD CONSTRAINT demo_salons_not_verified CHECK(NOT is_demo OR COALESCE(data->>'status','unverified')<>'verified');
+ALTER TABLE public.reviews ADD CONSTRAINT demo_reviews_not_verified CHECK(NOT is_demo OR kind='community');
+CREATE OR REPLACE VIEW public.published_reviews WITH (security_barrier=true) AS SELECT r.id,r.salon_id,r.author,r.service,r.dims,r.text,r.title,r.visit_date,r.status,r.kind,r.reply,r.created_at,r.is_demo FROM public.reviews r JOIN public.salons s ON s.id=r.salon_id WHERE r.status='approved' AND s.published AND NOT s.archived;
+CREATE FUNCTION public.tag_demo_review() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF EXISTS(SELECT 1 FROM public.salons WHERE id=NEW.salon_id AND is_demo) THEN NEW.is_demo=true; NEW.kind='community'; END IF; RETURN NEW; END $$;
+CREATE TRIGGER tag_demo_review BEFORE INSERT OR UPDATE ON public.reviews FOR EACH ROW EXECUTE FUNCTION public.tag_demo_review();
+ALTER TABLE public.partnership_requests DROP CONSTRAINT partnership_requests_status_check;
+ALTER TABLE public.partnership_requests ADD CONSTRAINT partnership_requests_status_check CHECK(status IN ('new','under-review','contacted','accepted','rejected','closed'));
+CREATE INDEX demo_salons_idx ON public.salons(is_demo);
+CREATE INDEX demo_reviews_idx ON public.reviews(is_demo);

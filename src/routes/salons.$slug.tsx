@@ -16,8 +16,8 @@ export const Route = createFileRoute("/salons/$slug")({
     if (!s) return seo("سالن پیدا نشد", "این سالن در میکزی پیدا نشد.", { noindex: true });
     const path = `/salons/${s.slug}`;
     return seo(`${s.name}، ${areaName(s.city, s.area)}`, `خدمات، قیمت اعلام‌شده، نمونه‌کار، ساعت کاری و نظرهای ${s.name}.`, {
-      path,
-      jsonLd: [
+      path, noindex: !!s.isDemo,
+      jsonLd: s.isDemo ? [] : [
         { "@context": "https://schema.org", "@type": "BeautySalon", name: s.name, address: s.address, telephone: s.phone, url: SITE_URL + path },
         breadcrumbLd([{ name: "سالن‌ها", path: "/salons" }, { name: s.name, path }]),
       ],

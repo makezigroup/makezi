@@ -37,16 +37,12 @@ export const getCategory = (id: string) => CATEGORIES.find((c) => c.id === id);
 export interface Area { slug: string; name: string }
 export interface City { slug: string; name: string; areas: Area[] }
 export const CITIES: City[] = [
-  {
-    slug: "tehran",
-    name: "تهران",
-    areas: [
-      { slug: "area-1", name: "[محله ۱]" },
-      { slug: "area-2", name: "[محله ۲]" },
-      { slug: "area-3", name: "[محله ۳]" },
-      { slug: "area-4", name: "[محله ۴]" },
-    ],
-  },
+  {slug:'tehran',name:'تهران',areas:[{slug:'vanak',name:'ونک'},{slug:'saadat-abad',name:'سعادت‌آباد'},{slug:'narmak',name:'نارمک'},{slug:'tajrish',name:'تجریش'}]},
+  {slug:'qom',name:'قم',areas:[{slug:'salarieh',name:'سالاریه'},{slug:'safashahr',name:'صفاشهر'}]},
+  {slug:'karaj',name:'کرج',areas:[{slug:'azimieh',name:'عظیمیه'},{slug:'mehrshahr',name:'مهرشهر'}]},
+  {slug:'isfahan',name:'اصفهان',areas:[{slug:'mardavij',name:'مرداویج'},{slug:'jolfa',name:'جلفا'}]},
+  {slug:'shiraz',name:'شیراز',areas:[{slug:'maali-abad',name:'معالی‌آباد'},{slug:'ghasr-dasht',name:'قصرالدشت'}]},
+  {slug:'mashhad',name:'مشهد',areas:[{slug:'sajjad',name:'سجاد'},{slug:'ahmad-abad',name:'احمدآباد'}]},
 ];
 export const getCity = (slug: string) => CITIES.find((c) => c.slug === slug);
 export const getArea = (city: string, area: string) => getCity(city)?.areas.find((a) => a.slug === area);
@@ -86,6 +82,7 @@ export interface Salon {
   name: string;
   published: boolean;
   archived?: boolean;
+  isDemo?: boolean;
   status: VerifyStatus;
   city: string;
   area: string; // area slug
@@ -118,6 +115,7 @@ export interface Salon {
 export type ReviewKind = "community" | "verified-visit";
 export type ReviewStatus = "pending" | "approved" | "rejected" | "hidden" | "reported";
 export interface Review {
+  isDemo?: boolean;
   id: string;
   salonId: string;
   author: string;

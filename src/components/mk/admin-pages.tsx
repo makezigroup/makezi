@@ -34,7 +34,15 @@ export function AdminHome() {
   const fmt = useFmt();
   const { salons, reviews, inquiries } = useApp();
   const stats: [string, number, "salon" | "review" | "support" | "verified"][] = [
-    ["سالن‌های منتشرشده", salons.filter((s) => s.published).length, "salon"],
+    ["همه‌ی سالن‌ها",salons.length,"salon"],
+    ["پیش‌نویس‌ها",salons.filter(s=>!s.published&&!s.archived).length,"salon"],
+    ["آرشیوشده",salons.filter(s=>s.archived).length,"salon"],
+    ["همه‌ی نظرها",reviews.length,"review"],
+    ["نظرهای ردشده",reviews.filter(r=>r.status==='rejected').length,"review"],
+    ["دسته‌های خدمات",CATEGORIES.length,"salon"],
+    ["خدمات ثبت‌شده",salons.reduce((n,s)=>n+s.services.length,0),"salon"],
+    ["درخواست‌های همکاری",inquiries.length,"support"],
+    ["سالن‌های منتشرشده", salons.filter((s) => s.published && !s.archived).length, "salon"],
     ["نظرهای منتظر بررسی", reviews.filter((r) => r.status === "pending").length, "review"],
     ["نظرهای گزارش‌شده", reviews.filter((r) => r.reports.length && r.status !== "rejected").length, "review"],
     ["درخواست‌های جدید", inquiries.filter((i) => i.status === "new").length, "support"],
@@ -86,7 +94,7 @@ export function AdminSalons() {
                 <tr key={s.id} className="border-b border-border last:border-0">
                   <td className="p-3 font-semibold">{s.name}</td>
                   <td className="p-3">{areaName(s.city, s.area)}</td>
-                  <td className="p-3"><VerifyBadge status={s.status} /></td>
+                  <td className="p-3">{s.isDemo ? <StatusBadge tone="neutral">اطلاعات نمونه</StatusBadge> : <VerifyBadge status={s.status} />}</td>
                   <td className="p-3">{fmt.num(s.services.length)}</td>
                   <td className="p-3">{fmt.date(s.checkedAt, { day: "numeric", month: "short", year: "numeric" })}</td>
                   <td className="p-3"><Switch checked={s.published} aria-label={`انتشار ${s.name}`} onCheckedChange={(v) => { upsertSalon({ ...s, published: v }); toast.success(v ? "منتشر شد." : "از نمایش عمومی خارج شد."); }} /></td>
@@ -127,7 +135,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
     if (s.name.trim().length < 2) e.name = "نام سالن را بنویسید.";
     if (!/^[a-z0-9-]{3,60}$/.test(s.slug)) e.slug = "فقط حروف کوچک لاتین، عدد و خط تیره (۳ تا ۶۰ نویسه).";
     else if (salons.some((x) => x.slug === s.slug && x.id !== s.id) || CITIES.some((c) => c.slug === s.slug)) e.slug = "این نشانی قبلاً استفاده شده است.";
-    if (normalizePhone(s.phone).length < 8) e.phone = "شماره‌ی تماس معتبر نیست.";
+    if (!s.isDemo && normalizePhone(s.phone).length < 8) e.phone = "شماره‌ی تماس معتبر نیست.";
     if (s.address.trim().length < 3) e.address = "آدرس را بنویسید.";
     if (s.categories.length === 0) e.categories = "دست‌کم یک دسته انتخاب کنید.";
     if (s.openHour >= s.closeHour) e.hours = "ساعت پایان باید بعد از ساعت شروع باشد.";
@@ -258,7 +266,7 @@ export function AdminReviews() {
                       {r.status !== "rejected" && <Button size="sm" variant="danger" onClick={() => act(r, { status: "rejected", moderationNote: "خلاف قوانین محتوا" }, "نظر رد شد.")}>رد</Button>}
                       {r.status === "approved" && <Button size="sm" variant="outline" onClick={() => act(r, { status: "hidden" }, "نظر پنهان شد.")}>پنهان</Button>}
                       {r.kind === "community" ? (
-                        <Button size="sm" variant="outline" disabled={!r.evidenceSubmitted} title={r.evidenceSubmitted ? undefined : "مدرکی پیوست نشده است"} onClick={() => act(r, { kind: "verified-visit" }, "برچسب مراجعه‌ی تأییدشده اضافه شد.")}>تأیید مراجعه</Button>
+                        <Button size="sm" variant="outline" disabled={r.isDemo || !r.evidenceSubmitted} title={r.evidenceSubmitted ? undefined : "مدرکی پیوست نشده است"} onClick={() => act(r, { kind: "verified-visit" }, "برچسب مراجعه‌ی تأییدشده اضافه شد.")}>تأیید مراجعه</Button>
                       ) : (
                         <Button size="sm" variant="ghost" onClick={() => act(r, { kind: "community" }, "برچسب برداشته شد.")}>برداشتن برچسب مراجعه</Button>
                       )}
@@ -328,7 +336,7 @@ export function AdminCategories() {
                 <td className="p-3 font-semibold">{v.name}</td>
                 <td className="p-3">{getCategory(v.category)?.label}</td>
                 <td className="p-3">{s.name}</td>
-                <td className="p-3">{v.priceFrom && "از "}{fmt.price(v.price)}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</td>
+                <td className="p-3">{v.priceFrom && "از "}{v.price>0 ? fmt.price(v.price) : "قیمت اعلام نشده"}{v.priceMax ? ` تا ${fmt.price(v.priceMax)}` : ""}</td>
                 <td className="p-3">{v.updated < isoDay(-90) ? <StatusBadge tone="warning">{fmt.date(v.updated, { day: "numeric", month: "short" })}</StatusBadge> : fmt.date(v.updated, { day: "numeric", month: "short" })}</td>
                 <td className="p-3"><Link to="/admin/salons/$id" params={{ id: s.id }} className={btn({ variant: "ghost", size: "sm" })}>ویرایش</Link></td>
               </tr>
@@ -344,7 +352,7 @@ export function AdminCategories() {
 export function AdminInquiries() {
   const { inquiries, updateInquiry } = useApp();
   const fmt = useFmt();
-  const LABEL = { new: "جدید", contacted: "تماس گرفته شد", accepted: "پذیرفته‌شده", closed: "بسته‌شده" } as const;
+  const LABEL = { new: "جدید", "under-review": "در حال بررسی", rejected: "ردشده", contacted: "تماس گرفته شد", accepted: "پذیرفته‌شده", closed: "بسته‌شده" } as const;
   return (
     <>
       <DashTitle title="درخواست کسب‌وکارها" body="درخواست‌های معرفی سالن یا اصلاح اطلاعات که از فرم «معرفی سالن» رسیده است." />
@@ -354,6 +362,7 @@ export function AdminInquiries() {
             <Card key={q.id} className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-h3">{q.business}</h2>
+                {q.isDemo && <StatusBadge tone="neutral">اطلاعات نمونه</StatusBadge>}
                 <StatusBadge tone={q.status === "new" ? "info" : q.status === "contacted" ? "warning" : "neutral"}>{LABEL[q.status]}</StatusBadge>
               </div>
               <p className="text-caption text-muted-foreground"><bdi dir="ltr" className="font-mono">{q.id}</bdi> · {fmt.date(q.date, { day: "numeric", month: "long" })} · {q.name} · <bdi dir="ltr">{fmt.digits(q.phone)}</bdi></p>
