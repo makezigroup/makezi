@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "میکزی MAKEZI — انتخاب آگاهانه در زیبایی" },
-      { name: "description", content: "سالن زیبایی را با قیمت ثبت‌شده، مدارک بررسی‌شده و نظرهای تأییدشده پیدا کنید و نوبت بگیرید." },
+      { name: "description", content: "سالن‌های زیبایی را با خدمات، قیمت اعلام‌شده، نمونه‌کار و نظرهای بررسی‌شده پیدا و مقایسه کنید." },
       { name: "theme-color", content: "#101C22" },
     ],
     links: [

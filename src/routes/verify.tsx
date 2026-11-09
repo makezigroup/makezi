@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/mk/layout";
@@ -16,6 +16,7 @@ const DEMO_CODE = "12345";
 
 function Verify() {
   const nav = useNavigate();
+  const router = useRouter();
   const { signIn } = useApp();
   const fmt = useFmt();
   const [phone, setPhone] = useState<string | null>(null);
@@ -45,7 +46,10 @@ function Verify() {
             if (code !== DEMO_CODE) return setErr("کد درست نیست. دوباره وارد کنید یا کد جدید بگیرید.");
             signIn(phone);
             toast.success("وارد شدید.");
-            nav({ to: "/my-bookings" });
+            const back = sessionStorage.getItem("mkz-return");
+            sessionStorage.removeItem("mkz-return");
+            if (back) router.history.push(back);
+            else nav({ to: "/account" });
           }}
         >
           <h1 className="text-h2">کد تأیید</h1>

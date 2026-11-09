@@ -4,14 +4,17 @@ import { SiteLayout } from "@/components/mk/layout";
 import { Button, DemoNote, Field, LogoMark, inputCls } from "@/components/mk/core";
 import { isValidPhone, normalizePhone } from "@/lib/format";
 import { seo } from "@/lib/seo";
+import { z } from "zod";
 
 export const Route = createFileRoute("/login")({
   head: () => seo("ورود با موبایل", "با شماره‌ی موبایل وارد میکزی شوید.", { noindex: true }),
+  validateSearch: z.object({ redirect: z.string().optional() }),
   component: Login,
 });
 
 function Login() {
   const nav = useNavigate();
+  const { redirect } = Route.useSearch();
   const [phone, setPhone] = useState("");
   const [err, setErr] = useState("");
   return (
@@ -24,6 +27,9 @@ function Login() {
             e.preventDefault();
             if (!isValidPhone(phone)) return setErr("شماره‌ی موبایل ۱۱ رقم است و با ۰۹ شروع می‌شود.");
             sessionStorage.setItem("mkz-otp-phone", normalizePhone(phone));
+            // Only same-site paths are allowed as a return target.
+            if (redirect?.startsWith("/") && !redirect.startsWith("//")) sessionStorage.setItem("mkz-return", redirect);
+            else sessionStorage.removeItem("mkz-return");
             nav({ to: "/verify" });
           }}
         >

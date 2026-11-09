@@ -8,7 +8,7 @@ import { Crumbs } from "./location-pages";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ATTRIBUTES, CATEGORIES, areaName, getCategory, getCity, priceFrom, reviewOverall, type Salon } from "@/lib/data";
 import { DECISIONS } from "@/lib/decisions";
-import { hasReviewed, publicReviews, validateReview } from "@/lib/rules";
+import { hasReviewed, publicReviews, validateReview, type ReviewErrors } from "@/lib/rules";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -283,7 +283,7 @@ function ReviewForm({ salon }: { salon: Salon }) {
   const [dims, setDims] = useState<(number | null)[]>(DECISIONS.ratingDimensions.map(() => null));
   const [text, setText] = useState("");
   const [evidence, setEvidence] = useState<File | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<ReviewErrors>({});
   const [sent, setSent] = useState(false);
 
   if (!phone)

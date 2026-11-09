@@ -15,5 +15,5 @@ describe("Persian formatting", () => {
 });
 describe("discovery filters", () => {
   it("verified-only hides pending and unverified salons", () =>
-    expect(filterSalons(SALONS, { verified: true }).every((s) => s.status === "verified")).toBe(true));
+    expect(filterSalons(SALONS, [], { verified: true }).every((s) => s.status === "verified")).toBe(true));
 });

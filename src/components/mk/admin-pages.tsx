@@ -108,12 +108,13 @@ const blankSalon = (id: string): Salon => ({
 });
 const WEEKDAYS = ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
 
+type SalonErrors = Partial<Record<"name" | "slug" | "phone" | "address" | "categories" | "hours" | "services", string>>;
 export function AdminSalonEdit({ id }: { id: string }) {
   const { salons, upsertSalon } = useApp();
   const nav = useNavigate();
   const existing = salons.find((s) => s.id === id);
   const [s, setS] = useState<Salon>(() => existing ?? blankSalon(`s-${Date.now()}`));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<SalonErrors>({});
   useEffect(() => { if (existing) setS(existing); }, [existing?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   if (id !== "new" && !existing) return <StatePanel icon="salon" title="این سالن پیدا نشد" action={<Link to="/admin/salons" className={btn()}>بازگشت</Link>} />;
   const set = (p: Partial<Salon>) => setS((x) => ({ ...x, ...p }));
@@ -121,7 +122,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
   const setSvc = (i: number, p: Partial<Service>) => set({ services: s.services.map((v, j) => (j === i ? { ...v, ...p, updated: isoDay(0) } : v)) });
 
   const save = () => {
-    const e: Record<string, string> = {};
+    const e: SalonErrors = {};
     if (s.name.trim().length < 2) e.name = "نام سالن را بنویسید.";
     if (!/^[a-z0-9-]{3,60}$/.test(s.slug)) e.slug = "فقط حروف کوچک لاتین، عدد و خط تیره (۳ تا ۶۰ نویسه).";
     else if (salons.some((x) => x.slug === s.slug && x.id !== s.id) || CITIES.some((c) => c.slug === s.slug)) e.slug = "این نشانی قبلاً استفاده شده است.";
@@ -132,7 +133,7 @@ export function AdminSalonEdit({ id }: { id: string }) {
     if (s.services.some((v) => !v.name.trim() || v.price <= 0 || (v.priceMax != null && v.priceMax < v.price))) e.services = "هر خدمت نام و قیمت معتبر داشته باشد (سقف قیمت کمتر از کف نباشد).";
     if (s.published && s.services.length === 0) e.services = "برای انتشار، دست‌کم یک خدمت لازم است.";
     setErrors(e);
-    if (Object.keys(e).length) return toast.error("چند مورد نیاز به اصلاح دارد.");
+    if (Object.keys(e).length) { toast.error("چند مورد نیاز به اصلاح دارد."); return; }
     upsertSalon({ ...s, phone: normalizePhone(s.phone), checkedAt: isoDay(0) });
     toast.success("پروفایل ذخیره شد.");
     nav({ to: "/admin/salons" });

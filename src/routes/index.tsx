@@ -3,56 +3,52 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/mk/layout";
 import { Icon, SectionHead, btn, Dot, inputCls } from "@/components/mk/core";
 import { SalonCard, SafeImg } from "@/components/mk/marketplace";
-import { AREAS, CATEGORIES, FAQ, GALLERY, IMAGES, SALONS } from "@/lib/data";
+import { CATEGORIES, CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
+import { usePublicSalons } from "@/lib/app-store";
+import { track } from "@/lib/analytics";
 import { seo } from "@/lib/seo";
-import type { DiscoverSearch } from "@/lib/filters";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
-  head: () => seo("انتخاب آگاهانه در زیبایی", "سالن زیبایی را با قیمت ثبت‌شده، مدارک بررسی‌شده و نظرهای تأییدشده پیدا کنید، مقایسه کنید و نوبت بگیرید."),
+  head: () => seo("انتخاب آگاهانه در زیبایی", "سالن‌های زیبایی را با خدمات، قیمت اعلام‌شده، نمونه‌کار و نظرهای بررسی‌شده پیدا و مقایسه کنید.", { path: "/" }),
   component: Home,
 });
 
 function HeroSearch() {
   const nav = useNavigate();
+  const [q, setQ] = useState("");
   const [cat, setCat] = useState("");
   const [area, setArea] = useState("");
-  const [date, setDate] = useState("");
+  const city = CITIES[0]!;
   return (
     <form
       role="search"
       aria-label="جست‌وجوی سالن"
       onSubmit={(e) => {
         e.preventDefault();
-        nav({ to: "/discover", search: { cat: (cat || undefined) as DiscoverSearch["cat"], area: area || undefined, date: (date || undefined) as DiscoverSearch["date"] } });
+        track("search_submitted", { source: "home" });
+        const c = CATEGORIES.find((x) => x.id === cat);
+        nav({ to: "/salons", search: { q: q.trim() || undefined, cat: c?.id, city: area ? city.slug : undefined, area: area || undefined } });
       }}
-      className="grid gap-3 rounded-card bg-card p-4 shadow-modal sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]"
+      className="grid gap-3 rounded-card bg-card p-4 shadow-modal sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto]"
     >
+      <label className="flex flex-col gap-1 text-caption font-semibold sm:col-span-2 lg:col-span-1">
+        نام سالن یا خدمت
+        <input className={inputCls} value={q} onChange={(e) => setQ(e.target.value)} placeholder="مثلاً کاشت ناخن" />
+      </label>
       <label className="flex flex-col gap-1 text-caption font-semibold">
         خدمت
         <select className={inputCls} value={cat} onChange={(e) => setCat(e.target.value)}>
           <option value="">همه‌ی خدمات</option>
-          {CATEGORIES.map((c) => (
-            <option key={c.id} value={c.id}>{c.label}</option>
-          ))}
+          {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
         </select>
       </label>
       <label className="flex flex-col gap-1 text-caption font-semibold">
-        محله
+        محله ({city.name})
         <select className={inputCls} value={area} onChange={(e) => setArea(e.target.value)}>
           <option value="">همه‌ی محله‌ها</option>
-          {AREAS.map((a) => (
-            <option key={a}>{a}</option>
-          ))}
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-caption font-semibold">
-        تاریخ (اختیاری)
-        <select className={inputCls} value={date} onChange={(e) => setDate(e.target.value)}>
-          <option value="">هر زمان</option>
-          <option value="today">امروز</option>
-          <option value="tomorrow">فردا</option>
+          {city.areas.map((a) => <option key={a.slug} value={a.slug}>{a.name}</option>)}
         </select>
       </label>
       <button type="submit" className={cn(btn({ size: "md" }), "self-end sm:col-span-2 lg:col-span-1")}>
@@ -63,48 +59,39 @@ function HeroSearch() {
 }
 
 function Home() {
-  const featured = SALONS.filter((s) => s.status === "verified").slice(0, 4);
+  const salons = usePublicSalons();
+  const featured = [...salons].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt)).slice(0, 4);
+  const gallery = galleryOf(salons).slice(0, 4);
   return (
     <SiteLayout>
-      {/* Hero */}
       <section className="container-mk grid items-center gap-10 pb-16 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
         <div className="flex flex-col gap-6">
-          <p className="flex items-center gap-2 text-caption font-semibold text-muted-foreground">
-            <Dot /> انتخاب آگاهانه در زیبایی
-          </p>
+          <p className="flex items-center gap-2 text-caption font-semibold text-muted-foreground"><Dot /> انتخاب آگاهانه در زیبایی</p>
           <h1 className="text-display">
-            سالن را با <span className="bg-lime px-2 text-brand-ink [box-decoration-break:clone]">قیمت و نمونه‌کار واقعی</span> انتخاب کنید
+            سالن را با <span className="bg-lime px-2 text-brand-ink [box-decoration-break:clone]">اطلاعات روشن</span> پیدا و مقایسه کنید
           </h1>
           <p className="max-w-xl text-body-l text-muted-foreground">
-            قیمت ثبت‌شده‌ی هر خدمت، مدارک بررسی‌شده و نظر کسانی که واقعاً نوبت گرفته‌اند را کنار هم ببینید و بدون تماس و پیام، نوبت رزرو کنید.
+            خدمات و قیمت اعلام‌شده، نمونه‌کار، مدارک و نظرهای بررسی‌شده‌ی سالن‌ها را کنار هم ببینید؛ بعد مستقیم با سالن تماس بگیرید.
           </p>
           <HeroSearch />
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => (
-              <Link key={c.id} to="/discover" search={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline hover:bg-muted">
+              <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline hover:bg-muted">
                 <Icon name={c.icon} size={18} /> {c.label}
               </Link>
             ))}
           </div>
         </div>
-        <div className="relative">
-          <SafeImg src={IMAGES.heroNails} alt="ژلیش صورتی روی دست؛ نمونه‌ی تصویر" eager className="aspect-[4/5] w-full rounded-sheet lg:aspect-[4/4.6]" />
-          <div className="absolute -bottom-6 start-6 flex max-w-64 flex-col gap-1 rounded-card bg-card p-4 shadow-modal">
-            <span className="text-label text-muted-foreground">ژلیش دست · سالن [نام ۲]</span>
-            <span className="font-semibold">۴۵۰٬۰۰۰ تومان</span>
-            <span className="flex items-center gap-1 text-label text-success-text"><Icon name="verified" size={14} /> قیمت ثبت‌شده · به‌روزرسانی ۱۲ مهر</span>
-          </div>
-        </div>
+        <SafeImg src={IMAGES.heroNails} alt="ژلیش صورتی روی دست؛ تصویر نمونه" eager className="aspect-[4/5] w-full rounded-sheet lg:aspect-[4/4.6]" />
       </section>
 
-      {/* How it works */}
       <section className="container-mk py-16">
-        <SectionHead eyebrow="سه قدم" title="پیدا کنید، مقایسه کنید، رزرو کنید" />
+        <SectionHead eyebrow="سه قدم" title="پیدا کنید، مقایسه کنید، تماس بگیرید" />
         <ol className="grid gap-4 md:grid-cols-3">
           {[
-            { i: "search" as const, t: "پیدا کنید", b: "بر اساس خدمت، محله، قیمت و زمان خالی جست‌وجو کنید." },
-            { i: "sort" as const, t: "مقایسه کنید", b: "قیمت ثبت‌شده، نمونه‌کار، مدارک و نظرهای تأییدشده را کنار هم ببینید. ترتیب نتایج همیشه توضیح داده می‌شود." },
-            { i: "calendar" as const, t: "رزرو کنید", b: "خدمت، متخصص و ساعت را انتخاب کنید و وضعیت نوبت را در «نوبت‌های من» دنبال کنید." },
+            { i: "search" as const, t: "پیدا کنید", b: "بر اساس خدمت، محله، قیمت، امتیاز و ویژگی‌ها جست‌وجو کنید." },
+            { i: "sort" as const, t: "مقایسه کنید", b: "تا سه سالن را کنار هم ببینید. معیار ترتیب نتایج همیشه نوشته می‌شود." },
+            { i: "call" as const, t: "تماس بگیرید", b: "با خود سالن تماس بگیرید یا مسیر را در نقشه باز کنید." },
           ].map((s, n) => (
             <li key={s.t} className="flex flex-col gap-3 rounded-card bg-card p-6 shadow-card">
               <span className="flex items-center justify-between">
@@ -118,31 +105,20 @@ function Home() {
         </ol>
       </section>
 
-      {/* Featured */}
       <section className="container-mk py-16">
-        <SectionHead
-          eyebrow="سالن‌های دارای مدارک تأییدشده"
-          title="چند سالن برای شروع"
-          body="مرتب‌شده بر اساس کامل‌بودن پروفایل. همه‌ی داده‌ها در این نسخه نمونه هستند."
-          action={<Link to="/discover" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>}
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((s) => (
-            <SalonCard key={s.id} salon={s} />
-          ))}
-        </div>
+        <SectionHead eyebrow="تازه بررسی‌شده" title="چند سالن برای شروع" body="مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی. داده‌های این نسخه نمونه‌اند." action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map((s) => <SalonCard key={s.id} salon={s} />)}</div>
       </section>
 
-      {/* Trust */}
       <section className="bg-inverse py-20 text-inverse-foreground">
         <div className="container-mk">
           <h2 className="text-h2">به‌جای ادعا، شواهد</h2>
-          <p className="mt-2 max-w-2xl text-body-l opacity-80">هرجا ممکن است «بهترین» بگوییم، یک عدد یا مدرک نشان می‌دهیم.</p>
+          <p className="mt-2 max-w-2xl text-body-l opacity-80">هر چه نمایش می‌دهیم، منبع و تاریخ دارد.</p>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
-              { i: "payment" as const, t: "قیمت ثبت‌شده", b: "هر سالن قیمت خدماتش را با تاریخ به‌روزرسانی ثبت می‌کند. اگر قیمت «از» باشد، دلیلش هم نوشته می‌شود." },
-              { i: "verified" as const, t: "مدارک بررسی‌شده", b: "مدرک فنی و مجوز بهداشت سالن بررسی می‌شود. این برچسب درباره‌ی مدارک است، نه تضمین کیفیت." },
-              { i: "review" as const, t: "نظر پس از رزرو", b: "فقط کسی که نوبتش انجام شده می‌تواند نظر بنویسد؛ و سالن می‌تواند پاسخ دهد." },
+              { i: "payment" as const, t: "قیمت با تاریخ", b: "قیمت هر خدمت با تاریخ آخرین بررسی تیم میکزی نمایش داده می‌شود." },
+              { i: "verified" as const, t: "مدارک بررسی‌شده", b: "برچسب «تأییدشده» درباره‌ی مدارک است، نه تضمین کیفیت." },
+              { i: "review" as const, t: "نظرهای بررسی‌شده", b: "هر نظر پیش از انتشار بررسی می‌شود؛ نظرهای دارای مدرک مراجعه جدا برچسب می‌خورند." },
             ].map((f) => (
               <div key={f.t} className="flex flex-col gap-3 rounded-card border border-current/15 p-6">
                 <span className="grid size-12 place-items-center rounded-full bg-lime text-brand-ink"><Icon name={f.i} /></span>
@@ -154,46 +130,39 @@ function Home() {
         </div>
       </section>
 
-      {/* Gallery teaser */}
-      <section className="container-mk py-16">
-        <SectionHead
-          eyebrow="گالری مدل"
-          title="ایده بگیرید، همان را رزرو کنید"
-          body="هر مدل به سالن سازنده و خدمت مربوطش وصل است."
-          action={<Link to="/gallery" className={btn({ variant: "outline", size: "sm" })}>دیدن گالری</Link>}
-        />
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {GALLERY.slice(0, 4).map((g) => (
-            <Link key={g.id} to="/gallery" className="group block overflow-hidden rounded-card no-underline">
-              <SafeImg src={g.image} alt={g.title} className="aspect-[4/5] w-full transition-transform ease-mk group-hover:scale-[1.02]" />
-              <p className="mt-2 text-caption font-semibold text-foreground">{g.title}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* For salons */}
-      <section className="container-mk py-16">
-        <div className="grid items-center gap-8 overflow-hidden rounded-sheet bg-card shadow-card md:grid-cols-2">
-          <SafeImg src={IMAGES.interior} alt="فضای داخلی یک سالن ناخن؛ تصویر نمونه" className="aspect-[3/2] size-full" />
-          <div className="flex flex-col gap-4 p-6 md:p-10">
-            <p className="flex items-center gap-2 text-caption font-semibold text-muted-foreground"><Dot /> برای سالن‌ها</p>
-            <h2 className="text-h2">با کیفیت کارتان دیده شوید، نه با بودجه‌ی تبلیغات</h2>
-            <p className="text-muted-foreground">پروفایل ساختاریافته با قیمت، نمونه‌کار و مدارک؛ و پنلی برای مدیریت نوبت‌ها و پاسخ به نظرها.</p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/salon/onboarding" className={btn()}>ثبت سالن</Link>
-              <Link to="/for-salons" className={btn({ variant: "outline" })}>بیشتر بدانید</Link>
-            </div>
+      {gallery.length > 0 && (
+        <section className="container-mk py-16">
+          <SectionHead eyebrow="نمونه‌کار" title="کار سالن‌ها را ببینید" body="هر تصویر به پروفایل سالن سازنده وصل است." action={<Link to="/gallery" className={btn({ variant: "outline", size: "sm" })}>همه‌ی نمونه‌کارها</Link>} />
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {gallery.map((g) => {
+              const s = salons.find((x) => x.id === g.salonId)!;
+              return (
+                <Link key={g.salonId + g.id} to="/salons/$slug" params={{ slug: s.slug }} className="group block overflow-hidden rounded-card no-underline">
+                  <SafeImg src={g.image} alt={`${g.title} — ${s.name}`} className="aspect-[4/5] w-full transition-transform ease-mk group-hover:scale-[1.02]" />
+                  <p className="mt-2 text-caption font-semibold text-foreground">{g.title}</p>
+                  <p className="text-label text-muted-foreground">{s.name}</p>
+                </Link>
+              );
+            })}
           </div>
+        </section>
+      )}
+
+      <section className="container-mk py-16">
+        <div className="flex flex-col items-start gap-4 rounded-sheet bg-muted p-8 md:flex-row md:items-center">
+          <div className="flex-1">
+            <h2 className="text-h2">سالن دارید؟</h2>
+            <p className="mt-2 text-muted-foreground">درخواست ثبت بفرستید؛ تیم میکزی اطلاعات شما را بررسی و منتشر می‌کند.</p>
+          </div>
+          <Link to="/for-salons" className={btn({ variant: "ink", size: "lg" })}>درخواست ثبت سالن</Link>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="container-mk py-16">
-        <SectionHead title="پرسش‌های رایج" action={<Link to="/help" className={btn({ variant: "ghost", size: "sm" })}>همه‌ی پرسش‌ها</Link>} />
-        <Accordion type="single" collapsible className="rounded-card bg-card px-5 shadow-card">
-          {FAQ.slice(0, 4).map((f) => (
-            <AccordionItem key={f.q} value={f.q}>
+      <section className="container-mk max-w-3xl py-16">
+        <SectionHead title="پرسش‌های رایج" />
+        <Accordion type="single" collapsible>
+          {FAQ.map((f, i) => (
+            <AccordionItem key={i} value={String(i)}>
               <AccordionTrigger className="text-start text-body font-semibold">{f.q}</AccordionTrigger>
               <AccordionContent className="text-body text-muted-foreground">{f.a}</AccordionContent>
             </AccordionItem>

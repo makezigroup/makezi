@@ -29,8 +29,9 @@ export function scoreOf(approved: Review[]): Score {
 export const hasReviewed = (all: Review[], salonId: string, userKey: string) =>
   all.some((r) => r.salonId === salonId && r.userKey === userKey && r.status !== "rejected");
 
-export function validateReview(v: { service: string; dims: (number | null)[]; text: string }) {
-  const e: Record<string, string> = {};
+export type ReviewErrors = Partial<Record<"service" | "dims" | "text" | "evidence", string>>;
+export function validateReview(v: { service: string; dims: (number | null)[]; text: string }): ReviewErrors {
+  const e: ReviewErrors = {};
   if (!v.service) e.service = "خدمتی را که گرفته‌اید انتخاب کنید.";
   if (v.dims.length !== DECISIONS.ratingDimensions.length || v.dims.some((d) => !d || d < 1 || d > 5)) e.dims = "به همه‌ی بخش‌ها از ۱ تا ۵ امتیاز دهید.";
   const t = v.text.trim();
@@ -41,8 +42,9 @@ export function validateReview(v: { service: string; dims: (number | null)[]; te
   return e;
 }
 
-export function validateInquiry(v: { business: string; name: string; phone: string; city: string; message: string }) {
-  const e: Record<string, string> = {};
+export type InquiryErrors = Partial<Record<"business" | "name" | "phone" | "city" | "message", string>>;
+export function validateInquiry(v: { business: string; name: string; phone: string; city: string; message: string }): InquiryErrors {
+  const e: InquiryErrors = {};
   if (v.business.trim().length < 2) e.business = "نام کسب‌وکار را بنویسید.";
   if (v.name.trim().length < 2) e.name = "نام خود را بنویسید.";
   if (!isValidPhone(v.phone)) e.phone = "شماره‌ی موبایل ۱۱ رقمی و با ۰۹ شروع شود.";
