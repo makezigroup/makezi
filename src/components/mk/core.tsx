@@ -193,8 +193,9 @@ export const Field = ({ label, hint, error, children, htmlFor }: { label: string
   <div className="flex flex-col gap-1.5">
     <label htmlFor={htmlFor} className="text-caption font-semibold">
       {label}
+      {!htmlFor && <span className="mt-1.5 block font-normal">{children}</span>}
     </label>
-    {children}
+    {htmlFor && children}
     {error ? (
       <p role="alert" className="flex items-center gap-1 text-caption text-error-text">
         <XCircle className="size-3.5" aria-hidden /> {error}
