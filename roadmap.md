@@ -1,13 +1,16 @@
 # MAKEZI product transformation
 
 ## Complete product architecture
-- [ ] Audit discovery, account, administration, support, persistence, navigation and responsive states against the new brief.
-- [ ] Complete independent service discovery, service details, category filters and typed search results.
-- [ ] Persist contact/problem submissions and provide staff management.
-- [ ] Complete account profile, password flows, event-backed notifications, preferences and safe account-deletion requests.
-- [ ] Complete staff catalog/location/pricing/media, moderation/evidence, users, homepage/SEO and activity management.
-- [ ] Add review/content/verification policies and complete support navigation without inventing legal commitments.
-- [ ] Verify persistence, permissions, desktop/tablet/mobile journeys and SEO; report implemented, partial and blocked work separately.
+- [x] Audit discovery, account, administration, support, persistence, navigation and responsive states against the new brief.
+- [x] Add independent service discovery/details, category filters and typed search results.
+- [x] Persist contact/problem submissions and provide staff management.
+- [x] Add account profile, password pages, event-backed notifications, preferences and tracked account-deletion requests.
+- [x] Add staff catalog/location/pricing/media, documents, users, homepage/SEO and activity management.
+- [x] Add draft review/content/verification policies and support navigation without inventing legal commitments.
+- [x] Check persistence, denied-user permissions, desktop/tablet/mobile and metadata; record remaining verification limits in the architecture audit.
+- [ ] Finalize legal text, retention and account erasure — requires approved policy from MAKEZI.
+- [ ] Replace sample imagery and schematic map — requires authentic media, locations and consent.
+- [ ] Finalize official support channels and verification criteria — requires MAKEZI decisions.
 
 ## Populated demo preview
 - [x] Add identifiable, idempotent Cloud demo salons, services, reviews, requests and test accounts without modifying real records.
@@ -21,7 +24,7 @@
 - [x] Preserve visual identity; show accurate empty states and persisted profile metadata.
 - [x] Verify public/mobile flows and partnership persistence; document all incomplete requirements in the implementation report.
 - [x] Verify authenticated favorites, comparison, admin and denied-user views using securely provisioned demo accounts.
-- [ ] Connect salon image uploads — public storage is blocked by workspace policy.
+- [x] Add private salon media upload and controlled public-image delivery; avatar upload/render tested, salon-image end-to-end verification remains limited.
 
 ## Previous visual synchronization
 
