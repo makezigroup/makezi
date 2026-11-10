@@ -201,6 +201,18 @@
 }
 
 /* Approved live-site proportions, preserving the official brand tokens. */
+.app-phone-screen {
+  inset: 4.78% 9.3% 4.68%;
+  border-radius: 14% / 6.4%;
+}
+.app-phone-capture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  /* Trim only the browser scrollbar at the capture's far edge. */
+  clip-path: inset(0 1.1% 0 0);
+}
 .hero-search label {
   min-width: 0;
   gap: 6px;

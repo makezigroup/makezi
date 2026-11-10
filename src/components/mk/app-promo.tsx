@@ -6,25 +6,29 @@ import { useFmt } from "@/lib/app-store";
 import { APP_LINKS, isLinkReady } from "@/lib/app-links";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
-import iphoneMockup from "@/assets/iphone-mockup.png";
-import iphoneMockupDark from "@/assets/iphone-mockup-dark-natural.png.asset.json";
+import iphoneScreenLight from "@/assets/iphone-screen-light.png.asset.json";
+import iphoneScreenDark from "@/assets/iphone-screen-dark.png.asset.json";
+import iphoneFrame from "@/assets/iphone-frame-clean.png.asset.json";
 
 /** Official iPhone mockup showing the real MAKEZI discovery screen. Single phone, no caption. */
 export function AppPhoneMockup({ className }: { className?: string | undefined }) {
   return (
-    <div className={cn("w-56 sm:w-72", className)}>
+    <div className={cn("app-phone relative aspect-[527/1025] w-56 sm:w-72", className)}>
+      <div className="app-phone-screen absolute overflow-hidden bg-background">
       <img
-        src={iphoneMockup}
+        src={iphoneScreenLight.url}
         alt="نمای اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
-        className="w-full dark:hidden"
+        className="app-phone-capture dark:hidden"
         loading="lazy"
       />
       <img
-        src={iphoneMockupDark.url}
+        src={iphoneScreenDark.url}
         alt="نمای تیرهٔ اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
-        className="hidden w-full dark:block"
+        className="app-phone-capture hidden dark:block"
         loading="lazy"
       />
+      </div>
+      <img src={iphoneFrame.url} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 size-full" loading="lazy" />
     </div>
   );
 }
