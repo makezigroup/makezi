@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { Button, Dot, Icon, Logo, LogoMark, btn } from "./core";
@@ -6,7 +6,6 @@ import type { IconName } from "./icon-data";
 import { useApp } from "@/lib/app-store";
 import { CompareBar } from "./marketplace";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -82,26 +81,6 @@ export function DigitsToggle() {
   );
 }
 
-function HeaderSearch() {
-  const nav = useNavigate();
-  const [q, setQ] = useState("");
-  return (
-    <form
-      role="search"
-      onSubmit={(e) => {
-        e.preventDefault();
-        track("search_submitted", { source: "header" });
-        nav({ to: "/search", search: { q: q || undefined } });
-      }}
-      className="hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border-strong bg-surface px-4 lg:flex lg:max-w-xs"
-    >
-      <Icon name="search" size={20} className="text-muted-foreground" />
-      <label htmlFor="hq" className="sr-only">جست‌وجوی خدمت یا سالن</label>
-      <input id="hq" value={q} onChange={(e) => setQ(e.target.value)} placeholder="سالن، خدمت یا آدرس…" className="h-11 min-w-0 flex-1 bg-transparent text-caption outline-none" />
-    </form>
-  );
-}
-
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const { phone } = useApp();
@@ -117,13 +96,11 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex-1 xl:hidden" />
-        <HeaderSearch />
         <div className="flex items-center gap-1">
           <Link to="/app" className={cn(btn({ variant: "ghost", size: "sm" }), "hidden rounded-full bg-pink-soft font-bold text-pink-text hover:bg-pink-soft lg:inline-flex")}>
             <Icon name="add" size={18} /> دانلود اپ
           </Link>
           <ThemeToggle />
-          <Link to="/my-reviews" className={cn(btn({ variant: "ghost", size: "sm" }), "hidden xl:inline-flex")}><Icon name="review" size={18} /> نظرهای من</Link>
           <AccountMenu />
           <Button variant="ghost" className="size-11 min-h-11 rounded-full p-0 xl:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="منو">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
