@@ -35,16 +35,21 @@ export const CATEGORIES: { id: CategoryId; label: string; icon: IconName; image?
 export const getCategory = (id: string) => CATEGORIES.find((c) => c.id === id);
 
 export interface Area { slug: string; name: string }
-export interface City { slug: string; name: string; areas: Area[] }
+export interface City { slug: string; name: string; areas: Area[]; lat: number; lng: number }
 export const CITIES: City[] = [
-  {slug:'tehran',name:'تهران',areas:[{slug:'vanak',name:'ونک'},{slug:'saadat-abad',name:'سعادت‌آباد'},{slug:'narmak',name:'نارمک'},{slug:'tajrish',name:'تجریش'}]},
-  {slug:'qom',name:'قم',areas:[{slug:'salarieh',name:'سالاریه'},{slug:'safashahr',name:'صفاشهر'}]},
-  {slug:'karaj',name:'کرج',areas:[{slug:'azimieh',name:'عظیمیه'},{slug:'mehrshahr',name:'مهرشهر'}]},
-  {slug:'isfahan',name:'اصفهان',areas:[{slug:'mardavij',name:'مرداویج'},{slug:'jolfa',name:'جلفا'}]},
-  {slug:'shiraz',name:'شیراز',areas:[{slug:'maali-abad',name:'معالی‌آباد'},{slug:'ghasr-dasht',name:'قصرالدشت'}]},
-  {slug:'mashhad',name:'مشهد',areas:[{slug:'sajjad',name:'سجاد'},{slug:'ahmad-abad',name:'احمدآباد'}]},
+  {slug:'tehran',name:'تهران',lat:35.6892,lng:51.389,areas:[{slug:'vanak',name:'ونک'},{slug:'saadat-abad',name:'سعادت‌آباد'},{slug:'narmak',name:'نارمک'},{slug:'tajrish',name:'تجریش'}]},
+  {slug:'qom',name:'قم',lat:34.6401,lng:50.8764,areas:[{slug:'salarieh',name:'سالاریه'},{slug:'safashahr',name:'صفاشهر'}]},
+  {slug:'karaj',name:'کرج',lat:35.84,lng:50.9391,areas:[{slug:'azimieh',name:'عظیمیه'},{slug:'mehrshahr',name:'مهرشهر'}]},
+  {slug:'isfahan',name:'اصفهان',lat:32.6546,lng:51.668,areas:[{slug:'mardavij',name:'مرداویج'},{slug:'jolfa',name:'جلفا'}]},
+  {slug:'shiraz',name:'شیراز',lat:29.5918,lng:52.5837,areas:[{slug:'maali-abad',name:'معالی‌آباد'},{slug:'ghasr-dasht',name:'قصرالدشت'}]},
+  {slug:'mashhad',name:'مشهد',lat:36.2605,lng:59.6168,areas:[{slug:'sajjad',name:'سجاد'},{slug:'ahmad-abad',name:'احمدآباد'}]},
 ];
 export const getCity = (slug: string) => CITIES.find((c) => c.slug === slug);
+/** Nearest supported city to a browser geolocation fix (great-circle distance). */
+export function nearestCity(lat: number, lng: number): City {
+  const d2 = (c: City) => (c.lat - lat) ** 2 + (c.lng - lng) ** 2;
+  return CITIES.reduce((best, c) => (d2(c) < d2(best) ? c : best), CITIES[0]!);
+}
 export const getArea = (city: string, area: string) => getCity(city)?.areas.find((a) => a.slug === area);
 export const areaName = (city: string, area: string) => getArea(city, area)?.name ?? area;
 

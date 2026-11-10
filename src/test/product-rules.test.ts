@@ -15,3 +15,11 @@ describe('support validation',()=>{
   it('rejects external report paths',()=>expect(supportSchema.safeParse({...base,related_path:'//evil.test'}).success).toBe(false));
 });
 it('reads records beyond the former 100 and 500 record caps',async()=>{const input=Array.from({length:1101},(_,i)=>i);expect(await readAll(async(a,b)=>({data:input.slice(a,b+1),error:null}))).toHaveLength(1101);});
+describe('nearestCity (hero search geolocation)', () => {
+  it('maps a Tehran fix to tehran and a Shiraz fix to shiraz', async () => {
+    const { nearestCity } = await import('@/lib/data');
+    expect(nearestCity(35.7, 51.42).slug).toBe('tehran');
+    expect(nearestCity(29.62, 52.53).slug).toBe('shiraz');
+    expect(nearestCity(36.3, 59.6).slug).toBe('mashhad');
+  });
+});

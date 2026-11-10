@@ -1,11 +1,11 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/mk/layout";
-import { Button, Icon, SectionHead, StatePanel, btn, Dot, inputCls } from "@/components/mk/core";
+import { Icon, SectionHead, StatePanel, btn, Dot, inputCls } from "@/components/mk/core";
+import { HeroSearch } from "@/components/mk/hero-search";
 import { ReviewCard, SalonCard, SafeImg } from "@/components/mk/marketplace";
 import { CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
-import { track } from "@/lib/analytics";
 import { seo } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductData } from '@/lib/product.functions';
@@ -18,48 +18,6 @@ export const Route = createFileRoute("/")({
   head: () => seo("انتخاب آگاهانه در زیبایی", "سالن‌های زیبایی را با خدمات، قیمت اعلام‌شده، نمونه‌کار و نظرهای بررسی‌شده پیدا و مقایسه کنید.", { path: "/" }),
   component: Home,
 });
-
-function HeroSearch() {
-  const product=useProduct();
-  const nav = useNavigate();
-  const [q, setQ] = useState("");
-  const [cat, setCat] = useState("");
-  const [area, setArea] = useState("");
-  const city = CITIES[0];
-  return (
-    <form
-      role="search"
-      aria-label="جست‌وجوی سالن"
-      onSubmit={(e) => {
-        e.preventDefault();
-        track("search_submitted", { source: "home" });
-        const c = product.categories.find((x) => x.id === cat);
-        nav({ to: "/salons", search: { q: q.trim() || undefined, cat: c?.id, city: area ? city?.slug : undefined, area: area || undefined } });
-      }}
-      className="hero-search grid gap-3 rounded-card bg-card p-3 shadow-modal sm:grid-cols-3"
-    >
-      <label className="flex flex-col gap-1 text-caption font-semibold">
-        نام سالن یا خدمت
-        <input className={inputCls} value={q} onChange={(e) => setQ(e.target.value)} placeholder="مثلاً کاشت ناخن" />
-      </label>
-      <label className="flex flex-col gap-1 text-caption font-semibold">
-        چه خدمتی؟
-        <select className={inputCls} value={cat} onChange={(e) => setCat(e.target.value)}>
-          <option value="">همه‌ی خدمات</option>
-          {product.categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-caption font-semibold">
-        کجا؟
-        <select className={inputCls} value={area} onChange={(e) => setArea(e.target.value)}>
-          <option value="">همه‌ی محله‌ها</option>
-          {product.locations.filter(l=>l.area&&l.city===city?.slug).map((a) => <option key={a.id} value={a.area}>{a.label}</option>)}
-        </select>
-      </label>
-      <Button type="submit" className="sm:col-span-3"><Icon name="search" size={20} /> جست‌وجوی سالن</Button>
-    </form>
-  );
-}
 
 function Home() {
   const product = Route.useLoaderData();
@@ -76,27 +34,31 @@ function Home() {
   const gallery = galleryOf(salons).slice(0, 4);
   return (
     <SiteLayout>
-      <section className="container-mk grid items-center gap-10 pb-14 pt-8 md:pt-12 lg:grid-cols-[1.05fr_1fr] lg:pb-20">
-        <div className="flex flex-col gap-6">
-          <h1 className="text-display">
-            سالن‌های اطرافتان را یک‌جا <span className="text-pink-text">مقایسه</span> کنید<Dot className="ms-1" />
-          </h1>
-          <p className="max-w-xl text-body-l text-muted-foreground">
-            خدمات و قیمت اعلام‌شده، نمونه‌کار، مدارک و نظرهای بررسی‌شده‌ی سالن‌ها را کنار هم ببینید؛ بعد مستقیم با سالن تماس بگیرید.
-          </p>
+      <section className="container-mk pb-14 pt-8 md:pt-12 lg:pb-20">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
+          <div className="flex flex-col gap-6">
+            <h1 className="text-display">
+              سالن‌های اطرافتان را یک‌جا <span className="text-pink-text">مقایسه</span> کنید<Dot className="ms-1" />
+            </h1>
+            <p className="max-w-xl text-body-l text-muted-foreground">
+              خدمات و قیمت اعلام‌شده، نمونه‌کار، مدارک و نظرهای بررسی‌شده‌ی سالن‌ها را کنار هم ببینید؛ بعد مستقیم با سالن تماس بگیرید.
+            </p>
+          </div>
+          <div className="grid grid-cols-[1.35fr_1fr] gap-3">
+            <SafeImg src={IMAGES.heroNails} alt="ژلیش صورتی روی دست؛ تصویر نمونه" eager className="row-span-2 aspect-[4/5] h-full w-full rounded-card" />
+            <Link to="/gallery" className="flex flex-col justify-between gap-3 rounded-card bg-primary p-5 text-primary-foreground no-underline">
+              <span className="text-label">گالری مدل</span><span className="text-h3">مدلی را که پسندیدید پیدا کنید</span><span className="text-caption">دیدن گالری مدل</span>
+            </Link>
+            <SafeImg src={IMAGES.heroNails} alt="جزئیات نمونه‌کار ناخن؛ تصویر نمونه" className="aspect-square h-full w-full rounded-card" />
+          </div>
+        </div>
+        <div className="mt-8 flex flex-col gap-5">
           <HeroSearch />
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-muted-foreground">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-caption text-muted-foreground">
             <li className="flex items-center gap-1.5"><Icon name="verified" size={16} className="text-pink" /> مدارک بررسی‌شده</li>
             <li className="flex items-center gap-1.5"><Icon name="review" size={16} className="text-pink" /> نظرهای بررسی‌شده</li>
             <li className="flex items-center gap-1.5"><Icon name="payment" size={16} className="text-pink" /> قیمت پیش از رفتن</li>
           </ul>
-        </div>
-        <div className="grid grid-cols-[1.35fr_1fr] gap-3">
-          <SafeImg src={IMAGES.heroNails} alt="ژلیش صورتی روی دست؛ تصویر نمونه" eager className="row-span-2 aspect-[4/5] h-full w-full rounded-card" />
-          <Link to="/gallery" className="flex flex-col justify-between gap-3 rounded-card bg-primary p-5 text-primary-foreground no-underline">
-            <span className="text-label">گالری مدل</span><span className="text-h3">مدلی را که پسندیدید پیدا کنید</span><span className="text-caption">دیدن گالری مدل</span>
-          </Link>
-          <SafeImg src={IMAGES.heroNails} alt="جزئیات نمونه‌کار ناخن؛ تصویر نمونه" className="aspect-square h-full w-full rounded-card" />
         </div>
       </section>
 
