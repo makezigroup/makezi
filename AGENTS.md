@@ -31,3 +31,4 @@
 - Media policies isolate avatar folders to the caller, limit shared salon folders to persisted staff roles, and bind upload ownership to the caller; public taxonomy excludes archived rows and public site content is limited to homepage configuration.
 - Salon verification requires accepted staff-reviewed private documents; review notifications derive from actual updates and honor profile notification preferences.
 - App download links live only in `src/lib/app-links.ts`; marketplace buttons render a disabled «به‌زودی» state until a real https URL is configured — never invent store links. The PWA is manifest-only (`public/manifest.webmanifest` + icons); no service worker, since offline support was not requested.
+- The shared app phone mockup uses theme-specific real discovery screenshots inside the same official hardware frame, selected by the site dark variant so both promotion placements stay synchronized.

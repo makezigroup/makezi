@@ -1,5 +1,10 @@
 # MAKEZI product transformation
 
+## Requested visual cleanup
+- [x] Hide the comparison tray on the final comparison page without clearing selections.
+- [x] Remove search trust captions, homepage iPhone caption, step numbers and the evidence section.
+- [x] Match the official iPhone screen to the site's light/dark mode and verify both promotion placements.
+
 ## Complete product architecture
 - [x] Audit discovery, account, administration, support, persistence, navigation and responsive states against the new brief.
 - [x] Add independent service discovery/details, category filters and typed search results.

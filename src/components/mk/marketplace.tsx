@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, Icon, VerifyBadge, StatusBadge, Dot, btn } from "./core";
@@ -239,7 +239,8 @@ export function StarsInput({ label, value, onChange }: { label: string; value: n
 export function CompareBar() {
   const { compare, salons, toggleCompare, clearCompare } = useApp();
   const fmt = useFmt();
-  if (compare.length === 0) return null;
+  const pathname = useLocation({ select: (location) => location.pathname });
+  if (compare.length === 0 || pathname.replace(/\/$/, "") === "/compare") return null;
   const items = compare.map((id) => salons.find((s) => s.id === id)).filter(Boolean) as Salon[];
   return (
     <div className="fixed inset-x-0 bottom-4 z-20 px-3">

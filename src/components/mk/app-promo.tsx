@@ -7,16 +7,25 @@ import { APP_LINKS, isLinkReady } from "@/lib/app-links";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import iphoneMockup from "@/assets/iphone-mockup.png";
+import iphoneMockupDark from "@/assets/iphone-mockup-dark.png";
 
 /** Official iPhone mockup showing the real MAKEZI discovery screen. Single phone, no caption. */
 export function AppPhoneMockup({ className }: { className?: string | undefined }) {
   return (
-    <img
-      src={iphoneMockup}
-      alt="نمای اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
-      className={cn("w-56 sm:w-72", className)}
-      loading="lazy"
-    />
+    <div className={cn("w-56 sm:w-72", className)}>
+      <img
+        src={iphoneMockup}
+        alt="نمای اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
+        className="w-full dark:hidden"
+        loading="lazy"
+      />
+      <img
+        src={iphoneMockupDark}
+        alt="نمای تیرهٔ اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
+        className="hidden w-full dark:block"
+        loading="lazy"
+      />
+    </div>
   );
 }
 
@@ -79,7 +88,6 @@ export function AppPromoSection() {
               <Smartphone className="size-4" /> استفاده در آیفون
             </Link>
           </div>
-          <p className="text-caption text-muted-foreground">نسخه‌ی آیفون میکزی یک وب‌اپلیکیشن است که از طریق Safari به صفحه‌ی اصلی اضافه می‌شود.</p>
         </div>
         <div className="flex justify-center">
           <AppPhoneMockup />

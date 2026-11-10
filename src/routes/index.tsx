@@ -5,7 +5,7 @@ import { Icon, SectionHead, StatePanel, btn, Dot, inputCls } from "@/components/
 import { HeroSearch } from "@/components/mk/hero-search";
 import { ReviewCard, SalonCard, SafeImg } from "@/components/mk/marketplace";
 import { CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
-import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
+import { useApp, usePublicSalons } from "@/lib/app-store";
 import { seo } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductData } from '@/lib/product.functions';
@@ -25,7 +25,6 @@ function Home() {
   const selected = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['featured']) ? config['featured'] : [];
   const selectedServices = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['services']) ? config['services'] : [];
   const { reviews } = useApp();
-  const fmt = useFmt();
   const salons = usePublicSalons();
   const featured = selected.length ? salons.filter(s=>selected.includes(s.id)) : [...salons].sort((a, b) => b.checkedAt.localeCompare(a.checkedAt)).slice(0, 4);
   const [selectedCity,setSelectedCity] = useState("tehran");
@@ -54,11 +53,6 @@ function Home() {
         </div>
         <div className="mt-8 flex flex-col gap-5">
           <HeroSearch />
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-caption text-muted-foreground">
-            <li className="flex items-center gap-1.5"><Icon name="verified" size={16} className="text-pink" /> مدارک بررسی‌شده</li>
-            <li className="flex items-center gap-1.5"><Icon name="review" size={16} className="text-pink" /> نظرهای بررسی‌شده</li>
-            <li className="flex items-center gap-1.5"><Icon name="payment" size={16} className="text-pink" /> قیمت پیش از رفتن</li>
-          </ul>
         </div>
       </section>
 
@@ -79,37 +73,16 @@ function Home() {
             { i: "search" as const, t: "پیدا کنید", b: "بر اساس خدمت، محله، قیمت، امتیاز و ویژگی‌ها جست‌وجو کنید." },
             { i: "sort" as const, t: "مقایسه کنید", b: "تا سه سالن را کنار هم ببینید. معیار ترتیب نتایج همیشه نوشته می‌شود." },
             { i: "call" as const, t: "تماس بگیرید", b: "با خود سالن تماس بگیرید یا مسیر را در نقشه باز کنید." },
-          ].map((s, n) => (
+          ].map((s) => (
             <li key={s.t} className="flex flex-col gap-3 rounded-card bg-card p-6 shadow-card">
               <span className="flex items-center justify-between">
                 <span className="grid size-12 place-items-center rounded-full bg-pink-soft text-pink-text"><Icon name={s.i} /></span>
-                 <span className="font-mono text-h2 text-pink-text">{fmt.digits(n + 1)}</span>
               </span>
               <h3 className="text-h3">{s.t}</h3>
               <p className="text-muted-foreground">{s.b}</p>
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="bg-muted py-16 text-foreground md:py-20">
-        <div className="container-mk">
-          <h2 className="text-h2">به‌جای ادعا، شواهد</h2>
-          <p className="mt-2 max-w-2xl text-body-l opacity-80">هر چه نمایش می‌دهیم، منبع و تاریخ دارد.</p>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {[
-              { i: "payment" as const, t: "قیمت با تاریخ", b: "قیمت هر خدمت با تاریخ آخرین بررسی تیم میکزی نمایش داده می‌شود." },
-              { i: "verified" as const, t: "مدارک بررسی‌شده", b: "برچسب «تأییدشده» درباره‌ی مدارک است، نه تضمین کیفیت." },
-              { i: "review" as const, t: "نظرهای بررسی‌شده", b: "هر نظر پیش از انتشار بررسی می‌شود؛ نظرهای دارای مدرک مراجعه جدا برچسب می‌خورند." },
-            ].map((f) => (
-              <div key={f.t} className="flex flex-col gap-3 rounded-card bg-card p-6 shadow-card">
-                <span className="grid size-12 place-items-center rounded-full bg-pink-soft text-pink-text"><Icon name={f.i} /></span>
-                <h3 className="text-h3">{f.t}</h3>
-                <p className="opacity-80">{f.b}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {gallery.length > 0 && (
