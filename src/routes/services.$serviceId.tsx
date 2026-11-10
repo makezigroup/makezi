@@ -7,7 +7,7 @@ import { ServiceCard } from '@/components/mk/service-discovery';
 import { getProductData } from '@/lib/product.functions';
 import { useApp, useFmt, usePublicSalons } from '@/lib/app-store';
 import { seo } from '@/lib/seo';
-export const Route = createFileRoute('/services/$serviceId')({ loader: () => getProductData(), head: ({ params, loaderData }) => { const s = loaderData?.services.find(v => v.id === params.serviceId); return seo(s?.name ?? 'خدمت پیدا نشد', s?.description || 'سالن‌های ارائه‌دهنده، قیمت‌های اعلام‌شده و نظرهای مرتبط با این خدمت.', { path: `/services/${params.serviceId}`, noindex: !s || s.is_demo }); }, component: ServiceDetail });
+export const Route = createFileRoute('/services/$serviceId')({ loader: () => getProductData(), head: ({ params, loaderData }) => { const s = loaderData?.services.find(v => v.id === params.serviceId); const custom=s?.seo&&typeof s.seo==='object'&&!Array.isArray(s.seo)?s.seo:{}; return seo(typeof custom['title']==='string'&&custom['title']?custom['title']:s?.name ?? 'خدمت پیدا نشد', typeof custom['description']==='string'&&custom['description']?custom['description']:s?.description || 'سالن‌های ارائه‌دهنده، قیمت‌های اعلام‌شده و نظرهای مرتبط با این خدمت.', { path: `/services/${params.serviceId}`, noindex: !s || s.is_demo || Boolean(custom['noindex']),image:s?.image??'' }); }, component: ServiceDetail });
 function ServiceDetail() {
   const { serviceId } = Route.useParams(), { services, categories, locations } = Route.useLoaderData(), salons = usePublicSalons(), { reviews } = useApp(), fmt = useFmt();
   const [city, setCity] = useState(''), [max, setMax] = useState('');

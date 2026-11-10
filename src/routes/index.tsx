@@ -62,6 +62,7 @@ function Home() {
   const product = Route.useLoaderData();
   const config = product.content.find(c=>c.id==='homepage')?.data;
   const selected = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['featured']) ? config['featured'] : [];
+  const selectedServices = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['services']) ? config['services'] : [];
   const { reviews } = useApp();
   const fmt = useFmt();
   const salons = usePublicSalons();
@@ -109,7 +110,7 @@ function Home() {
       </section>
 
       <section className="container-mk py-14"><SectionHead title="تازه‌اضافه‌شده" body="مرتب‌شده بر اساس تاریخ انتشار پروفایل."/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{recent.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
-      <section className="container-mk py-14"><SectionHead title="خدمات زیبایی" action={<Link to="/services" className={btn({variant:'outline'})}>همهٔ خدمات</Link>}/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{product.services.slice(0,4).map(s=><ServiceCard key={s.id} service={s}/>)}</div></section>
+      <section className="container-mk py-14"><SectionHead title="خدمات زیبایی" action={<Link to="/services" className={btn({variant:'outline'})}>همهٔ خدمات</Link>}/><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{(selectedServices.length?product.services.filter(s=>selectedServices.includes(s.id)):product.services.slice(0,4)).map(s=><ServiceCard key={s.id} service={s}/>)}</div></section>
       <section className="container-mk py-14"><SectionHead title="سالن‌های شهر شما"/><label className="mb-6 flex max-w-xs flex-col gap-2 text-caption">شهر<select className={inputCls} value={selectedCity} onChange={e=>setSelectedCity(e.target.value)}>{CITIES.map(c=><option key={c.slug} value={c.slug}>{c.name}</option>)}</select></label><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{nearby.map(s=><SalonCard key={s.id} salon={s}/>)}</div></section>
       <section className="container-mk py-16">
         <SectionHead eyebrow="سه قدم" title="پیدا کنید، مقایسه کنید، تماس بگیرید" />

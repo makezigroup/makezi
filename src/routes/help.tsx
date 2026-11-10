@@ -32,6 +32,7 @@ export const Route = createFileRoute("/help")({
         </ul>
       </section>
       <Link to="/contact" className={btn({ variant: "outline" }) + " mt-8"}>تماس با پشتیبانی</Link>
+      <section className="mt-10"><h2 className="text-h2">حساب، نظرها و اطلاعات سالن</h2><div className="mt-4 flex flex-wrap gap-3"><Link to="/review-guidelines" className={btn({variant:'outline'})}>راهنمای نظر</Link><Link to="/review-verification" className={btn({variant:'outline'})}>تأیید مراجعه</Link><Link to="/report-problem" className={btn({variant:'outline'})}>گزارش مشکل</Link><Link to="/forgot-password" className={btn({variant:'outline'})}>بازیابی حساب</Link><Link to="/services" className={btn({variant:'outline'})}>خدمات و قیمت‌ها</Link></div></section>
     </ContentPage>
   ),
 });

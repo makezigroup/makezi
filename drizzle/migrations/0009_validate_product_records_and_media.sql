@@ -1,0 +1,4 @@
+ALTER TABLE public.service_catalog ADD CONSTRAINT catalog_input_valid CHECK(id ~ '^[a-z0-9-]{2,80}$' AND char_length(name) BETWEEN 2 AND 150 AND char_length(description)<=3000 AND char_length(image)<=500) NOT VALID;
+ALTER TABLE public.support_submissions ADD CONSTRAINT support_path_valid CHECK(related_path='' OR (related_path LIKE '/%' AND related_path NOT LIKE '//%' AND position(chr(92) in related_path)=0)) NOT VALID;
+CREATE FUNCTION public.validate_media_type() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF NEW.bucket_id='makezi-media' AND COALESCE(NEW.metadata->>'mimetype','') NOT IN ('image/jpeg','image/png','image/webp') THEN RAISE EXCEPTION 'Image file required'; END IF; RETURN NEW; END $$;
+REVOKE ALL ON FUNCTION public.validate_media_type() FROM PUBLIC,anon,authenticated;
