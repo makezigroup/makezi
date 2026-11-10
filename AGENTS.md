@@ -28,4 +28,5 @@
 - Product context supplies persisted taxonomy/content to shared UI so staff edits reach discovery without source changes.
 - Account erasure is a tracked authenticated support request until retention is approved; never automatically remove review/evidence history.
 - Images live in private media storage; the public media endpoint serves only references on published salons and never avatars or evidence.
+- Media policies isolate avatar folders to the caller, limit shared salon folders to persisted staff roles, and bind upload ownership to the caller; public taxonomy excludes archived rows and public site content is limited to homepage configuration.
 - Salon verification requires accepted staff-reviewed private documents; review notifications derive from actual updates and honor profile notification preferences.
