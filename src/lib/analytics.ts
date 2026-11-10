@@ -10,7 +10,7 @@ export type EventName =
   | "salon_added_to_favorites" | "salon_removed_from_favorites"
   | "comparison_started" | "salon_added_to_comparison" | "comparison_completed"
   | "phone_contact_clicked" | "directions_clicked" | "website_clicked" | "business_inquiry_submitted"
-  | "app_download_page_viewed" | "cafe_bazaar_clicked" | "myket_clicked"
+  | "app_download_page_viewed" | "cafe_bazaar_clicked" | "myket_clicked" | "google_play_clicked"
   | "ios_pwa_guide_viewed" | "ios_install_guide_step_viewed" | "app_screenshot_viewed";
 
 export interface TrackedEvent { name: EventName; at: string; props?: Record<string, string | number | boolean> | undefined }

@@ -5,6 +5,8 @@ import { Button, Dot, Icon, Logo, LogoMark, btn } from "./core";
 import type { IconName } from "./icon-data";
 import { useApp } from "@/lib/app-store";
 import { CompareBar } from "./marketplace";
+import { StoreButton, WebAppButton } from "./app-promo";
+import appQr from "@/assets/app-qr.png";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
@@ -125,9 +127,9 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
-    { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/services", label: "خدمات" }, { to: "/categories", label: "دسته‌ها" }, { to: "/map", label: "نمای شماتیک مکان‌ها" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
+    { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/services", label: "خدمات" }, { to: "/map", label: "نمای شماتیک مکان‌ها" }, { to: "/gallery", label: "گالری مدل" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
     { title: "سالن‌ها", links: [{ to: "/for-salons", label: "سالن خود را به میکزی اضافه کنید" }] },
-    { title: "میکزی", links: [{ to: "/app", label: "دانلود اپلیکیشن" }, { to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
+    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین و پشتیبانی", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }, { to: "/review-guidelines", label: "راهنمای نظر" }, { to: "/review-verification", label: "تأیید مراجعه" }, { to: "/content-policy", label: "سیاست محتوا" }, { to: "/report-problem", label: "گزارش مشکل" }] },
   ];
   return (
@@ -139,6 +141,15 @@ export function SiteFooter() {
             <span className="text-xl font-extrabold">میکزی</span>
           </span>
           <p className="max-w-xs text-caption text-muted-foreground">راهنمای خدمات زیبایی برای انتخاب آگاهانه؛ اطلاعات شفاف و مقایسه‌ی سالن‌ها.</p>
+          <div className="mt-4 flex flex-col gap-3">
+            <h2 className="flex items-center gap-1.5 text-caption font-semibold opacity-70"><Dot className="size-1.5" />دانلود اپلیکیشن</h2>
+            <img src={appQr} alt="کد QR صفحه‌ی دانلود اپلیکیشن میکزی" className="w-24 rounded-input border border-border bg-card p-1.5" loading="lazy" />
+            <div className="flex flex-col items-start gap-2">
+              <StoreButton store="googlePlay" size="sm" />
+              <StoreButton store="cafeBazaar" size="sm" />
+              <WebAppButton size="sm" />
+            </div>
+          </div>
         </div>
         {cols.map((c) => (
           <div key={c.title}>
@@ -165,7 +176,7 @@ export function SiteFooter() {
 
 const BOTTOM: { to: string; label: string; icon: IconName }[] = [
   { to: "/salons", label: "سالن‌ها", icon: "search" },
-  { to: "/categories", label: "خدمات", icon: "nail" },
+  { to: "/services", label: "خدمات", icon: "nail" },
   { to: "/compare", label: "مقایسه", icon: "sort" },
   { to: "/saved", label: "علاقه‌مندی", icon: "save" },
   { to: "/account", label: "حساب", icon: "profile" },

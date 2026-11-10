@@ -1,106 +1,35 @@
 import { Link } from "@tanstack/react-router";
-import { Smartphone, Share, SquarePlus, Check, Download, Star, MapPin, Search } from "lucide-react";
+import { Smartphone, Share, SquarePlus, Check, Download, Globe } from "lucide-react";
 import type { ReactNode } from "react";
-import { Dot, Icon, LogoMark, btn } from "./core";
-import { usePublicSalons, useFmt, useScore } from "@/lib/app-store";
-import { areaName, type Salon } from "@/lib/data";
+import { Dot, Icon, btn } from "./core";
+import { useFmt } from "@/lib/app-store";
 import { APP_LINKS, isLinkReady } from "@/lib/app-links";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import iphoneMockup from "@/assets/iphone-mockup.png";
 
-/** CSS smartphone frame used for representative mockups of the real MAKEZI UI. */
-export function PhoneFrame({ children, label, className }: { children: ReactNode; label: string; className?: string | undefined }) {
+/** Official iPhone mockup showing the real MAKEZI discovery screen. Single phone, no caption. */
+export function AppPhoneMockup({ className }: { className?: string | undefined }) {
   return (
-    <figure className={cn("flex flex-col items-center gap-3", className)}>
-      <div className="w-56 overflow-hidden rounded-[2.2rem] border-[6px] border-ink bg-background shadow-modal sm:w-64">
-        <div className="flex items-center justify-center bg-ink py-1.5">
-          <span className="h-1.5 w-16 rounded-full bg-ink-foreground/40" />
-        </div>
-        <div className="flex h-96 flex-col gap-2 overflow-hidden p-3 sm:h-[26rem]">{children}</div>
-      </div>
-      <figcaption className="text-label text-muted-foreground">{label}</figcaption>
-    </figure>
+    <img
+      src={iphoneMockup}
+      alt="نمای اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
+      className={cn("w-56 sm:w-72", className)}
+      loading="lazy"
+    />
   );
 }
 
-function MiniSalonRow({ salon }: { salon: Salon }) {
-  const fmt = useFmt();
-  const s = useScore(salon.id);
-  return (
-    <div className="rounded-input border border-border bg-card p-2.5">
-      <div className="flex items-center justify-between gap-2">
-        <span className="truncate text-label font-bold">{salon.name}</span>
-        {s.avg != null && (
-          <span className="flex items-center gap-0.5 text-label font-bold text-pink-text">
-            <Star className="size-3 fill-current" /> {fmt.rating(s.avg)}
-          </span>
-        )}
-      </div>
-      <p className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
-        <MapPin className="size-3" /> {areaName(salon.city, salon.area)}
-      </p>
-    </div>
-  );
-}
+type Store = "cafeBazaar" | "myket" | "googlePlay";
 
-/** Representative mockup of the discovery screen, built from live directory data. */
-export function MockDiscoveryScreen() {
-  const salons = usePublicSalons().slice(0, 3);
-  return (
-    <>
-      <div className="flex items-center gap-2">
-        <LogoMark className="h-5 w-auto" />
-        <span className="text-caption font-extrabold">میکزی</span>
-      </div>
-      <div className="flex items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3 py-2 text-label text-muted-foreground">
-        <Search className="size-3.5" /> سالن، خدمت یا آدرس…
-      </div>
-      {salons.map((s) => <MiniSalonRow key={s.id} salon={s} />)}
-    </>
-  );
-}
-
-/** Representative mockup of a salon profile / reviews screen. */
-export function MockProfileScreen() {
-  const salon = usePublicSalons()[0];
-  const fmt = useFmt();
-  const s = useScore(salon?.id ?? "");
-  if (!salon) return null;
-  return (
-    <>
-      <div className="rounded-input bg-pink-soft p-3">
-        <p className="text-caption font-extrabold">{salon.name}</p>
-        <p className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
-          <MapPin className="size-3" /> {areaName(salon.city, salon.area)}
-        </p>
-        {s.avg != null && (
-          <p className="mt-2 flex items-center gap-1 text-label font-bold text-pink-text">
-            <Star className="size-3.5 fill-current" /> {fmt.rating(s.avg)}
-            <span className="font-normal text-muted-foreground">از {fmt.num(s.count)} نظر بررسی‌شده</span>
-          </p>
-        )}
-      </div>
-      <p className="text-label font-bold">خدمات و قیمت اعلام‌شده</p>
-      {salon.services.slice(0, 3).map((sv) => (
-        <div key={sv.id} className="flex items-center justify-between rounded-input border border-border bg-card px-2.5 py-2 text-label">
-          <span className="truncate">{sv.name}</span>
-          <span className="font-bold">{sv.price ? fmt.price(sv.price) : "—"}</span>
-        </div>
-      ))}
-      <span className="mt-auto rounded-full bg-primary py-2 text-center text-label font-bold text-primary-foreground">دیدن پروفایل سالن</span>
-    </>
-  );
-}
-
-type Store = "cafeBazaar" | "myket";
-
-const STORE_META: Record<Store, { label: string; event: "cafe_bazaar_clicked" | "myket_clicked" }> = {
+const STORE_META: Record<Store, { label: string; event: "cafe_bazaar_clicked" | "myket_clicked" | "google_play_clicked" }> = {
   cafeBazaar: { label: "دریافت از کافه‌بازار", event: "cafe_bazaar_clicked" },
   myket: { label: "دریافت از مایکت", event: "myket_clicked" },
+  googlePlay: { label: "دریافت از Google Play", event: "google_play_clicked" },
 };
 
 /** Marketplace button. Until the official URL is configured it renders a disabled «به‌زودی» state — never a fake link. */
-export function StoreButton({ store, size = "md" }: { store: Store; size?: "md" | "lg" | undefined }) {
+export function StoreButton({ store, size = "md" }: { store: Store; size?: "sm" | "md" | "lg" | undefined }) {
   const url = APP_LINKS[store];
   const meta = STORE_META[store];
   const ready = isLinkReady(url);
@@ -116,6 +45,15 @@ export function StoreButton({ store, size = "md" }: { store: Store; size?: "md" 
     <a href={url} target="_blank" rel="noopener noreferrer" className={cls} onClick={() => track(meta.event)}>
       <Download className="size-4" /> {meta.label}
     </a>
+  );
+}
+
+/** Web app (PWA) pill — always available, points to the /app download page. */
+export function WebAppButton({ size = "md" }: { size?: "sm" | "md" | "lg" | undefined }) {
+  return (
+    <Link to="/app" className={btn({ variant: "outline", size })}>
+      <Globe className="size-4" /> استفاده از وب‌اپ
+    </Link>
   );
 }
 
@@ -143,13 +81,8 @@ export function AppPromoSection() {
           </div>
           <p className="text-caption text-muted-foreground">نسخه‌ی آیفون میکزی یک وب‌اپلیکیشن است که از طریق Safari به صفحه‌ی اصلی اضافه می‌شود.</p>
         </div>
-        <div className="flex items-start justify-center gap-4">
-          <PhoneFrame label="نمای نمونه از جست‌وجوی سالن‌ها">
-            <MockDiscoveryScreen />
-          </PhoneFrame>
-          <PhoneFrame label="نمای نمونه از پروفایل سالن" className="mt-10 hidden sm:flex">
-            <MockProfileScreen />
-          </PhoneFrame>
+        <div className="flex justify-center">
+          <AppPhoneMockup />
         </div>
       </div>
     </section>

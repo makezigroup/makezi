@@ -6,6 +6,8 @@ export const APP_LINKS = {
   cafeBazaar: "",
   /** Official Myket listing — not published yet. */
   myket: "",
+  /** Official Google Play listing — not published yet. */
+  googlePlay: "",
   /** PWA address used in the iPhone installation guide. */
   pwaUrl: "https://makezi.lovable.app",
 } as const;

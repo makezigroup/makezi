@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/mk/layout";
 import { Button, Icon, SectionHead, StatePanel, btn, Dot, inputCls } from "@/components/mk/core";
 import { ReviewCard, SalonCard, SafeImg } from "@/components/mk/marketplace";
-import { CATEGORIES, CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
+import { CITIES, FAQ, IMAGES, galleryOf } from "@/lib/data";
 import { useApp, useFmt, usePublicSalons } from "@/lib/app-store";
 import { track } from "@/lib/analytics";
 import { seo } from "@/lib/seo";
@@ -66,7 +66,6 @@ function Home() {
   const config = product.content.find(c=>c.id==='homepage')?.data;
   const selected = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['featured']) ? config['featured'] : [];
   const selectedServices = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['services']) ? config['services'] : [];
-  const selectedCategories = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['categories']) ? config['categories'] : [];
   const { reviews } = useApp();
   const fmt = useFmt();
   const salons = usePublicSalons();
@@ -91,13 +90,6 @@ function Home() {
             <li className="flex items-center gap-1.5"><Icon name="review" size={16} className="text-pink" /> نظرهای بررسی‌شده</li>
             <li className="flex items-center gap-1.5"><Icon name="payment" size={16} className="text-pink" /> قیمت پیش از رفتن</li>
           </ul>
-          <div className="flex flex-wrap gap-2">
-            {product.categories.filter(c=>!selectedCategories.length||selectedCategories.includes(c.id)).map((c) => (
-              <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline transition-colors ease-mk hover:border-pink-border hover:bg-pink-soft">
-                <Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon??'package'} size={18} className="text-pink" /> {c.label}
-              </Link>
-            ))}
-          </div>
         </div>
         <div className="grid grid-cols-[1.35fr_1fr] gap-3">
           <SafeImg src={IMAGES.heroNails} alt="ژلیش صورتی روی دست؛ تصویر نمونه" eager className="row-span-2 aspect-[4/5] h-full w-full rounded-card" />

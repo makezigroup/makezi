@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Smartphone, Download, ChevronDown } from "lucide-react";
 import { SiteLayout } from "@/components/mk/layout";
 import { Dot, btn } from "@/components/mk/core";
-import { InstallStep, INSTALL_STEPS, MockDiscoveryScreen, MockProfileScreen, PhoneFrame, StoreButton, IconBadge } from "@/components/mk/app-promo";
+import { InstallStep, INSTALL_STEPS, AppPhoneMockup, StoreButton, IconBadge } from "@/components/mk/app-promo";
 import { APP_LINKS, detectPlatform, type Platform } from "@/lib/app-links";
 import { track } from "@/lib/analytics";
 import { seo } from "@/lib/seo";
@@ -81,13 +81,8 @@ function AppPage() {
             </button>
           </div>
         </div>
-        <div className="flex items-start justify-center gap-4">
-          <PhoneFrame label="نمای نمونه از جست‌وجوی سالن‌ها">
-            <MockDiscoveryScreen />
-          </PhoneFrame>
-          <PhoneFrame label="نمای نمونه از پروفایل سالن" className="mt-10 hidden sm:flex">
-            <MockProfileScreen />
-          </PhoneFrame>
+        <div className="flex justify-center">
+          <AppPhoneMockup />
         </div>
       </section>
 

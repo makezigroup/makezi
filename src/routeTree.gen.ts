@@ -53,8 +53,6 @@ import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminVerificationsRouteImport } from './routes/admin.verifications'
-import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
-import { Route as CategoriesCatRouteImport } from './routes/categories.$cat'
 import { Route as SalonsIndexRouteImport } from './routes/salons.index'
 import { Route as SalonsSlugRouteImport } from './routes/salons.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -285,16 +283,6 @@ const AdminVerificationsRoute = AdminVerificationsRouteImport.update({
   path: '/verifications',
   getParentRoute: () => AdminRoute,
 } as any)
-const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
-  id: '/categories/',
-  path: '/categories/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CategoriesCatRoute = CategoriesCatRouteImport.update({
-  id: '/categories/$cat',
-  path: '/categories/$cat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SalonsIndexRoute = SalonsIndexRouteImport.update({
   id: '/salons/',
   path: '/salons/',
@@ -386,11 +374,9 @@ export interface FileRoutesByFullPath {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/categories/': typeof CategoriesIndexRoute
   '/salons/': typeof SalonsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
@@ -442,11 +428,9 @@ export interface FileRoutesByTo {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin': typeof AdminIndexRoute
-  '/categories': typeof CategoriesIndexRoute
   '/salons': typeof SalonsIndexRoute
   '/services': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
@@ -500,11 +484,9 @@ export interface FileRoutesById {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/verifications': typeof AdminVerificationsRoute
-  '/categories/$cat': typeof CategoriesCatRoute
   '/salons/$slug': typeof SalonsSlugRoute
   '/services/$serviceId': typeof ServicesServiceIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/categories/': typeof CategoriesIndexRoute
   '/salons/': typeof SalonsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/salons/$id': typeof AdminSalonsIdRoute
@@ -559,11 +541,9 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/users'
     | '/admin/verifications'
-    | '/categories/$cat'
     | '/salons/$slug'
     | '/services/$serviceId'
     | '/admin/'
-    | '/categories/'
     | '/salons/'
     | '/services/'
     | '/admin/salons/$id'
@@ -615,11 +595,9 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/users'
     | '/admin/verifications'
-    | '/categories/$cat'
     | '/salons/$slug'
     | '/services/$serviceId'
     | '/admin'
-    | '/categories'
     | '/salons'
     | '/services'
     | '/admin/salons/$id'
@@ -672,11 +650,9 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/users'
     | '/admin/verifications'
-    | '/categories/$cat'
     | '/salons/$slug'
     | '/services/$serviceId'
     | '/admin/'
-    | '/categories/'
     | '/salons/'
     | '/services/'
     | '/admin/salons/$id'
@@ -718,10 +694,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
-  CategoriesCatRoute: typeof CategoriesCatRoute
   SalonsSlugRoute: typeof SalonsSlugRoute
   ServicesServiceIdRoute: typeof ServicesServiceIdRoute
-  CategoriesIndexRoute: typeof CategoriesIndexRoute
   SalonsIndexRoute: typeof SalonsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
   ApiPublicMediaRoute: typeof ApiPublicMediaRoute
@@ -1039,20 +1013,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVerificationsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/categories/': {
-      id: '/categories/'
-      path: '/categories'
-      fullPath: '/categories/'
-      preLoaderRoute: typeof CategoriesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/categories/$cat': {
-      id: '/categories/$cat'
-      path: '/categories/$cat'
-      fullPath: '/categories/$cat'
-      preLoaderRoute: typeof CategoriesCatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/salons/': {
       id: '/salons/'
       path: '/salons'
@@ -1189,10 +1149,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
-  CategoriesCatRoute: CategoriesCatRoute,
   SalonsSlugRoute: SalonsSlugRoute,
   ServicesServiceIdRoute: ServicesServiceIdRoute,
-  CategoriesIndexRoute: CategoriesIndexRoute,
   SalonsIndexRoute: SalonsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
   ApiPublicMediaRoute: ApiPublicMediaRoute,
