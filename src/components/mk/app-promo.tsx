@@ -7,7 +7,7 @@ import { APP_LINKS, isLinkReady } from "@/lib/app-links";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import iphoneMockup from "@/assets/iphone-mockup.png";
-import iphoneMockupDark from "@/assets/iphone-mockup-dark.png";
+import iphoneMockupDark from "@/assets/iphone-mockup-dark-natural.png.asset.json";
 
 /** Official iPhone mockup showing the real MAKEZI discovery screen. Single phone, no caption. */
 export function AppPhoneMockup({ className }: { className?: string | undefined }) {
@@ -20,7 +20,7 @@ export function AppPhoneMockup({ className }: { className?: string | undefined }
         loading="lazy"
       />
       <img
-        src={iphoneMockupDark}
+        src={iphoneMockupDark.url}
         alt="نمای تیرهٔ اپلیکیشن میکزی روی آیفون؛ فهرست سالن‌ها با جست‌وجو و فیلتر"
         className="hidden w-full dark:block"
         loading="lazy"
