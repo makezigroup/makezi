@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { Button, Icon, Logo, LogoMark, btn } from "./core";
+import { Button, Dot, Icon, Logo, LogoMark, btn } from "./core";
 import type { IconName } from "./icon-data";
 import { useApp } from "@/lib/app-store";
 import { CompareBar } from "./marketplace";
@@ -111,7 +111,7 @@ export function SiteHeader() {
         <Logo />
         <nav aria-label="اصلی" className="hidden flex-1 items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} className="whitespace-nowrap rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-muted" }}>
+            <Link key={n.to} to={n.to} className="whitespace-nowrap rounded-full px-3 py-2 text-caption font-semibold text-foreground no-underline hover:bg-muted" activeProps={{ className: "bg-pink-soft text-pink-text" }}>
               {n.label}
             </Link>
           ))}
@@ -159,11 +159,11 @@ export function SiteFooter() {
         </div>
         {cols.map((c) => (
           <div key={c.title}>
-            <h2 className="mb-3 text-caption font-semibold opacity-70">{c.title}</h2>
+            <h2 className="mb-3 flex items-center gap-1.5 text-caption font-semibold opacity-70"><Dot className="size-1.5" />{c.title}</h2>
             <ul className="flex flex-col gap-2">
               {c.links.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-caption text-foreground no-underline hover:underline">
+                  <Link to={l.to} className="text-caption text-foreground no-underline decoration-pink underline-offset-4 hover:underline">
                     {l.label}
                   </Link>
                 </li>
@@ -198,7 +198,7 @@ export function BottomNav() {
           return (
             <li key={b.to}>
               <Link to={b.to} className={cn("flex min-h-16 flex-col items-center justify-center gap-0.5 text-label no-underline", active ? "text-foreground" : "text-muted-foreground")} aria-current={active ? "page" : undefined}>
-                <span className={cn("grid h-7 w-12 place-items-center rounded-full", active && "bg-lime text-brand-ink")}>
+                <span className={cn("grid h-7 w-12 place-items-center rounded-full", active && "bg-pink-soft text-pink-text")}>
                   <Icon name={b.icon} size={20} />
                 </span>
                 {b.label}
@@ -265,7 +265,7 @@ export function DashShell({ title, badge, nav, children }: { title: string; badg
                     activeOptions={{ exact: !!n.exact }}
                     onClick={() => setOpen(false)}
                     className="flex min-h-11 items-center gap-3 rounded-button px-3 text-caption font-semibold text-foreground no-underline hover:bg-muted"
-                    activeProps={{ className: "!bg-selected !text-selected-foreground" }}
+                    activeProps={{ className: "!bg-pink-soft !text-pink-text" }}
                   >
                     <Icon name={n.icon} size={20} />
                     {n.label}

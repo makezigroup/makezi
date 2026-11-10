@@ -21,8 +21,8 @@ function Categories() {
       <ul className="container-mk grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((c) => (
           <li key={c.id}>
-            <Link to="/categories/$cat" params={{ cat: c.id }} className="flex h-full flex-col gap-3 rounded-card bg-card p-5 text-foreground no-underline shadow-card transition-shadow ease-mk hover:shadow-modal">
-              <span className="grid size-12 place-items-center rounded-full bg-muted"><Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon ?? 'package'} /></span>
+            <Link to="/categories/$cat" params={{ cat: c.id }} className="flex h-full flex-col gap-3 rounded-card bg-card p-5 text-foreground no-underline shadow-card transition-[box-shadow,border-color] ease-mk hover:shadow-modal border border-transparent hover:border-pink-border">
+              <span className="grid size-12 place-items-center rounded-full bg-pink-soft text-pink-text"><Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon ?? 'package'} /></span>
               <span className="text-h3">{c.label}</span>
               <span className="text-caption text-muted-foreground">{c.description || CATEGORIES.find(v=>v.id===c.id)?.body}</span>
               <span className="mt-auto text-caption font-semibold">{fmt.num(salons.filter((s) => s.services.some(v=>v.category===c.id)).length)} سالن</span>

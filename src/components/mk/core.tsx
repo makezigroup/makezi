@@ -60,6 +60,7 @@ export const btn = cva(
         primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
         ink: "bg-ink text-ink-foreground hover:bg-ink-hover",
         outline: "border border-foreground bg-transparent text-foreground hover:bg-muted",
+        pink: "border border-pink-border bg-pink-soft text-pink-text hover:border-pink",
         ghost: "bg-transparent text-foreground hover:bg-muted",
         danger: "border border-error text-error-text bg-transparent hover:bg-error-soft",
       },
@@ -125,7 +126,7 @@ export function Chip({ active, onClick, children, icon }: { active?: boolean | u
       onClick={onClick}
       className={cn(
         "inline-flex min-h-10 items-center gap-1.5 rounded-full border px-4 text-caption font-semibold transition-colors ease-mk",
-        active ? "border-selected bg-selected text-selected-foreground" : "border-border-strong bg-surface text-foreground hover:bg-muted",
+        active ? "border-pink-border bg-pink-soft text-pink-text" : "border-border-strong bg-surface text-foreground hover:border-pink-border hover:bg-pink-soft",
       )}
     >
       {icon && <Icon name={icon} size={18} />}
@@ -207,4 +208,4 @@ export const Field = ({ label, hint, error, children, htmlFor }: { label: string
 );
 
 export const inputCls =
-  "min-h-12 w-full rounded-input border border-border-strong bg-surface px-3.5 text-body text-foreground placeholder:text-subtle-foreground focus-visible:border-foreground focus-visible:shadow-[0_0_0_4px_var(--brand-lime)] outline-none transition-[border-color,box-shadow] ease-mk aria-[invalid=true]:border-error";
+  "min-h-12 w-full rounded-input border border-border-strong bg-surface px-3.5 text-body text-foreground placeholder:text-subtle-foreground focus-visible:border-pink focus-visible:shadow-[0_0_0_4px_var(--mk-pink-ring)] outline-none transition-[border-color,box-shadow] ease-mk aria-[invalid=true]:border-error";

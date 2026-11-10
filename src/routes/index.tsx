@@ -79,21 +79,21 @@ function Home() {
       <section className="container-mk grid items-center gap-10 pb-14 pt-8 md:pt-12 lg:grid-cols-[1.05fr_1fr] lg:pb-20">
         <div className="flex flex-col gap-6">
           <h1 className="text-display">
-            سالن‌های اطرافتان را یک‌جا مقایسه کنید<Dot className="ms-1" />
+            سالن‌های اطرافتان را یک‌جا <span className="text-pink-text">مقایسه</span> کنید<Dot className="ms-1" />
           </h1>
           <p className="max-w-xl text-body-l text-muted-foreground">
             خدمات و قیمت اعلام‌شده، نمونه‌کار، مدارک و نظرهای بررسی‌شده‌ی سالن‌ها را کنار هم ببینید؛ بعد مستقیم با سالن تماس بگیرید.
           </p>
           <HeroSearch />
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-muted-foreground">
-            <li className="flex items-center gap-1.5"><Icon name="verified" size={16} /> مدارک بررسی‌شده</li>
-            <li className="flex items-center gap-1.5"><Icon name="review" size={16} /> نظرهای بررسی‌شده</li>
-            <li className="flex items-center gap-1.5"><Icon name="payment" size={16} /> قیمت پیش از رفتن</li>
+            <li className="flex items-center gap-1.5"><Icon name="verified" size={16} className="text-pink" /> مدارک بررسی‌شده</li>
+            <li className="flex items-center gap-1.5"><Icon name="review" size={16} className="text-pink" /> نظرهای بررسی‌شده</li>
+            <li className="flex items-center gap-1.5"><Icon name="payment" size={16} className="text-pink" /> قیمت پیش از رفتن</li>
           </ul>
           <div className="flex flex-wrap gap-2">
             {product.categories.filter(c=>!selectedCategories.length||selectedCategories.includes(c.id)).map((c) => (
-              <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline hover:bg-muted">
-                <Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon??'package'} size={18} /> {c.label}
+              <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline transition-colors ease-mk hover:border-pink-border hover:bg-pink-soft">
+                <Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon??'package'} size={18} className="text-pink" /> {c.label}
               </Link>
             ))}
           </div>
@@ -125,8 +125,8 @@ function Home() {
           ].map((s, n) => (
             <li key={s.t} className="flex flex-col gap-3 rounded-card bg-card p-6 shadow-card">
               <span className="flex items-center justify-between">
-                <span className="grid size-12 place-items-center rounded-full bg-muted"><Icon name={s.i} /></span>
-                 <span className="font-mono text-h2 text-muted-foreground">{fmt.digits(n + 1)}</span>
+                <span className="grid size-12 place-items-center rounded-full bg-pink-soft text-pink-text"><Icon name={s.i} /></span>
+                 <span className="font-mono text-h2 text-pink-text">{fmt.digits(n + 1)}</span>
               </span>
               <h3 className="text-h3">{s.t}</h3>
               <p className="text-muted-foreground">{s.b}</p>
@@ -146,7 +146,7 @@ function Home() {
               { i: "review" as const, t: "نظرهای بررسی‌شده", b: "هر نظر پیش از انتشار بررسی می‌شود؛ نظرهای دارای مدرک مراجعه جدا برچسب می‌خورند." },
             ].map((f) => (
               <div key={f.t} className="flex flex-col gap-3 rounded-card bg-card p-6 shadow-card">
-                <span className="grid size-12 place-items-center rounded-full bg-muted"><Icon name={f.i} /></span>
+                <span className="grid size-12 place-items-center rounded-full bg-pink-soft text-pink-text"><Icon name={f.i} /></span>
                 <h3 className="text-h3">{f.t}</h3>
                 <p className="opacity-80">{f.b}</p>
               </div>

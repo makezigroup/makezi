@@ -64,6 +64,7 @@
   --color-pink: var(--color-accent);
   --color-pink-soft: var(--color-bg-accent-subtle);
   --color-pink-text: var(--color-accent-text);
+  --color-pink-border: var(--mk-pink-border);
   --color-lime: var(--brand-lime);
   --color-lime-soft: var(--lime-50);
   --color-brand-ink: var(--brand-ink);
@@ -101,6 +102,13 @@
 :root {
   --radius: 12px;
   --mk-pink: var(--brand-pink);
+  /* Supporting pink tints for controlled accent surfaces (visual refinement brief). */
+  --mk-pink-border: rgba(255, 112, 166, 0.25);
+  --mk-pink-ring: rgba(255, 112, 166, 0.22);
+}
+[data-theme="dark"] {
+  --mk-pink-border: rgba(255, 112, 166, 0.4);
+  --mk-pink-ring: rgba(255, 112, 166, 0.3);
 }
 
 @layer base {

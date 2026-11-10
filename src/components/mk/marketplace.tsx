@@ -46,7 +46,7 @@ export function RatingInline({ salonId }: { salonId: string }) {
     return <span className="text-caption text-muted-foreground">{fmt.num(s.count)} نظر · برای امتیاز کافی نیست</span>;
   return (
     <span className="inline-flex items-center gap-1 text-caption">
-      <Icon name="rating" size={16} />
+      <Icon name="rating" size={16} className="text-pink" />
       <span className="font-semibold">{fmt.rating(s.avg)}</span>
       <span className="text-muted-foreground">از {fmt.digits(5)} · {fmt.num(s.count)} نظر</span>
     </span>
@@ -62,7 +62,7 @@ export function SaveButton({ id, className, label }: { id: string; className?: s
       onClick={() => toggleSaved(id)}
       aria-pressed={on}
       aria-label={on ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
-      className={cn(label ? btn({ variant: "outline", size: "lg" }) : "grid size-11 place-items-center rounded-full bg-surface text-foreground shadow-card", !label && on && "bg-ink text-ink-foreground", className)}
+      className={cn(label ? btn({ variant: "outline", size: "lg" }) : "grid size-11 place-items-center rounded-full bg-surface text-foreground shadow-card", on && "bg-pink-soft text-pink-text", className)}
     >
       <Icon name="save" size={20} />
       {label && (on ? "در علاقه‌مندی‌ها" : "علاقه‌مندی")}
@@ -80,7 +80,7 @@ export function CompareToggle({ id, size = "sm" }: { id: string; size?: "sm" | "
       onClick={() => {
         if (!toggleCompare(id)) toast.error(`حداکثر ${DECISIONS.compareMax === 3 ? "سه" : DECISIONS.compareMax} سالن را می‌توانید مقایسه کنید.`);
       }}
-      className={cn(btn({ variant: on ? "ink" : "outline", size }), "relative z-[1]")}
+      className={cn(btn({ variant: on ? "pink" : "outline", size }), "relative z-[1]")}
     >
       <Icon name="sort" size={18} /> {on ? "در مقایسه" : "مقایسه"}
     </button>
@@ -145,7 +145,7 @@ export function RatingSummary({ salonId }: { salonId: string }) {
             <li key={d} className="grid grid-cols-[8rem_1fr_2.5rem] items-center gap-3 text-caption">
               <span>{d}</span>
               <span className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
-                <span className="block h-full rounded-full bg-ink" style={{ width: `${((s.dims[i] ?? 0) / 5) * 100}%` }} />
+                <span className="block h-full rounded-full bg-pink" style={{ width: `${((s.dims[i] ?? 0) / 5) * 100}%` }} />
               </span>
               <span className="font-semibold">{fmt.rating(s.dims[i] ?? 0)}</span>
             </li>
@@ -179,7 +179,7 @@ export function ReviewCard({ r, report = true }: { r: Review; report?: boolean |
           <p className="font-semibold">{r.author}</p>
           <p className="text-caption text-muted-foreground">{r.service} · {fmt.date(r.date, { day: "numeric", month: "long", year: "numeric" })}</p>
         </div>
-        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-caption">
+        <span className="inline-flex items-center gap-1 rounded-full bg-pink-soft px-2.5 py-0.5 text-caption text-pink-text">
           <Icon name="rating" size={14} /> {fmt.rating(reviewOverall(r))}
         </span>
       </header>
@@ -226,7 +226,7 @@ export function StarsInput({ label, value, onChange }: { label: string; value: n
             aria-label={`${label}: ${n} از ۵`}
             aria-pressed={value === n}
             onClick={() => onChange(n)}
-            className={cn("grid size-10 place-items-center rounded-full border text-caption font-semibold", value != null && n <= value ? "border-selected bg-selected text-selected-foreground" : "border-border-strong bg-surface")}
+            className={cn("grid size-10 place-items-center rounded-full border text-caption font-semibold", value != null && n <= value ? "border-pink-border bg-pink-soft text-pink-text" : "border-border-strong bg-surface")}
           >
             {fmt.digits(n)}
           </button>

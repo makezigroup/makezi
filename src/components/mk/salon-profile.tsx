@@ -70,8 +70,8 @@ export function SalonProfile({ salon }: { salon: Salon }) {
             </div>
             <h1 className="text-h1">{salon.name}</h1>
             <RatingInline salonId={salon.id} />
-            <p className="flex items-center gap-2 text-muted-foreground"><Icon name="location" size={20} /> {salon.address}</p>
-            <p className="flex flex-wrap items-center gap-2 text-muted-foreground"><Icon name="clock" size={20} /> {salon.hours} · <OpenBadge salon={salon} /></p>
+            <p className="flex items-center gap-2 text-muted-foreground"><Icon name="location" size={20} className="text-pink" /> {salon.address}</p>
+            <p className="flex flex-wrap items-center gap-2 text-muted-foreground"><Icon name="clock" size={20} className="text-pink" /> {salon.hours} · <OpenBadge salon={salon} /></p>
             {salon.services.length > 0 && <p className="text-caption">بازه‌ی قیمت اعلام‌شده: از {fmt.price(priceFrom(salon))}</p>}
             <div className="mt-2 flex flex-wrap gap-2">
               {canContactSalon(salon) && <a href={`tel:${salon.phone}`}  onClick={() => track("phone_contact_clicked", { salon: salon.id })} className={btn({ size: "lg" }) + " flex-1"}>
@@ -146,7 +146,7 @@ export function SalonProfile({ salon }: { salon: Salon }) {
             <div className="flex flex-col gap-6">
               {grouped.map(({ c, list }) => (
                 <div key={c.id}>
-                  <h3 className="mb-2 flex items-center gap-2 text-h3"><Icon name={c.icon} size={20} /> {c.label}</h3>
+                  <h3 className="mb-2 flex items-center gap-2 text-h3"><Icon name={c.icon} size={20} className="text-pink" /> {c.label}</h3>
                   <ul className="divide-y divide-border rounded-card bg-card shadow-card">
                     {list.map((v) => (
                       <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
@@ -207,9 +207,9 @@ export function SalonProfile({ salon }: { salon: Salon }) {
           <h2 className="mb-4 text-h2">آدرس و تماس</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <ul className="flex flex-col gap-3 rounded-card bg-card p-5 shadow-card">
-              <li className="flex items-center gap-2"><Icon name="location" size={20} /> {salon.address}</li>
-              <li className="flex items-center gap-2"><Icon name="call" size={20} /> {canContactSalon(salon) ? <a href={`tel:${salon.phone}`}><bdi dir="ltr">{fmt.digits(salon.phone)}</bdi></a> : "اطلاعات تماس نمونه — تماس واقعی غیرفعال"}</li>
-              <li className="flex items-center gap-2"><Icon name="clock" size={20} /> {salon.hours}</li>
+              <li className="flex items-center gap-2"><Icon name="location" size={20} className="text-pink" /> {salon.address}</li>
+              <li className="flex items-center gap-2"><Icon name="call" size={20} className="text-pink" /> {canContactSalon(salon) ? <a href={`tel:${salon.phone}`}><bdi dir="ltr">{fmt.digits(salon.phone)}</bdi></a> : "اطلاعات تماس نمونه — تماس واقعی غیرفعال"}</li>
+              <li className="flex items-center gap-2"><Icon name="clock" size={20} className="text-pink" /> {salon.hours}</li>
               {!salon.isDemo && validWebsite(salon.website) && <li className="flex items-center gap-2"><Icon name="share" size={20} /> <a href={salon.website} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("website_contact_clicked", { salon: salon.id })}>وب‌سایت سالن</a></li>}
               {!salon.isDemo && salon.instagram && <li className="flex items-center gap-2"><Icon name="camera" size={20} /> <a href={`https://instagram.com/${salon.instagram}`} target="_blank" rel="noopener noreferrer nofollow" onClick={() => track("instagram_contact_clicked", { salon: salon.id, kind: "instagram" })}><bdi dir="ltr">@{salon.instagram}</bdi></a></li>}
             </ul>
