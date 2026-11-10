@@ -8,7 +8,7 @@ import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import iphoneScreenLight from "@/assets/iphone-screen-light.png.asset.json";
 import iphoneScreenDark from "@/assets/iphone-screen-dark.png.asset.json";
-import iphoneFrame from "@/assets/iphone-frame-clean.png.asset.json";
+import iphoneFrame from "@/assets/iphone-hardware-frame.png.asset.json";
 
 /** Official iPhone mockup showing the real MAKEZI discovery screen. Single phone, no caption. */
 export function AppPhoneMockup({ className }: { className?: string | undefined }) {
