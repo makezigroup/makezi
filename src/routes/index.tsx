@@ -10,6 +10,7 @@ import { seo } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductData } from '@/lib/product.functions';
 import { ServiceCard } from '@/components/mk/service-discovery';
+import { AppPromoSection } from '@/components/mk/app-promo';
 import { useProduct } from '@/lib/product-context';
 
 export const Route = createFileRoute("/")({
@@ -106,6 +107,8 @@ function Home() {
           <SafeImg src={IMAGES.heroNails} alt="جزئیات نمونه‌کار ناخن؛ تصویر نمونه" className="aspect-square h-full w-full rounded-card" />
         </div>
       </section>
+
+      <AppPromoSection />
 
       <section className="container-mk py-14">
         <SectionHead eyebrow={selected.length?'انتخاب کارکنان':'تازه بررسی‌شده'} title="چند سالن برای شروع" body={selected.length?'انتخاب تیم میکزی برای شروع بررسی.':'مرتب‌شده بر اساس تاریخ آخرین بررسی تیم میکزی.'} action={<Link to="/salons" className={btn({ variant: "outline", size: "sm" })}>همه‌ی سالن‌ها</Link>} />

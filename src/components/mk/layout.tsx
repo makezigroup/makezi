@@ -119,6 +119,9 @@ export function SiteHeader() {
         <div className="flex-1 xl:hidden" />
         <HeaderSearch />
         <div className="flex items-center gap-1">
+          <Link to="/app" className={cn(btn({ variant: "ghost", size: "sm" }), "hidden rounded-full bg-pink-soft font-bold text-pink-text hover:bg-pink-soft lg:inline-flex")}>
+            <Icon name="add" size={18} /> دانلود اپ
+          </Link>
           <ThemeToggle />
           <Link to="/my-reviews" className={cn(btn({ variant: "ghost", size: "sm" }), "hidden xl:inline-flex")}><Icon name="review" size={18} /> نظرهای من</Link>
           <AccountMenu />
@@ -134,6 +137,9 @@ export function SiteHeader() {
               {n.label}
             </Link>
           ))}
+          <Link to="/app" onClick={() => setOpen(false)} className="mt-1 flex items-center gap-2 rounded-input bg-pink-soft px-3 py-3 font-bold text-pink-text no-underline">
+            <Icon name="add" size={18} /> دانلود اپلیکیشن میکزی
+          </Link>
         </nav>
       )}
     </header>
@@ -144,7 +150,7 @@ export function SiteFooter() {
   const cols: { title: string; links: { to: string; label: string }[] }[] = [
     { title: "مشتریان", links: [{ to: "/salons", label: "جست‌وجوی سالن" }, { to: "/services", label: "خدمات" }, { to: "/categories", label: "دسته‌ها" }, { to: "/map", label: "نمای شماتیک مکان‌ها" }, { to: "/gallery", label: "گالری مدل" }, { to: "/my-reviews", label: "نظرهای من" }, { to: "/saved", label: "علاقه‌مندی‌ها" }, { to: "/compare", label: "مقایسه‌ی سالن‌ها" }] },
     { title: "سالن‌ها", links: [{ to: "/for-salons", label: "سالن خود را به میکزی اضافه کنید" }] },
-    { title: "میکزی", links: [{ to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
+    { title: "میکزی", links: [{ to: "/app", label: "دانلود اپلیکیشن" }, { to: "/about", label: "درباره‌ی ما" }, { to: "/how-it-works", label: "میکزی چطور کار می‌کند" }, { to: "/help", label: "راهنما و پرسش‌ها" }, { to: "/contact", label: "تماس و پشتیبانی" }] },
     { title: "قوانین و پشتیبانی", links: [{ to: "/privacy", label: "حریم خصوصی (پیش‌نویس)" }, { to: "/terms", label: "شرایط استفاده (پیش‌نویس)" }, { to: "/review-guidelines", label: "راهنمای نظر" }, { to: "/review-verification", label: "تأیید مراجعه" }, { to: "/content-policy", label: "سیاست محتوا" }, { to: "/report-problem", label: "گزارش مشکل" }] },
   ];
   return (

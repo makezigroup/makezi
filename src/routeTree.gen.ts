@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ContentPolicyRouteImport } from './routes/content-policy'
@@ -82,6 +83,11 @@ const AccountRoute = AccountRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompareRoute = CompareRouteImport.update({
@@ -341,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
+  '/app': typeof AppRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/content-policy': typeof ContentPolicyRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/app': typeof AppRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/content-policy': typeof ContentPolicyRoute
@@ -453,6 +461,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
+  '/app': typeof AppRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/content-policy': typeof ContentPolicyRoute
@@ -511,6 +520,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/admin'
+    | '/app'
     | '/compare'
     | '/contact'
     | '/content-policy'
@@ -566,6 +576,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/app'
     | '/compare'
     | '/contact'
     | '/content-policy'
@@ -622,6 +633,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/admin'
+    | '/app'
     | '/compare'
     | '/contact'
     | '/content-policy'
@@ -679,6 +691,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AppRoute: typeof AppRoute
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
   ContentPolicyRoute: typeof ContentPolicyRoute
@@ -744,6 +757,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compare': {
@@ -1142,6 +1162,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   AdminRoute: AdminRouteWithChildren,
+  AppRoute: AppRoute,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
   ContentPolicyRoute: ContentPolicyRoute,

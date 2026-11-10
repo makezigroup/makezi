@@ -88,6 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "میکزی MAKEZI — انتخاب آگاهانه در زیبایی" },
       { name: "description", content: "سالن‌های زیبایی را با خدمات، قیمت اعلام‌شده، نمونه‌کار و نظرهای بررسی‌شده پیدا و مقایسه کنید." },
       { name: "theme-color", content: "#101C22" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "میکزی" },
+      { name: "mobile-web-app-capable", content: "yes" },
     ],
     links: [
       {
@@ -95,6 +99,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

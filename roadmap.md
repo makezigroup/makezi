@@ -38,3 +38,10 @@
 - This is a partial visual alignment, not a pixel-identical reproduction. Current sample images, eight categories, richer filters, contact/review behavior, and listing form are preserved instead of copying the reference's empty/booking-only states.
 - Live reference inspection covered home, discover, map, gallery, for-salons, help, how-it-works, about, contact, login, account, privacy, terms, saved, verify, my-bookings, salon/onboarding, and the public sample salon profile. Signed-in states were not accessible.
 - Visual synchronization preserved product behavior; subsequent work connected Cloud authentication and persistent records.
+## تجربه دانلود اپ (سند جدید)
+- [x] پیکربندی متمرکز لینک‌های دانلود (کافه‌بازار/مایکت/PWA)
+- [x] بخش تبلیغ اپ در صفحه اصلی + ورودی ناوبری و پاصفحه
+- [x] صفحه /app با کارت پلتفرم، راهنمای نصب آیفون، امکانات، پرسش‌ها
+- [x] مانیفست PWA و آیکون‌ها (بدون سرویس‌ورکر)
+- [x] رویدادهای تحلیلی اپ
+- [x] آزمون، ساخت و بررسی مرورگری

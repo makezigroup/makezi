@@ -9,7 +9,9 @@ export type EventName =
   | "review_started" | "salon_favorited" | "salon_unfavorited" | "partnership_form_submitted" | "search_result_clicked" | "service_viewed" | "whatsapp_contact_clicked" | "website_contact_clicked" | "instagram_contact_clicked"
   | "salon_added_to_favorites" | "salon_removed_from_favorites"
   | "comparison_started" | "salon_added_to_comparison" | "comparison_completed"
-  | "phone_contact_clicked" | "directions_clicked" | "website_clicked" | "business_inquiry_submitted";
+  | "phone_contact_clicked" | "directions_clicked" | "website_clicked" | "business_inquiry_submitted"
+  | "app_download_page_viewed" | "cafe_bazaar_clicked" | "myket_clicked"
+  | "ios_pwa_guide_viewed" | "ios_install_guide_step_viewed" | "app_screenshot_viewed";
 
 export interface TrackedEvent { name: EventName; at: string; props?: Record<string, string | number | boolean> | undefined }
 const KEY = "mkz-events-v1";
