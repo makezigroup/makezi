@@ -130,7 +130,7 @@ export function HeroSearch() {
           <label className="flex h-full cursor-text items-center gap-2.5 rounded-input px-3 py-2.5 transition-shadow focus-within:bg-muted/60 focus-within:ring-2 focus-within:ring-pink">
             <Search className="size-5 shrink-0 text-pink" aria-hidden />
             <span className="min-w-0 flex-1">
-              <span className="block whitespace-nowrap text-caption font-semibold text-muted-foreground">چه چیزی دنبالش هستی؟</span>
+              <span className="block whitespace-nowrap text-caption font-semibold text-muted-foreground">دنبال چه چیزی هستی؟</span>
               <input
                 value={q}
                 onChange={(e) => {

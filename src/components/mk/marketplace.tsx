@@ -167,17 +167,23 @@ export function ReviewKindBadge({ r }: { r: Review }) {
 
 const REPORT_REASONS = ["محتوای توهین‌آمیز", "تبلیغ یا هرزنامه", "اطلاعات شخصی", "محتوای نامرتبط", "احتمال نظر جعلی"];
 
-export function ReviewCard({ r, report = true }: { r: Review; report?: boolean | undefined }) {
+export function ReviewCard({ r, report = true, showSalon = false }: { r: Review; report?: boolean | undefined; showSalon?: boolean | undefined }) {
   const fmt = useFmt();
-  const { reportReview } = useApp();
+  const { reportReview, salons } = useApp();
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
+  const salon = showSalon ? salons.find((s) => s.id === r.salonId) : undefined;
   return (
     <article className="flex flex-col gap-3 rounded-card bg-card p-5 shadow-card">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="font-semibold">{r.author}</p>
           <p className="text-caption text-muted-foreground">{r.service} · {fmt.date(r.date, { day: "numeric", month: "long", year: "numeric" })}</p>
+          {salon && (
+            <Link to="/salons/$slug" params={{ slug: salon.slug }} className="text-caption font-semibold text-pink-text underline underline-offset-4">
+              درباره‌ی {salon.name}
+            </Link>
+          )}
         </div>
         <span className="inline-flex items-center gap-1 rounded-full bg-pink-soft px-2.5 py-0.5 text-caption text-pink-text">
           <Icon name="rating" size={14} /> {fmt.rating(reviewOverall(r))}

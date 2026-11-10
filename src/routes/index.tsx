@@ -116,7 +116,7 @@ function Home() {
 
       <section className="container-mk py-14">
         <SectionHead title="آخرین نظرهای بررسی‌شده" />
-        {reviews.some(r=>r.status==='approved') ? <div className="grid gap-4 md:grid-cols-3">{reviews.filter((r) => r.status === "approved").slice(0, 3).map((r) => <ReviewCard key={r.id} r={r} />)}</div> : <p className="text-muted-foreground">هنوز نظری منتشر نشده است.</p>}
+        {reviews.some(r=>r.status==='approved') ? <div className="grid gap-4 md:grid-cols-3">{reviews.filter((r) => r.status === "approved").slice(0, 3).map((r) => <ReviewCard key={r.id} r={r} showSalon />)}</div> : <p className="text-muted-foreground">هنوز نظری منتشر نشده است.</p>}
       </section>
 
       <section className="container-mk py-14">
