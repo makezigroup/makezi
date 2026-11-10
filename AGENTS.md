@@ -23,3 +23,9 @@
 - Public navigation is a shared header with a collapsible mobile menu, not a persistent bottom bar; preserve access to account, favorites, and comparison through the menu so live-site presentation does not change product behavior.
 
 - Demo seeding and removal use scripts/demo and stable identifiers, preserve non-demo rows, and never expose test credentials in source or UI.
+- Independent services use service_catalog IDs shared with embedded salon offerings; preserve offering prices while catalog metadata stays centrally managed.
+- Public directory filtering and result paging run in server functions; bounded Cloud page reads must be drained before deriving complete totals.
+- Product context supplies persisted taxonomy/content to shared UI so staff edits reach discovery without source changes.
+- Account erasure is a tracked authenticated support request until retention is approved; never automatically remove review/evidence history.
+- Images live in private media storage; the public media endpoint serves only references on published salons and never avatars or evidence.
+- Salon verification requires accepted staff-reviewed private documents; review notifications derive from actual updates and honor profile notification preferences.

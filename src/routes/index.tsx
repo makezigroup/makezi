@@ -10,6 +10,7 @@ import { seo } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getProductData } from '@/lib/product.functions';
 import { ServiceCard } from '@/components/mk/service-discovery';
+import { useProduct } from '@/lib/product-context';
 
 export const Route = createFileRoute("/")({
   loader: () => getProductData(),
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HeroSearch() {
+  const product=useProduct();
   const nav = useNavigate();
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("");
@@ -30,7 +32,7 @@ function HeroSearch() {
       onSubmit={(e) => {
         e.preventDefault();
         track("search_submitted", { source: "home" });
-        const c = CATEGORIES.find((x) => x.id === cat);
+        const c = product.categories.find((x) => x.id === cat);
         nav({ to: "/salons", search: { q: q.trim() || undefined, cat: c?.id, city: area ? city?.slug : undefined, area: area || undefined } });
       }}
       className="hero-search grid gap-3 rounded-card bg-card p-3 shadow-modal sm:grid-cols-3"
@@ -43,14 +45,14 @@ function HeroSearch() {
         چه خدمتی؟
         <select className={inputCls} value={cat} onChange={(e) => setCat(e.target.value)}>
           <option value="">همه‌ی خدمات</option>
-          {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+          {product.categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
         </select>
       </label>
       <label className="flex flex-col gap-1 text-caption font-semibold">
         کجا؟
         <select className={inputCls} value={area} onChange={(e) => setArea(e.target.value)}>
           <option value="">همه‌ی محله‌ها</option>
-          {city?.areas.map((a) => <option key={a.slug} value={a.slug}>{a.name}</option>)}
+          {product.locations.filter(l=>l.area&&l.city===city?.slug).map((a) => <option key={a.id} value={a.area}>{a.label}</option>)}
         </select>
       </label>
       <Button type="submit" className="sm:col-span-3"><Icon name="search" size={20} /> جست‌وجوی سالن</Button>
@@ -63,6 +65,7 @@ function Home() {
   const config = product.content.find(c=>c.id==='homepage')?.data;
   const selected = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['featured']) ? config['featured'] : [];
   const selectedServices = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['services']) ? config['services'] : [];
+  const selectedCategories = config && typeof config==='object' && !Array.isArray(config) && Array.isArray(config['categories']) ? config['categories'] : [];
   const { reviews } = useApp();
   const fmt = useFmt();
   const salons = usePublicSalons();
@@ -88,9 +91,9 @@ function Home() {
             <li className="flex items-center gap-1.5"><Icon name="payment" size={16} /> قیمت پیش از رفتن</li>
           </ul>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
+            {product.categories.filter(c=>!selectedCategories.length||selectedCategories.includes(c.id)).map((c) => (
               <Link key={c.id} to="/categories/$cat" params={{ cat: c.id }} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-border-strong bg-surface px-4 text-caption font-semibold text-foreground no-underline hover:bg-muted">
-                <Icon name={c.icon} size={18} /> {c.label}
+                <Icon name={CATEGORIES.find(v=>v.id===c.id)?.icon??'package'} size={18} /> {c.label}
               </Link>
             ))}
           </div>

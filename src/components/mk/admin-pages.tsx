@@ -16,6 +16,7 @@ import { getEvents, track, type TrackedEvent } from "@/lib/analytics";
 import { supabase } from "@/integrations/supabase/client";
 import { isoDay, normalizePhone } from "@/lib/format";
 import { MediaUpload } from './media-upload';
+import { useProduct } from '@/lib/product-context';
 
 export const ADMIN_NAV = [
   { to: "/admin", label: "پیشخوان", icon: "salon" as const, exact: true },
@@ -41,13 +42,18 @@ const Note = () => (
 export function AdminHome() {
   const fmt = useFmt();
   const { salons, reviews, inquiries } = useApp();
+  const product=useProduct();
+  const [newMessages,setNewMessages]=useState(0);
+  useEffect(()=>{void supabase.from('support_submissions').select('id',{count:'exact',head:true}).eq('status','new').then(({count})=>setNewMessages(count??0));},[]);
   const stats: [string, number, "salon" | "review" | "support" | "verified"][] = [
     ["همه‌ی سالن‌ها",salons.length,"salon"],
     ["پیش‌نویس‌ها",salons.filter(s=>!s.published&&!s.archived).length,"salon"],
     ["آرشیوشده",salons.filter(s=>s.archived).length,"salon"],
     ["همه‌ی نظرها",reviews.length,"review"],
     ["نظرهای ردشده",reviews.filter(r=>r.status==='rejected').length,"review"],
-    ["دسته‌های خدمات",CATEGORIES.length,"salon"],
+    ["دسته‌های خدمات",product.categories.length,"salon"],
+    ["کاتالوگ خدمات",product.services.length,"salon"],
+    ["پیام‌های جدید",newMessages,"support"],
     ["خدمات ثبت‌شده",salons.reduce((n,s)=>n+s.services.length,0),"salon"],
     ["درخواست‌های همکاری",inquiries.length,"support"],
     ["سالن‌های منتشرشده", salons.filter((s) => s.published && !s.archived).length, "salon"],
@@ -87,12 +93,15 @@ export function AdminSalons() {
   const { salons, upsertSalon } = useApp();
   const fmt = useFmt();
   const [q, setQ] = useState("");
-  const list = salons.filter((s) => !q || s.name.includes(q));
+  const [status,setStatus]=useState(''),[page,setPage]=useState(1);
+  const filtered = salons.filter((s) => (!q || s.name.includes(q))&&(!status||(status==='archived'?s.archived:status==='published'?s.published&&!s.archived:!s.published&&!s.archived)));
+  const list=filtered.slice((page-1)*20,page*20);
   return (
     <>
       <DashTitle title="سالن‌ها" body="ایجاد، ویرایش، انتشار و توقف انتشار پروفایل‌ها." action={<Link to="/admin/salons/$id" params={{ id: "new" }} className={btn({ size: "sm" })}><Icon name="add" size={18} /> افزودن سالن</Link>} />
       <label className="sr-only" htmlFor="as-q">جست‌وجو</label>
       <input id="as-q" className={inputCls + " mb-4 max-w-sm"} placeholder="جست‌وجوی نام سالن…" value={q} onChange={(e) => setQ(e.target.value)} />
+      <select aria-label="وضعیت سالن" className={inputCls+' mb-4 max-w-sm'} value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}><option value="">همهٔ وضعیت‌ها</option><option value="published">منتشرشده</option><option value="draft">پیش‌نویس</option><option value="archived">آرشیوشده</option></select>
       {list.length === 0 ? <StatePanel icon="salon" title="سالنی پیدا نشد" /> : (
         <div className="overflow-x-auto rounded-card bg-card shadow-card">
           <table className="w-full min-w-[640px] text-caption">
@@ -113,6 +122,7 @@ export function AdminSalons() {
           </table>
         </div>
       )}
+      <div className="mt-6 flex gap-3"><Button variant="outline" disabled={page===1} onClick={()=>setPage(v=>v-1)}>قبلی</Button><Button variant="outline" disabled={page*20>=filtered.length} onClick={()=>setPage(v=>v+1)}>بعدی</Button></div>
       <Note />
     </>
   );
